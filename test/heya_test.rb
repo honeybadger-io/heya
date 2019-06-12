@@ -1,4 +1,4 @@
-require 'test_helper'
+require "test_helper"
 
 class Heya::Test < ActiveSupport::TestCase
   test "truth" do
