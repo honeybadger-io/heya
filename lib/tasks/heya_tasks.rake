@@ -1,4 +1,6 @@
-# desc "Explaining what the task does"
-# task :heya do
-#   # Task goes here
-# end
+namespace :heya do
+  desc "Send campaign emails"
+  task scheduler: :environment do
+    Heya::Campaigns::Scheduler.new.run
+  end
+end

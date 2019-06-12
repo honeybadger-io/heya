@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  contact: one
+  campaign: one
+  last_sent_at: 2019-06-08 22:30:31
+
+two:
+  contact: two
+  campaign: two
+  last_sent_at: 2019-06-08 22:30:31
