@@ -49,7 +49,7 @@ using Ruby. That could be an argument to host your marketing site with your app
       default wait: 2.days
 
       step :one,   subject: 'First email subject',  wait: 0.days
-      step :two,   subject: 'Second email subject', segment: Heya::Contact.trialing.installed_project
+      step :two,   subject: 'Second email subject', segment: -> { trialing.installed_project }
       step :three, subject: 'Third email subject'
     end
     ```
