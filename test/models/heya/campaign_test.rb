@@ -8,18 +8,18 @@ module Heya
 
       campaign.add(contact)
 
-      assert campaign.contacts.where(id: contact).exists?
+      assert campaign.memberships.where(contact: contact).exists?
     end
 
-    test "#remove removes a contact to a campaign" do
-      contact = heya_contacts(:one)
+    test "#remove removes a contact from a campaign" do
+      contact = contacts(:one)
       campaign = heya_campaigns(:one)
 
-      assert campaign.contacts.where(id: contact).exists?
+      assert campaign.memberships.where(contact: contact).exists?
 
       campaign.remove(contact)
 
-      refute campaign.contacts.where(id: contact).exists?
+      refute campaign.memberships.where(contact: contact).exists?
     end
   end
 end

@@ -10,20 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_08_025612) do
+ActiveRecord::Schema.define(version: 2019_06_13_183430) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "contacts", force: :cascade do |t|
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "heya_campaign_memberships", force: :cascade do |t|
-    t.bigint "contact_id", null: false
     t.bigint "campaign_id", null: false
+    t.string "contact_type", null: false
+    t.bigint "contact_id", null: false
     t.datetime "last_sent_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["campaign_id"], name: "index_heya_campaign_memberships_on_campaign_id"
     t.index ["contact_id", "campaign_id"], name: "index_heya_campaign_memberships_on_contact_id_and_campaign_id", unique: true
-    t.index ["contact_id"], name: "index_heya_campaign_memberships_on_contact_id"
+    t.index ["contact_type", "contact_id"], name: "index_heya_campaign_memberships_on_contact_type_and_contact_id"
   end
 
   create_table "heya_campaigns", force: :cascade do |t|
@@ -32,20 +39,14 @@ ActiveRecord::Schema.define(version: 2019_06_08_025612) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "heya_contacts", force: :cascade do |t|
-    t.string "email"
-    t.datetime "last_contacted"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "heya_message_receipts", force: :cascade do |t|
     t.bigint "message_id", null: false
+    t.string "contact_type", null: false
     t.bigint "contact_id", null: false
     t.datetime "sent_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["contact_id"], name: "index_heya_message_receipts_on_contact_id"
+    t.index ["contact_type", "contact_id"], name: "index_heya_message_receipts_on_contact_type_and_contact_id"
     t.index ["message_id", "contact_id"], name: "index_heya_message_receipts_on_message_id_and_contact_id", unique: true
     t.index ["message_id"], name: "index_heya_message_receipts_on_message_id"
   end
@@ -59,8 +60,6 @@ ActiveRecord::Schema.define(version: 2019_06_08_025612) do
   end
 
   add_foreign_key "heya_campaign_memberships", "heya_campaigns", column: "campaign_id"
-  add_foreign_key "heya_campaign_memberships", "heya_contacts", column: "contact_id"
-  add_foreign_key "heya_message_receipts", "heya_contacts", column: "contact_id"
   add_foreign_key "heya_message_receipts", "heya_messages", column: "message_id"
   add_foreign_key "heya_messages", "heya_campaigns", column: "campaign_id"
 end

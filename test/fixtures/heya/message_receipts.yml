@@ -5,11 +5,11 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
-  contact: one
+  contact: one (Contact)
   message: one
   sent_at: 2019-06-08 22:30:31
 
 two:
-  contact: two
+  contact: two (Contact)
   message: two
   sent_at: 2019-06-08 22:30:31

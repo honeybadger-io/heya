@@ -6,8 +6,9 @@ module Heya
       class << self
         def defaults
           @defaults ||= {
+            contact_class: "User",
             action: Actions::Email,
-            segment: ::Heya::Contact.all,
+            segment: -> { all },
             wait: 2.days,
           }
         end

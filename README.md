@@ -3,7 +3,6 @@ Heya is a customer communication and automation framework for Rails. The purpose
 of this project is to replace Honeybadger's usage of Intercom and Drip.
 
 ## Roadmap
-
 For the time being, we could use [ahoy](https://github.com/ankane/ahoy) for web
 analytics, event tracking, email analytics, and subscribes/unsubscribes. I'd
 like to take advantage of the existing Rails ecosystem as much as
@@ -43,7 +42,6 @@ using Ruby. That could be an argument to host your marketing site with your app
 [high_voltage](https://github.com/thoughtbot/high_voltage).
 
 ## Usage
-
 1. Create a campaign:
     ```ruby
     # app/campaigns/trial_onboarding_campaign.rb
@@ -75,30 +73,13 @@ using Ruby. That could be an argument to host your marketing site with your app
 
 ## Installation
 1. Clone this repo in your project's parent directory:
-
 ```bash
 git clone https://github.com/honeybadger-io/heya.git
 ```
 
 2. Add this line to your application's Gemfile:
-
 ```ruby
 gem 'heya', path: '../heya'
-```
-
-3. Create the following file at `app/models/heya/contact.rb`:
-```ruby
-# app/models/heya/contact.rb
-class Heya::Contact < ApplicationRecord
-  include Heya::Concerns::Models::Contact
-
-  # If you want to associate contacts with a user:
-  # belongs_to :user, optional: true
-  #
-  # def email
-  #   user&.email || read_attribute(:email)
-  # end
-end
 ```
 
 4. Then execute:
@@ -106,7 +87,6 @@ end
 bundle
 rails heya:install:migrations db:migrate
 ```
-
 
 ## Contributing
 TODO: Contribution directions go here.
