@@ -56,9 +56,9 @@ using Ruby. That could be an argument to host your marketing site with your app
 
 2. Create campaign email templates (i.e. using
    [maildown](https://github.com/schneems/maildown)):
-    - `app/views/heya/campaign_mailer/one.md.erb`
-    - `app/views/heya/campaign_mailer/two.md.erb`
-    - `app/views/heya/campaign_mailer/three.md.erb`
+    - `app/views/heya/campaign_mailer/trial_onboarding_campaign/one.md.erb`
+    - `app/views/heya/campaign_mailer/trial_onboarding_campaign/two.md.erb`
+    - `app/views/heya/campaign_mailer/trial_onboarding_campaign/three.md.erb`
     - etc.
 
 3. Add a contact to a campaign:
