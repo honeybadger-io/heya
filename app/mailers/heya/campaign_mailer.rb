@@ -8,7 +8,7 @@ class Heya::CampaignMailer < ApplicationMailer
 
     mail(
       to: @contact.email,
-      subject: @message.properties.fetch(:subject),
+      subject: @message.properties.fetch("subject"),
       template_path: "heya/campaign_mailer/#{@campaign.name.underscore}",
       template_name: @message.name.underscore
     )

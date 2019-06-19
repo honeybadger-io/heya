@@ -1,38 +1,41 @@
 module Heya
   module Campaigns
-    # Campaigns::Base provides a Ruby DSL for building campaign sequences.
+    # {Campaigns::Base} provides a Ruby DSL for building campaign sequences.
     # Multiple actions are supported; the default is email.
     class Base
       class << self
-        def defaults
-          @defaults ||= {
-            contact_class: "User",
-            action: Actions::Email,
-            segment: -> { all },
-            wait: 2.days,
+        class_attribute :defaults
+
+        self.defaults = {
+          contact_class: "User",
+          action: Actions::Email,
+          segment: -> { all },
+          wait: 2.days,
+        }.freeze
+
+        def campaign
+          @campaign ||= CampaignProxy.new {
+            ::Heya::Campaign.where(name: name).first_or_create!.tap(&:readonly!)
           }
         end
 
-        def campaign
-          @campaign ||= ::Heya::Campaign.where(name: name).first_or_create!.tap(&:readonly!)
-        end
-
-        def messages
-          @messages ||= []
-        end
-
-        def default(**opts)
-          defaults.merge!(opts)
+        def default(**props)
+          self.defaults = defaults.merge(props).freeze
         end
 
         def step(name, **props)
-          message = ::Heya::Message.where(campaign: campaign, name: name).first_or_create!
-          message.properties = defaults.merge(props)
-          message.readonly!
-          messages << message
+          proxy_props = props.select { |k, _| defaults.key?(k) }
+          message_props = props.reject { |k, _| defaults.key?(k) }.stringify_keys
+
+          campaign << MessageProxy.new(**defaults.merge(proxy_props)) {
+            message = ::Heya::Message.where(campaign: campaign.model, name: name).first_or_create!
+            message.properties = message_props
+            message.readonly!
+            message
+          }
         end
 
-        delegate :add, :add!, :remove, to: :campaign
+        delegate :add, :remove, :messages, to: :campaign
       end
     end
   end

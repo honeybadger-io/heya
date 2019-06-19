@@ -7,5 +7,10 @@ one:
 
 two:
   contact: two (Contact)
-  campaign: two
+  campaign: one
+  last_sent_at: 2019-06-08 22:30:31
+
+three:
+  contact: three (Contact)
+  campaign: one
   last_sent_at: 2019-06-08 22:30:31

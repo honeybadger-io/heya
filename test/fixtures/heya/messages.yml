@@ -6,6 +6,8 @@
 #
 one:
   name: one
+  campaign: one
 
 two:
   name: two
+  campaign: one
