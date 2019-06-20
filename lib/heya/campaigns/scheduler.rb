@@ -1,6 +1,6 @@
 module Heya
   module Campaigns
-    # Campaigns::Scheduler schedules campaign jobs to run for each campaign.
+    # {Campaigns::Scheduler} schedules campaign jobs to run for each campaign.
     #
     # For each message in each campaign:
     #   1. Find contacts who haven't received message, and are outside
@@ -10,6 +10,9 @@ module Heya
     #   4. Process job
     class Scheduler
       def run
+        # Creates database records if necessary
+        Campaigns::Base.subclasses.each(&:load_model)
+
         Campaign.find_each do |campaign|
           campaign.name.constantize.messages.each do |message|
             Queries::MessageContactsQuery.call(campaign, message).find_each do |contact|
@@ -25,8 +28,8 @@ module Heya
         ActiveRecord::Base.transaction do
           now = Time.now.utc
           CampaignMembership.where(contact: contact).update_all(last_sent_at: now)
-          MessageReceipt.create!(message: message, contact: contact, sent_at: now)
-          message.properties.fetch(:action).call(contact: contact, message: message)
+          MessageReceipt.create!(message: message.model, contact: contact, sent_at: now)
+          message.action.call(contact: contact, message: message.model)
         end
       end
     end

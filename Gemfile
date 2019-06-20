@@ -14,4 +14,7 @@ gemspec
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
 
-gem "standard", "~> 0.0.40", groups: [:development, :test]
+group :development, :test do
+  gem "standard", "~> 0.0.40"
+  gem "yard", "~> 0.9.19"
+end

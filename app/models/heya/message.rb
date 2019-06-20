@@ -4,8 +4,10 @@ module Heya
 
     belongs_to :campaign, optional: true
 
-    has_many :receipts, class_name: "MessageReceipt"
+    has_many :receipts, class_name: "MessageReceipt", dependent: :destroy
 
+    # Data properties needed by action to render message -- i.e. for emails:
+    # "subject"
     attr_accessor :properties
   end
 end

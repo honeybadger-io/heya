@@ -2,8 +2,8 @@ module Heya
   class Campaign < ApplicationRecord
     self.table_name = "heya_campaigns"
 
-    has_many :messages
-    has_many :memberships, class_name: "CampaignMembership"
+    has_many :messages, dependent: :destroy
+    has_many :memberships, class_name: "CampaignMembership", dependent: :destroy
 
     delegate :sanitize_sql_array, to: ActiveRecord::Base
 
