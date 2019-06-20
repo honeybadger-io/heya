@@ -18,3 +18,5 @@ group :development, :test do
   gem "standard", "~> 0.0.40"
   gem "yard", "~> 0.9.19"
 end
+
+gem 'minitest-ci', group: :test

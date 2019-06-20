@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite time='0.000519' skipped='0' failures='0' errors='0' name="Heya::Test" assertions='1' tests='1' timestamp="2019-06-20T11:44:46-07:00">
+  <testcase time='0.000519' file="test/heya_test.rb" name="test_truth" assertions='1'>
+  </testcase>
+</testsuite>
