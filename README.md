@@ -1,4 +1,6 @@
 # Heya 👋
+[![CircleCI](https://circleci.com/gh/honeybadger-io/heya.svg?style=svg&circle-token=41341cd6f508a899e10bb09b9c9e45941bfb6944)](https://circleci.com/gh/honeybadger-io/heya)
+
 Heya is a customer communication and automation framework for Rails. The purpose
 of this project is to replace Honeybadger's usage of Intercom and Drip.
 
