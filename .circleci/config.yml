@@ -10,11 +10,18 @@ jobs:
       - image: circleci/ruby:2.6.2-node-browsers
         environment:
           BUNDLER_VERSION: 2.0.1
+          RAILS_ENV: test
+          PGUSER: heya
+          PGHOST: localhost
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       - image: circleci/postgres:9.6
+        environment:
+          POSTGRES_USER: heya
+          POSTGRES_DB: dummy_test
+          POSTGRES_PASSWORD: ""
 
     working_directory: ~/repo
 
