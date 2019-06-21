@@ -85,6 +85,48 @@ module Heya
 
         assert_mock action
       end
+
+      test "it processes actions that match segments" do
+        # Setup
+        action = Minitest::Mock.new
+
+        create_test_campaign do
+          default contact_class: "Contact"
+
+          step :one, wait: 0, action: action, segment: -> { where(properties: {foo: "bar"}) }
+          step :two, wait: 0, action: action
+        end
+
+        contact = contacts(:one)
+        TestCampaign.add(contact)
+
+        # Second action expected first
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.second.model,
+        }])
+
+        run_once
+
+        assert_mock action
+
+        # Nothing expected until segment matches
+        run_once
+
+        assert_mock action
+
+        # First action expected when segment matches
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.first.model,
+        }])
+
+        contact.update_attribute(:properties, {foo: "bar"})
+
+        run_once
+
+        assert_mock action
+      end
     end
   end
 end
