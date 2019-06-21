@@ -35,7 +35,7 @@ module Heya
           }
         end
 
-        delegate :add, :remove, :messages, to: :campaign
+        delegate :add, :remove, :messages, :load_model, to: :campaign
       end
     end
   end

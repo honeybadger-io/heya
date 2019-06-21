@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite time='0.018585' skipped='0' failures='0' errors='0' name="Heya::CampaignTest" assertions='3' tests='2' timestamp="2019-06-20T11:44:46-07:00">
-  <testcase time='0.012867' file="test/models/heya/campaign_test.rb" name="test_#add_adds_a_contact_to_a_campaign" assertions='1'>
-  </testcase>
-  <testcase time='0.005718' file="test/models/heya/campaign_test.rb" name="test_#remove_removes_a_contact_from_a_campaign" assertions='2'>
-  </testcase>
-</testsuite>

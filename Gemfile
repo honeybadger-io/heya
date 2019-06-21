@@ -20,3 +20,5 @@ group :development, :test do
 end
 
 gem 'minitest-ci', group: :test
+
+gem "timecop", "~> 0.9.1"

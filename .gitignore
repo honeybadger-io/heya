@@ -9,3 +9,5 @@ test/dummy/tmp/
 
 .yardoc/
 doc/
+
+test/reports/

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite time='0.088112' skipped='0' failures='0' errors='0' name="Heya::CampaignMembershipTest" assertions='1' tests='1' timestamp="2019-06-20T11:44:46-07:00">
-  <testcase time='0.088112' file="test/models/heya/campaign_membership_test.rb" name="test_it_sets_default_last_sent_at_time" assertions='1'>
-  </testcase>
-</testsuite>

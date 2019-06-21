@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite time='0.283616' skipped='0' failures='0' errors='0' name="Heya::ActionsTest" assertions='3' tests='1' timestamp="2019-06-20T11:44:46-07:00">
-  <testcase time='0.283616' file="test/lib/heya/actions_test.rb" name="test_it_sends_an_email_to_contact" assertions='3'>
-  </testcase>
-</testsuite>
