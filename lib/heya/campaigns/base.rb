@@ -1,3 +1,5 @@
+require "ostruct"
+
 module Heya
   module Campaigns
     # {Campaigns::Base} provides a Ruby DSL for building campaign sequences.
@@ -14,9 +16,20 @@ module Heya
         }.freeze
 
         def campaign
-          @campaign ||= CampaignProxy.new {
-            ::Heya::Campaign.where(name: name).first_or_create!.tap(&:readonly!)
-          }
+          @campaign ||= ::Heya::Campaign.where(name: name).first_or_create!.tap do |campaign|
+            steps.each_pair do |name, _|
+              messages << ::Heya::Message.where(campaign: campaign, name: name).first_or_create!
+            end
+          end
+        end
+        alias load_model campaign
+
+        def messages
+          @messages ||= []
+        end
+
+        def steps
+          @steps ||= {}
         end
 
         def default(**props)
@@ -24,18 +37,13 @@ module Heya
         end
 
         def step(name, **props)
-          proxy_props = props.select { |k, _| defaults.key?(k) }
-          message_props = props.reject { |k, _| defaults.key?(k) }.stringify_keys
+          options = props.select { |k, _| defaults.key?(k) }
+          options[:properties] = props.reject { |k, _| defaults.key?(k) }.stringify_keys
 
-          campaign << MessageProxy.new(**defaults.merge(proxy_props)) {
-            message = ::Heya::Message.where(campaign: campaign.model, name: name).first_or_create!
-            message.properties = message_props
-            message.readonly!
-            message
-          }
+          steps[name] = OpenStruct.new(defaults.merge(options))
         end
 
-        delegate :add, :remove, :messages, :load_model, to: :campaign
+        delegate :add, :remove, to: :campaign
       end
     end
   end

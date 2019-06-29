@@ -14,7 +14,7 @@ module Heya
         Campaigns::Base.subclasses.each(&:load_model)
 
         Campaign.find_each do |campaign|
-          campaign.name.constantize.messages.each do |message|
+          campaign.messages.each do |message|
             Queries::MessageContactsQuery.call(campaign, message).find_each do |contact|
               process(contact, message)
             end
@@ -28,8 +28,8 @@ module Heya
         ActiveRecord::Base.transaction do
           now = Time.now.utc
           CampaignMembership.where(contact: contact).update_all(last_sent_at: now)
-          MessageReceipt.create!(message: message.model, contact: contact, sent_at: now)
-          message.action.call(contact: contact, message: message.model)
+          MessageReceipt.create!(message: message, contact: contact, sent_at: now)
+          message.action.call(contact: contact, message: message)
         end
       end
     end

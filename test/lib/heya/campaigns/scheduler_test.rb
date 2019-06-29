@@ -47,7 +47,7 @@ module Heya
         # First action expected immediately
         action.expect(:call, nil, [{
           contact: contact,
-          message: TestCampaign.messages.first.model,
+          message: TestCampaign.messages.first,
         }])
 
         run_twice
@@ -59,7 +59,7 @@ module Heya
 
         action.expect(:call, nil, [{
           contact: contact,
-          message: TestCampaign.messages.second.model,
+          message: TestCampaign.messages.second,
         }])
 
         run_twice
@@ -78,7 +78,7 @@ module Heya
 
         action.expect(:call, nil, [{
           contact: contact,
-          message: TestCampaign.messages.third.model,
+          message: TestCampaign.messages.third,
         }])
 
         run_twice
@@ -103,7 +103,7 @@ module Heya
         # Second action expected first
         action.expect(:call, nil, [{
           contact: contact,
-          message: TestCampaign.messages.second.model,
+          message: TestCampaign.messages.second,
         }])
 
         run_once
@@ -118,7 +118,7 @@ module Heya
         # First action expected when segment matches
         action.expect(:call, nil, [{
           contact: contact,
-          message: TestCampaign.messages.first.model,
+          message: TestCampaign.messages.first,
         }])
 
         contact.update_attribute(:properties, {foo: "bar"})
