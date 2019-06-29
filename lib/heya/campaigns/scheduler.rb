@@ -14,7 +14,7 @@ module Heya
         Campaigns::Base.subclasses.each(&:load_model)
 
         Campaign.find_each do |campaign|
-          campaign.messages.each do |message|
+          campaign.ordered_messages.each do |message|
             Queries::MessageContactsQuery.call(campaign, message).find_each do |contact|
               process(contact, message)
             end

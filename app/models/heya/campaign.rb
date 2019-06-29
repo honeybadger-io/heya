@@ -30,5 +30,9 @@ module Heya
     def klass
       @klass ||= name.constantize
     end
+
+    def ordered_messages
+      klass.messages
+    end
   end
 end
