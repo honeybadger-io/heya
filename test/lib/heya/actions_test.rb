@@ -8,11 +8,8 @@ module Heya
       contact = contacts(:one)
       message = heya_messages(:one)
 
-      assert_emails 1 do
-        email = Actions::Email.call(contact: contact, message: message)
-
-        assert_equal "First subject", email.subject
-        assert_equal "one@example.com", email.to.first
+      assert_enqueued_email_with CampaignMailer, :build, args: {contact: contact, message: message} do
+        Actions::Email.call(contact: contact, message: message)
       end
     end
   end
