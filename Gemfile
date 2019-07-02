@@ -19,6 +19,6 @@ group :development, :test do
   gem "yard", "~> 0.9.19"
 end
 
-gem 'minitest-ci', group: :test
+gem "minitest-ci", group: :test
 
 gem "timecop", "~> 0.9.1"

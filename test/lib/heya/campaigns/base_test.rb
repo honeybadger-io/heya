@@ -26,9 +26,7 @@ module Heya
         }
 
         assert_difference("Heya::Campaign.count") do
-          model = klass.campaign.model
-
-          assert_equal "TestCampaign", model.name
+          assert_equal "TestCampaign", klass.campaign.name
         end
       end
 
@@ -42,12 +40,13 @@ module Heya
           }
         }
 
-        assert_difference("Heya::Message.count") do
-          assert_equal "one", klass.messages.first.model.name
+        assert_no_difference("Heya::Message.count") do
+          assert_equal 0, klass.messages.size
         end
 
-        assert_difference("Heya::Message.count") do
-          assert_equal "two", klass.messages.second.model.name
+        assert_difference("Heya::Message.count", 2) do
+          klass.load_model
+          assert_equal 2, klass.messages.size
         end
       end
 
@@ -61,7 +60,7 @@ module Heya
         }
 
         assert_no_difference("Heya::Campaign.count") do
-          assert_equal heya_campaigns(:one), klass.campaign.model
+          assert_equal heya_campaigns(:one), klass.campaign
         end
       end
 
@@ -80,12 +79,11 @@ module Heya
         }
 
         assert_no_difference("Heya::Message.count") do
-          assert_equal heya_messages(:one), klass.messages.first.model
+          klass.load_model
         end
 
-        assert_no_difference("Heya::Message.count") do
-          assert_equal heya_messages(:two), klass.messages.second.model
-        end
+        assert_equal heya_messages(:one), klass.messages.first
+        assert_equal heya_messages(:two), klass.messages.second
       end
     end
   end

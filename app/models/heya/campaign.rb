@@ -26,5 +26,13 @@ module Heya
     def remove(contact)
       memberships.where(contact: contact).destroy_all
     end
+
+    def klass
+      @klass ||= name.constantize
+    end
+
+    def ordered_messages
+      klass.messages
+    end
   end
 end
