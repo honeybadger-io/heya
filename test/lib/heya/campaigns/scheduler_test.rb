@@ -93,7 +93,7 @@ module Heya
         create_test_campaign do
           default contact_class: "Contact"
 
-          step :one, wait: 0, action: action, segment: -> { where(properties: {foo: "bar"}) }
+          step :one, wait: 0, action: action, segment: -> { where(traits: {foo: "bar"}) }
           step :two, wait: 0, action: action
         end
 
@@ -121,7 +121,42 @@ module Heya
           message: TestCampaign.messages.first,
         }])
 
-        contact.update_attribute(:properties, {foo: "bar"})
+        contact.update_attribute(:traits, {foo: "bar"})
+
+        run_once
+
+        assert_mock action
+      end
+
+      test "it processes actions that match default segments" do
+        # Setup
+        action = Minitest::Mock.new
+
+        class TestContact < Contact
+          default_segment { where(traits: {foo: "bar"}) }
+        end
+
+        create_test_campaign do
+          default contact_class: TestContact
+
+          step :one, wait: 0, action: action
+        end
+
+        contact = contacts(:one).becomes(TestContact)
+        TestCampaign.add(contact)
+
+        # Nothing expected until segment matches
+        run_once
+
+        assert_mock action
+
+        contact.update_attribute(:traits, {foo: "bar"})
+
+        # First action expected once default segment matches
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.first,
+        }])
 
         run_once
 

@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 2019_06_13_183430) do
 
   create_table "contacts", force: :cascade do |t|
     t.string "email"
-    t.jsonb "properties"
+    t.jsonb "traits"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

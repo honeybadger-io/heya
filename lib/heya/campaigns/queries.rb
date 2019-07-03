@@ -16,7 +16,7 @@ module Heya
           .where(
             "heya_campaign_memberships.last_sent_at <= ?", wait_threshold
           )
-          .merge(message.segment)
+          .merge(message.build_segment)
       }
     end
   end

@@ -8,12 +8,14 @@ module Heya
     delegate :sanitize_sql_array, to: ActiveRecord::Base
 
     def contacts(class_name)
-      contact_relation = class_name.constantize
-      contact_relation
+      klass = class_name.constantize
+      base_klass = klass.base_class
+
+      klass
         .joins(
           sanitize_sql_array([
-            "inner join heya_campaign_memberships on heya_campaign_memberships.contact_type = ? and heya_campaign_memberships.contact_id = #{contact_relation.table_name}.id and heya_campaign_memberships.campaign_id = ?",
-            class_name,
+            "inner join heya_campaign_memberships on heya_campaign_memberships.contact_type = ? and heya_campaign_memberships.contact_id = #{base_klass.table_name}.id and heya_campaign_memberships.campaign_id = ?",
+            base_klass.name,
             id,
           ])
         ).all

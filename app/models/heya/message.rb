@@ -9,11 +9,16 @@ module Heya
     delegate :contact_class, :action, :segment, :wait, :properties, to: :options
 
     def contact_class
-      @contact_class ||= options.contact_class.constantize
+      @contact_class ||= begin
+                           klass = options.contact_class
+                           klass.is_a?(String) ? klass.constantize : klass
+                         end
     end
 
-    def segment
-      @segment ||= contact_class.instance_exec(&options.segment)
+    def build_segment
+      contact_class
+        .build_default_segment
+        .instance_exec(&options.segment)
     end
 
     private
