@@ -218,6 +218,41 @@ module Heya
 
         assert_mock action
       end
+
+      test "it removes contacts from campaign at end" do
+        # Setup
+        action = Minitest::Mock.new
+
+        create_test_campaign do
+          default contact_class: "Contact"
+
+          step :one, wait: 0, action: action
+          # step two will be skipped due to conditions
+          step :two, wait: 0, action: action, segment: -> { where(traits: {foo: "bar"}) }
+          step :three, wait: 0, action: action
+        end
+
+        contact = contacts(:one)
+        TestCampaign.add(contact)
+
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.first,
+        }])
+
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.third,
+        }])
+
+        assert CampaignMembership.where(campaign: TestCampaign.campaign, contact: contact).exists?
+
+        run_once
+
+        assert_mock action
+
+        refute CampaignMembership.where(campaign: TestCampaign.campaign, contact: contact).exists?
+      end
     end
   end
 end

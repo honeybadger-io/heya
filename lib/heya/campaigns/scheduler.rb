@@ -19,6 +19,13 @@ module Heya
               process(contact, message)
             end
           end
+
+          if last_message = campaign.ordered_messages.last
+            CampaignMembership.where(
+              campaign: campaign,
+              contact: Queries::ContactsReceivedMessageQuery.call(campaign, last_message)
+            ).destroy_all
+          end
         end
       end
 

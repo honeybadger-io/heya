@@ -22,6 +22,18 @@ module Heya
           )
           .merge(message.build_segment)
       }
+
+      # Given a campaign and a message, {Queries::ContactsReceivedMessageQuery}
+      # returns the contacts who have already received the message.
+      ContactsReceivedMessageQuery = ->(campaign, message) {
+        receipt_query = MessageReceipt
+          .select("heya_message_receipts.contact_id")
+          .where(contact_type: message.contact_class.name)
+          .where("heya_message_receipts.message_id = ?", message.id)
+
+        campaign.contacts(message.contact_class.name)
+          .where(id: receipt_query)
+      }
     end
   end
 end
