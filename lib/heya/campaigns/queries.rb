@@ -1,9 +1,9 @@
 module Heya
   module Campaigns
     module Queries
-      # Given a campaign and a message, {Queries::MessageContactsQuery} returns
+      # Given a campaign and a message, {Queries::ContactsForMessage} returns
       # the contacts who should receive the message.
-      MessageContactsQuery = ->(campaign, message) {
+      ContactsForMessage = ->(campaign, message) {
         wait_threshold = Time.now.utc - message.wait
 
         # Send to contacts who have never received this email or any email
@@ -23,9 +23,9 @@ module Heya
           .merge(message.build_segment)
       }
 
-      # Given a campaign and a message, {Queries::ContactsReceivedMessageQuery}
+      # Given a campaign and a message, {Queries::ContactsReceivedMessage}
       # returns the contacts who have already received the message.
-      ContactsReceivedMessageQuery = ->(campaign, message) {
+      ContactsReceivedMessage = ->(campaign, message) {
         receipt_query = MessageReceipt
           .select("heya_message_receipts.contact_id")
           .where(contact_type: message.contact_class.name)
