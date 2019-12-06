@@ -16,6 +16,20 @@ module Heya
         assert_not_equal Base.defaults, klass.defaults
       end
 
+      test "it sets class segment" do
+        assert_kind_of Proc, Base.segment
+      end
+
+      test "it allows subclasses to change segment" do
+        block = -> { where(id: 1) }
+        klass = Class.new(Base) {
+          segment(&block)
+        }
+
+        assert_equal block, klass.segment
+        assert_not_equal Base.segment, klass.segment
+      end
+
       test "it lazily creates a new campaign model" do
         klass = assert_no_difference("Heya::Campaign.count") {
           Class.new(Base) {

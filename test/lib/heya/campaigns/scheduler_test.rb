@@ -219,6 +219,54 @@ module Heya
         assert_mock action
       end
 
+      test "it processes actions that match campaign segment" do
+        # Setup
+        action = Minitest::Mock.new
+
+        create_test_campaign do
+          default contact_class: "Contact"
+
+          segment { where("traits->>? = ?", "foo", "foo") }
+
+          step :one, wait: 0, action: action
+          step :two, wait: 0, action: action, segment: -> { where("traits->>? = ?", "bar", "bar") }
+        end
+
+        contact = contacts(:one)
+
+        TestCampaign.add(contact)
+
+        # Nothing matches initially
+        run_once
+        assert_mock action
+
+        # Step one matches
+        contact.update_attribute(:traits, {foo: "foo"})
+        TestCampaign.add(contact)
+
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.first,
+        }])
+
+        run_once
+
+        assert_mock action
+
+        # Step two matches
+        contact.update_attribute(:traits, {foo: "foo", bar: "bar"})
+        TestCampaign.add(contact)
+
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.second,
+        }])
+
+        run_once
+
+        assert_mock action
+      end
+
       test "it removes contacts from campaign at end" do
         # Setup
         action = Minitest::Mock.new
