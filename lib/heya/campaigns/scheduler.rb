@@ -15,9 +15,16 @@ module Heya
 
         Campaign.find_each do |campaign|
           campaign.ordered_messages.each do |message|
-            Queries::MessageContactsQuery.call(campaign, message).find_each do |contact|
+            Queries::ContactsForMessage.call(campaign, message).find_each do |contact|
               process(contact, message)
             end
+          end
+
+          if last_message = campaign.ordered_messages.last
+            CampaignMembership.where(
+              campaign: campaign,
+              contact: Queries::ContactsReceivedMessage.call(campaign, last_message)
+            ).destroy_all
           end
         end
       end

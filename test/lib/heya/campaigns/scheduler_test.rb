@@ -86,6 +86,61 @@ module Heya
         assert_mock action
       end
 
+      test "it processes campaign actions in order" do
+        # Setup
+        action = Minitest::Mock.new
+
+        create_test_campaign do
+          default contact_class: "Contact"
+
+          step :one, wait: 0, action: action
+          step :two, wait: 2.days, action: action, segment: -> { where(traits: {foo: "bar"}) }
+          step :three, wait: 3.days, action: action
+        end
+
+        contact = contacts(:one)
+        TestCampaign.add(contact)
+
+        # First action expected immediately
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.first,
+        }])
+
+        run_twice
+
+        assert_mock action
+
+        # Second action expected 2 days later
+        Timecop.travel(2.days.from_now)
+
+        # Nothing expected--segment doesn't match
+        run_once
+
+        assert_mock action
+
+        # Third action expected one day later
+        Timecop.travel(1.days.from_now)
+
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.third,
+        }])
+
+        run_twice
+
+        assert_mock action
+
+        Timecop.travel(2.days.from_now)
+
+        contact.update_attribute(:traits, {foo: "bar"})
+
+        # Nothing expected--campaign has moved on.
+        run_once
+
+        assert_mock action
+      end
+
       test "it processes actions that match segments" do
         # Setup
         action = Minitest::Mock.new
@@ -93,27 +148,13 @@ module Heya
         create_test_campaign do
           default contact_class: "Contact"
 
-          step :one, wait: 0, action: action, segment: -> { where(traits: {foo: "bar"}) }
-          step :two, wait: 0, action: action
+          step :one, wait: 0, action: action
+          step :two, wait: 0, action: action, segment: -> { where(traits: {foo: "bar"}) }
+          step :three, wait: 0, action: action, segment: -> { where(traits: {bar: "baz"}) }
         end
 
         contact = contacts(:one)
         TestCampaign.add(contact)
-
-        # Second action expected first
-        action.expect(:call, nil, [{
-          contact: contact,
-          message: TestCampaign.messages.second,
-        }])
-
-        run_once
-
-        assert_mock action
-
-        # Nothing expected until segment matches
-        run_once
-
-        assert_mock action
 
         # First action expected when segment matches
         action.expect(:call, nil, [{
@@ -121,7 +162,22 @@ module Heya
           message: TestCampaign.messages.first,
         }])
 
-        contact.update_attribute(:traits, {foo: "bar"})
+        run_once
+
+        assert_mock action
+
+        # No action expected until segment matches
+        run_once
+
+        assert_mock action
+
+        # Third action expected when segment matches
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.third,
+        }])
+
+        contact.update_attribute(:traits, {bar: "baz"})
 
         run_once
 
@@ -161,6 +217,41 @@ module Heya
         run_once
 
         assert_mock action
+      end
+
+      test "it removes contacts from campaign at end" do
+        # Setup
+        action = Minitest::Mock.new
+
+        create_test_campaign do
+          default contact_class: "Contact"
+
+          step :one, wait: 0, action: action
+          # step two will be skipped due to conditions
+          step :two, wait: 0, action: action, segment: -> { where(traits: {foo: "bar"}) }
+          step :three, wait: 0, action: action
+        end
+
+        contact = contacts(:one)
+        TestCampaign.add(contact)
+
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.first,
+        }])
+
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.third,
+        }])
+
+        assert CampaignMembership.where(campaign: TestCampaign.campaign, contact: contact).exists?
+
+        run_once
+
+        assert_mock action
+
+        refute CampaignMembership.where(campaign: TestCampaign.campaign, contact: contact).exists?
       end
     end
   end
