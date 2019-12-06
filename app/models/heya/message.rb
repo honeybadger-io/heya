@@ -18,6 +18,7 @@ module Heya
     def build_segment
       contact_class
         .build_default_segment
+        .instance_exec(&campaign.klass.segment)
         .instance_exec(&options.segment)
     end
 

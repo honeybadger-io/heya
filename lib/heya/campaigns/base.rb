@@ -6,7 +6,7 @@ module Heya
     # Multiple actions are supported; the default is email.
     class Base
       class << self
-        class_attribute :defaults
+        class_attribute :defaults, :__segment
 
         self.defaults = {
           contact_class: "User",
@@ -14,6 +14,8 @@ module Heya
           segment: -> { all },
           wait: 2.days,
         }.freeze
+
+        self.__segment = -> { all }
 
         def campaign
           @campaign ||= ::Heya::Campaign.where(name: name).first_or_create!.tap do |campaign|
@@ -41,6 +43,14 @@ module Heya
           options[:properties] = props.reject { |k, _| defaults.key?(k) }.stringify_keys
 
           steps[name] = OpenStruct.new(defaults.merge(options))
+        end
+
+        def segment(&block)
+          if block_given?
+            self.__segment = block
+          end
+
+          self.__segment
         end
 
         delegate :add, :remove, to: :campaign
