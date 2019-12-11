@@ -55,8 +55,10 @@ ActiveRecord::Schema.define(version: 2019_06_13_183430) do
   create_table "heya_messages", force: :cascade do |t|
     t.bigint "campaign_id"
     t.string "name"
+    t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["campaign_id", "position"], name: "index_heya_messages_on_campaign_id_and_position", unique: true
     t.index ["campaign_id"], name: "index_heya_messages_on_campaign_id"
   end
 

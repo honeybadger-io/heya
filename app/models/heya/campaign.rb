@@ -8,7 +8,7 @@ module Heya
     delegate :sanitize_sql_array, to: ActiveRecord::Base
 
     def contacts(class_name)
-      klass = class_name.constantize
+      klass = class_name.is_a?(String) ? class_name.constantize : class_name
       base_klass = klass.base_class
 
       klass
@@ -21,7 +21,10 @@ module Heya
         ).all
     end
 
-    def add(contact)
+    def add(contact, restart: false)
+      restart && MessageReceipt
+        .where(message: Message.where(campaign: self))
+        .delete_all
       memberships.where(contact: contact).first_or_create!
     end
 

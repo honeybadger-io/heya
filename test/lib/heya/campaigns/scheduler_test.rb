@@ -29,190 +29,169 @@ module Heya
         assert_mock mock
       end
 
-      test "it processes campaign actions on time" do
-        # Setup
+      test "it processes campaign actions in order" do
         action = Minitest::Mock.new
-
         create_test_campaign do
-          default contact_class: "Contact"
-
-          step :one, wait: 0, action: action
-          step :two, wait: 2.days, action: action
-          step :three, wait: 3.days, action: action
+          default contact_class: "Contact", action: action
+          step :one, wait: 5.days
+          step :two, wait: 3.days
+          step :three, wait: 2.days
         end
-
         contact = contacts(:one)
         TestCampaign.add(contact)
 
-        # First action expected immediately
+        Timecop.travel(1.days.from_now)
+        run_twice
+        assert_mock action
+
+        Timecop.travel(1.days.from_now)
+        run_twice
+        assert_mock action
+
+        Timecop.travel(6.days.from_now)
         action.expect(:call, nil, [{
           contact: contact,
           message: TestCampaign.messages.first,
         }])
-
         run_twice
-
         assert_mock action
 
-        # Second action expected 2 days later
         Timecop.travel(2.days.from_now)
+        run_twice
+        assert_mock action
 
+        Timecop.travel(1.days.from_now)
         action.expect(:call, nil, [{
           contact: contact,
           message: TestCampaign.messages.second,
         }])
-
         run_twice
-
         assert_mock action
 
-        # Nothing expected 2 days later
-        Timecop.travel(2.days.from_now)
-
-        run_twice
-
-        assert_mock action
-
-        # Third action expected one day later
         Timecop.travel(1.days.from_now)
+        run_twice
+        assert_mock action
 
+        Timecop.travel(1.days.from_now)
         action.expect(:call, nil, [{
           contact: contact,
           message: TestCampaign.messages.third,
         }])
-
         run_twice
-
         assert_mock action
       end
 
-      test "it processes campaign actions in order" do
-        # Setup
+      test "it skips actions that don't match segments" do
         action = Minitest::Mock.new
-
         create_test_campaign do
-          default contact_class: "Contact"
-
-          step :one, wait: 0, action: action
-          step :two, wait: 2.days, action: action, segment: -> { where(traits: {foo: "bar"}) }
-          step :three, wait: 3.days, action: action
+          default contact_class: "Contact", wait: 0, action: action
+          step :one, segment: -> { where(traits: {foo: "bar"}) }
         end
-
         contact = contacts(:one)
         TestCampaign.add(contact)
 
-        # First action expected immediately
-        action.expect(:call, nil, [{
-          contact: contact,
-          message: TestCampaign.messages.first,
-        }])
-
         run_twice
-
-        assert_mock action
-
-        # Second action expected 2 days later
-        Timecop.travel(2.days.from_now)
-
-        # Nothing expected--segment doesn't match
-        run_once
-
-        assert_mock action
-
-        # Third action expected one day later
-        Timecop.travel(1.days.from_now)
-
-        action.expect(:call, nil, [{
-          contact: contact,
-          message: TestCampaign.messages.third,
-        }])
-
-        run_twice
-
-        assert_mock action
-
-        Timecop.travel(2.days.from_now)
-
-        contact.update_attribute(:traits, {foo: "bar"})
-
-        # Nothing expected--campaign has moved on.
-        run_once
-
         assert_mock action
       end
 
       test "it processes actions that match segments" do
-        # Setup
         action = Minitest::Mock.new
-
         create_test_campaign do
-          default contact_class: "Contact"
-
-          step :one, wait: 0, action: action
-          step :two, wait: 0, action: action, segment: -> { where(traits: {foo: "bar"}) }
-          step :three, wait: 0, action: action, segment: -> { where(traits: {bar: "baz"}) }
+          default contact_class: "Contact", wait: 0, action: action
+          step :one, segment: -> { where(traits: {foo: "bar"}) }
         end
-
         contact = contacts(:one)
+        contact.update_attribute(:traits, {foo: "bar"})
         TestCampaign.add(contact)
 
-        # First action expected when segment matches
         action.expect(:call, nil, [{
           contact: contact,
           message: TestCampaign.messages.first,
         }])
 
-        run_once
+        run_twice
+        assert_mock action
+      end
 
+      test "it waits for segments to match" do
+        action = Minitest::Mock.new
+        create_test_campaign do
+          default contact_class: "Contact", action: action
+          step :one, wait: 0
+          step :two, wait: 2.days, segment: -> { where(traits: {foo: "bar"}) }
+          step :three, wait: 1.day, segment: -> { where(traits: {bar: "baz"}) }
+        end
+        contact = contacts(:one)
+        contact.update_attribute(:traits, {bar: "baz"})
+        TestCampaign.add(contact)
+
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.first,
+        }])
+        run_twice
         assert_mock action
 
-        # No action expected until segment matches
-        run_once
-
+        Timecop.travel(1.days.from_now)
+        run_twice
         assert_mock action
 
-        # Third action expected when segment matches
+        Timecop.travel(1.days.from_now)
         action.expect(:call, nil, [{
           contact: contact,
           message: TestCampaign.messages.third,
         }])
+        run_once
+        assert_mock action
+      end
 
-        contact.update_attribute(:traits, {bar: "baz"})
+      test "it skips actions that don't match default segments" do
+        action = Minitest::Mock.new
+        class TestContact < Contact
+          default_segment { where(traits: {foo: "bar"}) }
+        end
+        create_test_campaign do
+          default contact_class: TestContact, wait: 0, action: action
+          step :one
+        end
+        contact = contacts(:one).becomes(TestContact)
+        TestCampaign.add(contact)
 
         run_once
-
         assert_mock action
       end
 
       test "it processes actions that match default segments" do
-        # Setup
         action = Minitest::Mock.new
-
         class TestContact < Contact
           default_segment { where(traits: {foo: "bar"}) }
         end
-
         create_test_campaign do
-          default contact_class: TestContact
-
-          step :one, wait: 0, action: action
+          default contact_class: TestContact, wait: 0, action: action
+          step :one
         end
-
         contact = contacts(:one).becomes(TestContact)
+        contact.update_attribute(:traits, {foo: "bar"})
         TestCampaign.add(contact)
 
-        # Nothing expected until segment matches
-        run_once
-
-        assert_mock action
-
-        contact.update_attribute(:traits, {foo: "bar"})
-
-        # First action expected once default segment matches
         action.expect(:call, nil, [{
           contact: contact,
           message: TestCampaign.messages.first,
         }])
+
+        run_once
+        assert_mock action
+      end
+
+      test "it skips actions that don't match campaign segment" do
+        action = Minitest::Mock.new
+        create_test_campaign do
+          default contact_class: "Contact", wait: 0, action: action
+          segment { where("traits->>? = ?", "foo", "foo") }
+          step :one
+        end
+        contact = contacts(:one)
+        TestCampaign.add(contact)
 
         run_once
 
@@ -220,27 +199,13 @@ module Heya
       end
 
       test "it processes actions that match campaign segment" do
-        # Setup
         action = Minitest::Mock.new
-
         create_test_campaign do
-          default contact_class: "Contact"
-
+          default contact_class: "Contact", wait: 0, action: action
           segment { where("traits->>? = ?", "foo", "foo") }
-
-          step :one, wait: 0, action: action
-          step :two, wait: 0, action: action, segment: -> { where("traits->>? = ?", "bar", "bar") }
+          step :one
         end
-
         contact = contacts(:one)
-
-        TestCampaign.add(contact)
-
-        # Nothing matches initially
-        run_once
-        assert_mock action
-
-        # Step one matches
         contact.update_attribute(:traits, {foo: "foo"})
         TestCampaign.add(contact)
 
@@ -252,52 +217,21 @@ module Heya
         run_once
 
         assert_mock action
-
-        # Step two matches
-        contact.update_attribute(:traits, {foo: "foo", bar: "bar"})
-        TestCampaign.add(contact)
-
-        action.expect(:call, nil, [{
-          contact: contact,
-          message: TestCampaign.messages.second,
-        }])
-
-        run_once
-
-        assert_mock action
       end
 
       test "it removes contacts from campaign at end" do
-        # Setup
-        action = Minitest::Mock.new
-
         create_test_campaign do
-          default contact_class: "Contact"
-
-          step :one, wait: 0, action: action
-          # step two will be skipped due to conditions
-          step :two, wait: 0, action: action, segment: -> { where(traits: {foo: "bar"}) }
-          step :three, wait: 0, action: action
+          default contact_class: "Contact", wait: 0
+          step :one
+          step :two
+          step :three
         end
-
         contact = contacts(:one)
         TestCampaign.add(contact)
-
-        action.expect(:call, nil, [{
-          contact: contact,
-          message: TestCampaign.messages.first,
-        }])
-
-        action.expect(:call, nil, [{
-          contact: contact,
-          message: TestCampaign.messages.third,
-        }])
 
         assert CampaignMembership.where(campaign: TestCampaign.campaign, contact: contact).exists?
 
         run_once
-
-        assert_mock action
 
         refute CampaignMembership.where(campaign: TestCampaign.campaign, contact: contact).exists?
       end

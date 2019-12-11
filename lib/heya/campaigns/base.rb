@@ -19,8 +19,13 @@ module Heya
 
         def campaign
           @campaign ||= ::Heya::Campaign.where(name: name).first_or_create!.tap do |campaign|
-            steps.each_pair do |name, _|
-              messages << ::Heya::Message.where(campaign: campaign, name: name).first_or_create!
+            steps.each.with_index do |name_opts, i|
+              name, opts = name_opts
+              message = ::Heya::Message.where(campaign: campaign, name: name).first_or_create! do |message|
+                message.position = i
+              end
+              message.update_attribute(:position, i)
+              messages << message
             end
           end
         end
