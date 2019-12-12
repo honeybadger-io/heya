@@ -28,18 +28,18 @@ jobs:
     - name: Cache
       uses: actions/cache@v1
       with:
-        path: .bundle
-        key: bundle-${{ hashFiles('Gemfile.lock') }}
+        path: vendor/bundle
+        key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
         restore-keys: |
-          bundle-${{ env.cache-name }}-
-          bundle-
+          ${{ runner.os }}-gem-
 
-    - name: Build and test with Rake
+    - name: Build and test
       env:
         PGHOST: localhost
         PGUSER: postgres
         RAILS_ENV: test
       run: |
         gem install bundler
+        bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
         bundle exec rake db:create db:schema:load test
