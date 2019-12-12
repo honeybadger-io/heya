@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 2019_06_13_183430) do
 
   create_table "heya_campaigns", force: :cascade do |t|
     t.string "name"
+    t.integer "position", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

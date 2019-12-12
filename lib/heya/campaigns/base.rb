@@ -53,7 +53,7 @@ module Heya
         end
 
         def model
-          @model ||= ::Heya::Campaign.where(name: name).first_or_create!.tap do |campaign|
+          @model ||= ::Heya::Campaign.where(name: name, position: -1).first_or_create!.tap do |campaign|
             steps.each.with_index do |name_opts, i|
               name, opts = name_opts
               campaign.messages.where(name: name).first_or_create! { |message|

@@ -13,9 +13,9 @@ module Heya
         }
       end
 
-      def create_test_campaign(&block)
-        Object.send(:remove_const, :TestCampaign) if Object.const_defined?(:TestCampaign)
-        Object.send(:const_set, :TestCampaign, Class.new(Campaigns::Base, &block))
+      def create_test_campaign(const = :TestCampaign, &block)
+        Object.send(:remove_const, const) if Object.const_defined?(const)
+        Object.send(:const_set, const, Class.new(Campaigns::Base, &block))
       end
 
       test "it loads campaign models before running" do
@@ -266,6 +266,77 @@ module Heya
           }
         }.each(&:join)
 
+        assert_mock action
+      end
+
+      test "it processes multiple campaign actions in order" do
+        action = Minitest::Mock.new
+        create_test_campaign(:TestCampaign1) do
+          default action: action
+          contact_type "Contact"
+          step :one, wait: 5.days
+        end
+        create_test_campaign(:TestCampaign2) do
+          default action: action
+          contact_type "Contact"
+          step :one, wait: 3.days
+        end
+        create_test_campaign(:TestCampaign3) do
+          default action: action
+          contact_type "Contact"
+          step :one, wait: 2.days
+        end
+        contact = contacts(:one)
+        TestCampaign1.add(contact)
+        TestCampaign2.add(contact)
+        TestCampaign3.add(contact)
+
+        Heya.configure do |config|
+          config.priority = [
+            TestCampaign1,
+            TestCampaign2,
+            TestCampaign3,
+          ]
+        end
+
+        Timecop.travel(1.days.from_now)
+        run_twice
+        assert_mock action
+
+        Timecop.travel(1.days.from_now)
+        run_twice
+        assert_mock action
+
+        Timecop.travel(6.days.from_now)
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign1.messages.first,
+        }])
+        run_twice
+        assert_mock action
+
+        Timecop.travel(2.days.from_now)
+        run_twice
+        assert_mock action
+
+        Timecop.travel(1.days.from_now)
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign2.messages.first,
+        }])
+        run_twice
+        assert_mock action
+
+        Timecop.travel(1.days.from_now)
+        run_twice
+        assert_mock action
+
+        Timecop.travel(1.days.from_now)
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign3.messages.first,
+        }])
+        run_twice
         assert_mock action
       end
     end
