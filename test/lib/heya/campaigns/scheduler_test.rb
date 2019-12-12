@@ -238,11 +238,11 @@ module Heya
         contact = contacts(:one)
         TestCampaign.add(contact)
 
-        assert CampaignMembership.where(campaign: TestCampaign.campaign, contact: contact).exists?
+        assert CampaignMembership.where(campaign: TestCampaign.model, contact: contact).exists?
 
         run_once
 
-        refute CampaignMembership.where(campaign: TestCampaign.campaign, contact: contact).exists?
+        refute CampaignMembership.where(campaign: TestCampaign.model, contact: contact).exists?
       end
     end
   end

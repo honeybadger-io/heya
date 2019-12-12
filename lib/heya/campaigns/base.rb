@@ -17,8 +17,8 @@ module Heya
         self.__segment = -> { all }
         self.__contact_type = "User"
 
-        def campaign
-          @campaign ||= ::Heya::Campaign.where(name: name).first_or_create!.tap do |campaign|
+        def model
+          @model ||= ::Heya::Campaign.where(name: name).first_or_create!.tap do |campaign|
             steps.each.with_index do |name_opts, i|
               name, opts = name_opts
               message = ::Heya::Message.where(campaign: campaign, name: name).first_or_create! { |message|
@@ -30,7 +30,7 @@ module Heya
             end
           end
         end
-        alias load_model campaign
+        alias load_model model
 
         def messages
           @messages ||= []
@@ -67,7 +67,7 @@ module Heya
           __contact_type
         end
 
-        delegate :add, :remove, to: :campaign
+        delegate :add, :remove, to: :model
       end
     end
   end

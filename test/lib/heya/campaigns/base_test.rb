@@ -53,7 +53,7 @@ module Heya
         }
 
         assert_difference("Heya::Campaign.count") do
-          assert_equal "TestCampaign", klass.campaign.name
+          assert_equal "TestCampaign", klass.model.name
         end
       end
 
@@ -87,7 +87,7 @@ module Heya
         }
 
         assert_no_difference("Heya::Campaign.count") do
-          assert_equal heya_campaigns(:one), klass.campaign
+          assert_equal heya_campaigns(:one), klass.model
         end
       end
 
