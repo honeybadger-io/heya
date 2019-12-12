@@ -32,7 +32,8 @@ module Heya
       test "it processes campaign actions in order" do
         action = Minitest::Mock.new
         create_test_campaign do
-          default contact_class: "Contact", action: action
+          default action: action
+          contact_type "Contact"
           step :one, wait: 5.days
           step :two, wait: 3.days
           step :three, wait: 2.days
@@ -84,7 +85,8 @@ module Heya
       test "it skips actions that don't match segments" do
         action = Minitest::Mock.new
         create_test_campaign do
-          default contact_class: "Contact", wait: 0, action: action
+          default wait: 0, action: action
+          contact_type "Contact"
           step :one, segment: -> { where(traits: {foo: "bar"}) }
         end
         contact = contacts(:one)
@@ -97,7 +99,8 @@ module Heya
       test "it processes actions that match segments" do
         action = Minitest::Mock.new
         create_test_campaign do
-          default contact_class: "Contact", wait: 0, action: action
+          default wait: 0, action: action
+          contact_type "Contact"
           step :one, segment: -> { where(traits: {foo: "bar"}) }
         end
         contact = contacts(:one)
@@ -116,7 +119,8 @@ module Heya
       test "it waits for segments to match" do
         action = Minitest::Mock.new
         create_test_campaign do
-          default contact_class: "Contact", action: action
+          default action: action
+          contact_type "Contact"
           step :one, wait: 0
           step :two, wait: 2.days, segment: -> { where(traits: {foo: "bar"}) }
           step :three, wait: 1.day, segment: -> { where(traits: {bar: "baz"}) }
@@ -151,7 +155,8 @@ module Heya
           default_segment { where(traits: {foo: "bar"}) }
         end
         create_test_campaign do
-          default contact_class: TestContact, wait: 0, action: action
+          default wait: 0, action: action
+          contact_type TestContact
           step :one
         end
         contact = contacts(:one).becomes(TestContact)
@@ -167,7 +172,8 @@ module Heya
           default_segment { where(traits: {foo: "bar"}) }
         end
         create_test_campaign do
-          default contact_class: TestContact, wait: 0, action: action
+          default wait: 0, action: action
+          contact_type TestContact
           step :one
         end
         contact = contacts(:one).becomes(TestContact)
@@ -186,7 +192,8 @@ module Heya
       test "it skips actions that don't match campaign segment" do
         action = Minitest::Mock.new
         create_test_campaign do
-          default contact_class: "Contact", wait: 0, action: action
+          default wait: 0, action: action
+          contact_type "Contact"
           segment { where("traits->>? = ?", "foo", "foo") }
           step :one
         end
@@ -201,7 +208,8 @@ module Heya
       test "it processes actions that match campaign segment" do
         action = Minitest::Mock.new
         create_test_campaign do
-          default contact_class: "Contact", wait: 0, action: action
+          default wait: 0, action: action
+          contact_type "Contact"
           segment { where("traits->>? = ?", "foo", "foo") }
           step :one
         end
@@ -221,7 +229,8 @@ module Heya
 
       test "it removes contacts from campaign at end" do
         create_test_campaign do
-          default contact_class: "Contact", wait: 0
+          default wait: 0
+          contact_type "Contact"
           step :one
           step :two
           step :three

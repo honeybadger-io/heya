@@ -23,10 +23,10 @@ SQL
         # Safeguard to make sure we never send the same message twice.
         receipt_query = MessageReceipt
           .select("heya_message_receipts.contact_id")
-          .where(contact_type: message.contact_class.name)
+          .where(contact_type: campaign.contact_class.name)
           .where("heya_message_receipts.message_id = ?", message.id)
 
-        campaign.contacts(message.contact_class.name)
+        campaign.contacts
           .where.not(id: receipt_query)
           .where(NEXT_MESSAGE_SUBQUERY, {
             campaign_id: campaign.id,
@@ -42,10 +42,10 @@ SQL
       ContactsReceivedMessage = ->(campaign, message) {
         receipt_query = MessageReceipt
           .select("heya_message_receipts.contact_id")
-          .where(contact_type: message.contact_class.name)
+          .where(contact_type: campaign.contact_class.name)
           .where("heya_message_receipts.message_id = ?", message.id)
 
-        campaign.contacts(message.contact_class.name)
+        campaign.contacts
           .where(id: receipt_query)
       }
     end

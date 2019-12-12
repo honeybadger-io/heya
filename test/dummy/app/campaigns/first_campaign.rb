@@ -1,5 +1,5 @@
 class FirstCampaign < Heya::Campaigns::Base
-  default contact_class: "Contact"
+  contact_type "Contact"
 
   step :one, subject: "First subject"
   step :two, subject: "Second subject"

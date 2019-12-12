@@ -30,6 +30,19 @@ module Heya
         assert_not_equal Base.segment, klass.segment
       end
 
+      test "it sets default contact_type" do
+        assert_equal "User", Base.contact_type
+      end
+
+      test "it allows subclasses to change contact_type" do
+        klass = Class.new(Base) {
+          contact_type "Contact"
+        }
+
+        assert_equal "Contact", klass.contact_type
+        assert_not_equal Base.contact_type, klass.contact_type
+      end
+
       test "it lazily creates a new campaign model" do
         klass = assert_no_difference("Heya::Campaign.count") {
           Class.new(Base) {
@@ -47,7 +60,7 @@ module Heya
       test "it lazily creates message models" do
         klass = assert_no_difference("Heya::Message.count") {
           Class.new(Base) {
-            default contact_class: "Contact"
+            contact_type "Contact"
 
             step :one
             step :two
@@ -85,7 +98,7 @@ module Heya
               "FirstCampaign"
             end
 
-            default contact_class: "Contact"
+            contact_type "Contact"
 
             step :one
             step :two

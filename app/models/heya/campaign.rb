@@ -6,16 +6,15 @@ module Heya
     has_many :memberships, class_name: "CampaignMembership", dependent: :destroy
 
     delegate :sanitize_sql_array, to: ActiveRecord::Base
+    delegate :segment, :contact_type, to: :klass
 
-    def contacts(class_name)
-      klass = class_name.is_a?(String) ? class_name.constantize : class_name
-      base_klass = klass.base_class
-
-      klass
+    def contacts
+      base_class = contact_class.base_class
+      contact_class
         .joins(
           sanitize_sql_array([
-            "inner join heya_campaign_memberships on heya_campaign_memberships.contact_type = ? and heya_campaign_memberships.contact_id = #{base_klass.table_name}.id and heya_campaign_memberships.campaign_id = ?",
-            base_klass.name,
+            "inner join heya_campaign_memberships on heya_campaign_memberships.contact_type = ? and heya_campaign_memberships.contact_id = #{base_class.table_name}.id and heya_campaign_memberships.campaign_id = ?",
+            base_class.name,
             id,
           ])
         ).all
@@ -38,6 +37,10 @@ module Heya
 
     def ordered_messages
       klass.messages
+    end
+
+    def contact_class
+      @contact_class ||= contact_type.constantize
     end
   end
 end

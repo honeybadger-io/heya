@@ -6,16 +6,16 @@ module Heya
     # Multiple actions are supported; the default is email.
     class Base
       class << self
-        class_attribute :defaults, :__segment
+        class_attribute :defaults, :__segment, :__contact_type
 
         self.defaults = {
-          contact_class: "User",
           action: Actions::Email,
           segment: -> { all },
           wait: 2.days,
         }.freeze
 
         self.__segment = -> { all }
+        self.__contact_type = "User"
 
         def campaign
           @campaign ||= ::Heya::Campaign.where(name: name).first_or_create!.tap do |campaign|
@@ -56,6 +56,14 @@ module Heya
           end
 
           self.__segment
+        end
+
+        def contact_type(value = nil)
+          if value.present?
+            self.__contact_type = value.kind_of?(String) ? value.to_s : value.name
+          end
+
+          self.__contact_type
         end
 
         delegate :add, :remove, to: :campaign
