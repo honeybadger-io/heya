@@ -7,6 +7,12 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:11.5
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
     - uses: actions/checkout@v1
     - name: Set up Ruby 2.6
@@ -22,7 +28,9 @@ jobs:
           bundle-${{ env.cache-name }}-
           bundle-
     - name: Build and test with Rake
+      env:
+        RAILS_ENV: test
       run: |
         gem install bundler
         bundle install --jobs 4 --retry 3
-        bundle exec rake
+        bundle exec rake db:create db:schema:load test
