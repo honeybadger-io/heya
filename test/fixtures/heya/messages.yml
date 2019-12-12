@@ -7,7 +7,11 @@
 one:
   name: one
   campaign: one
+  position: 0
+  wait: 172800
 
 two:
   name: two
   campaign: one
+  position: 0
+  wait: 172800
