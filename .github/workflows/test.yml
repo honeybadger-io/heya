@@ -15,13 +15,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+
     - name: Set up Ruby 2.6
       uses: actions/setup-ruby@v1
       with:
         ruby-version: 2.6.x
+
     - name: Install PostgreSQL 11 client
       run: |
         sudo apt-get -yqq install libpq-dev postgresql-client
+
     - name: Cache
       uses: actions/cache@v1
       with:
@@ -30,6 +33,7 @@ jobs:
         restore-keys: |
           bundle-${{ env.cache-name }}-
           bundle-
+
     - name: Build and test with Rake
       env:
         PGHOST: localhost
