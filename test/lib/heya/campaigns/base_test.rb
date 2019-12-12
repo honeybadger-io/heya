@@ -67,13 +67,8 @@ module Heya
           }
         }
 
-        assert_no_difference("Heya::Message.count") do
-          assert_equal 0, klass.messages.size
-        end
-
         assert_difference("Heya::Message.count", 2) do
-          klass.load_model
-          assert_equal 2, klass.messages.size
+          assert_equal 2, klass.messages.count
         end
       end
 

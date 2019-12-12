@@ -21,20 +21,14 @@ module Heya
           @model ||= ::Heya::Campaign.where(name: name).first_or_create!.tap do |campaign|
             steps.each.with_index do |name_opts, i|
               name, opts = name_opts
-              message = ::Heya::Message.where(campaign: campaign, name: name).first_or_create! { |message|
+              campaign.messages.where(name: name).first_or_create! { |message|
                 message.position = i
                 message.wait = opts.wait
-              }
-              message.update_attributes(position: i, wait: opts.wait)
-              messages << message
+              }.update_attributes(position: i, wait: opts.wait)
             end
           end
         end
         alias load_model model
-
-        def messages
-          @messages ||= []
-        end
 
         def steps
           @steps ||= {}
@@ -67,7 +61,7 @@ module Heya
           __contact_type
         end
 
-        delegate :add, :remove, to: :model
+        delegate :add, :remove, :messages, to: :model
       end
     end
   end
