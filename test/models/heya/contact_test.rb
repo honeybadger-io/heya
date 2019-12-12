@@ -6,13 +6,22 @@ module Heya
       contact = contacts(:one)
       memberships = CampaignMembership.where(contact_id: contact.id)
 
-      FirstCampaign.add(contact)
-
       assert memberships.any?
 
       contact.destroy
 
       refute memberships.any?
+    end
+
+    test "it destroys message receipts on destroy" do
+      contact = contacts(:one)
+      receipts = MessageReceipt.where(contact_id: contact.id)
+
+      assert receipts.any?
+
+      contact.destroy
+
+      refute receipts.any?
     end
   end
 end
