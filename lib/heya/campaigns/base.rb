@@ -6,9 +6,9 @@ module Heya
     # Multiple actions are supported; the default is email.
     class Base
       class << self
-        class_attribute :defaults, :__segment, :__contact_type
+        class_attribute :__defaults, :__segment, :__contact_type
 
-        self.defaults = {
+        self.__defaults = {
           action: Actions::Email,
           segment: -> { all },
           wait: 2.days,
@@ -40,14 +40,14 @@ module Heya
         end
 
         def default(**props)
-          self.defaults = defaults.merge(props).freeze
+          self.__defaults = __defaults.merge(props).freeze
         end
 
         def step(name, **props)
-          options = props.select { |k, _| defaults.key?(k) }
-          options[:properties] = props.reject { |k, _| defaults.key?(k) }.stringify_keys
+          options = props.select { |k, _| __defaults.key?(k) }
+          options[:properties] = props.reject { |k, _| __defaults.key?(k) }.stringify_keys
 
-          steps[name] = OpenStruct.new(defaults.merge(options))
+          steps[name] = OpenStruct.new(__defaults.merge(options))
         end
 
         def segment(&block)

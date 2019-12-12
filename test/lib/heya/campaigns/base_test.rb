@@ -4,7 +4,7 @@ module Heya
   module Campaigns
     class BaseTest < ActiveSupport::TestCase
       test "it sets class defaults" do
-        assert_kind_of Hash, Base.defaults
+        assert_kind_of Hash, Base.__defaults
       end
 
       test "it allows subclasses to change defaults" do
@@ -12,8 +12,8 @@ module Heya
           default wait: 5.years
         }
 
-        assert_equal 5.years, klass.defaults[:wait]
-        assert_not_equal Base.defaults, klass.defaults
+        assert_equal 5.years, klass.__defaults[:wait]
+        assert_not_equal Base.__defaults, klass.__defaults
       end
 
       test "it sets class segment" do
