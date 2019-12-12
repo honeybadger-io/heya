@@ -6,6 +6,7 @@ module Heya
 
         included do
           class_attribute :__heya_default_segment, instance_writer: true, instance_predicate: false, default: nil
+          has_many :heya_campaign_memberships, class_name: "Heya::CampaignMembership", as: :contact, dependent: :destroy
         end
 
         module ClassMethods
