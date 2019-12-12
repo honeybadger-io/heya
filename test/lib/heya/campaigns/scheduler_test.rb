@@ -8,9 +8,9 @@ module Heya
       end
 
       def run_twice
-        2.times do
+        2.times {
           run_once
-        end
+        }
       end
 
       def create_test_campaign(&block)
@@ -243,6 +243,30 @@ module Heya
         run_once
 
         refute CampaignMembership.where(campaign: TestCampaign.model, contact: contact).exists?
+      end
+
+      test "it processes campaign actions concurrently" do
+        action = Minitest::Mock.new
+        create_test_campaign do
+          default wait: 0, action: action
+          contact_type "Contact"
+          step :one
+        end
+        contact = contacts(:one)
+        TestCampaign.add(contact)
+
+        action.expect(:call, nil, [{
+          contact: contact,
+          message: TestCampaign.messages.first,
+        }])
+
+        20.times.map {
+          Thread.new {
+            run_once
+          }
+        }.each(&:join)
+
+        assert_mock action
       end
     end
   end

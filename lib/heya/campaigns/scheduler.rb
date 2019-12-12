@@ -33,13 +33,15 @@ module Heya
 
       def process(contact, message)
         ActiveRecord::Base.transaction do
+          return if MessageReceipt.where(contact: contact, message: message).exists?
+
           if contact.class.merge(message.build_segment).where(id: contact.id).exists?
             now = Time.now.utc
             CampaignMembership.where(contact: contact).update_all(last_sent_at: now)
-            MessageReceipt.create!(message: message, contact: contact, sent_at: now)
+            MessageReceipt.create!(contact: contact, message: message, sent_at: now)
             message.action.call(contact: contact, message: message)
           else
-            MessageReceipt.create!(message: message, contact: contact)
+            MessageReceipt.create!(contact: contact, message: message)
           end
         end
       end
