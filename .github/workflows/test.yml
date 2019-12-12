@@ -1,4 +1,4 @@
-name: Ruby
+name: Test
 
 on: [push]
 
@@ -19,6 +19,9 @@ jobs:
       uses: actions/setup-ruby@v1
       with:
         ruby-version: 2.6.x
+    - name: Install PostgreSQL 11 client
+      run: |
+        sudo apt-get -yqq install libpq-dev postgresql-client
     - name: Cache
       uses: actions/cache@v1
       with:
