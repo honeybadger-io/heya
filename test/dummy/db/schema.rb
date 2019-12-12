@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 2019_06_13_183430) do
     t.bigint "message_id", null: false
     t.string "contact_type", null: false
     t.bigint "contact_id", null: false
-    t.datetime "sent_at", null: false
+    t.datetime "sent_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["contact_type", "contact_id"], name: "index_heya_message_receipts_on_contact_type_and_contact_id"

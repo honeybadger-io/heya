@@ -4,7 +4,7 @@ class CreateHeyaMessageReceipts < ActiveRecord::Migration[5.2]
       t.belongs_to :message, null: false, foreign_key: {to_table: "heya_messages"}
       t.references :contact, null: false, polymorphic: true, index: true
 
-      t.datetime :sent_at, null: false
+      t.datetime :sent_at
 
       t.timestamps
     end

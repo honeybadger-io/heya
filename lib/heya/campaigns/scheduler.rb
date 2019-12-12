@@ -39,7 +39,7 @@ module Heya
             MessageReceipt.create!(message: message, contact: contact, sent_at: now)
             message.action.call(contact: contact, message: message)
           else
-            MessageReceipt.create!(message: message, contact: contact, sent_at: Time.now)
+            MessageReceipt.create!(message: message, contact: contact)
           end
         end
       end
