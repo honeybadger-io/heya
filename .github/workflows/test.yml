@@ -32,6 +32,8 @@ jobs:
           bundle-
     - name: Build and test with Rake
       env:
+        PGHOST: localhost
+        PGUSER: postgres
         RAILS_ENV: test
       run: |
         gem install bundler
