@@ -20,7 +20,7 @@ module Heya
             end
           end
 
-          if last_message = campaign.ordered_messages.last
+          if (last_message = campaign.ordered_messages.last)
             CampaignMembership.where(
               campaign: campaign,
               contact: Queries::ContactsReceivedMessage.call(campaign, last_message)

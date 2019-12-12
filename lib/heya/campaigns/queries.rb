@@ -1,18 +1,18 @@
 module Heya
   module Campaigns
     module Queries
-      NEXT_MESSAGE_SUBQUERY = (<<-SQL).freeze
-(SELECT m.id FROM heya_messages AS m
-  WHERE m.campaign_id = :campaign_id
-  AND m.position > coalesce((SELECT m.position FROM heya_message_receipts AS r
-    INNER JOIN heya_messages AS m ON m.id = r.message_id AND m.campaign_id = :campaign_id
-    WHERE r.contact_type = heya_campaign_memberships.contact_type AND r.contact_id = heya_campaign_memberships.contact_id
-    ORDER BY m.position DESC
-    LIMIT 1), -1)
-  ORDER BY m.position ASC
-  LIMIT 1
-) = :message_id
-SQL
+      NEXT_MESSAGE_SUBQUERY = <<~SQL.freeze
+        (SELECT m.id FROM heya_messages AS m
+          WHERE m.campaign_id = :campaign_id
+          AND m.position > coalesce((SELECT m.position FROM heya_message_receipts AS r
+            INNER JOIN heya_messages AS m ON m.id = r.message_id AND m.campaign_id = :campaign_id
+            WHERE r.contact_type = heya_campaign_memberships.contact_type AND r.contact_id = heya_campaign_memberships.contact_id
+            ORDER BY m.position DESC
+            LIMIT 1), -1)
+          ORDER BY m.position ASC
+          LIMIT 1
+        ) = :message_id
+      SQL
 
       # Given a campaign and a message, {Queries::ContactsForMessage} returns
       # the contacts who should receive the message.

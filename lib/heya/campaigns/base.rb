@@ -20,10 +20,10 @@ module Heya
         def campaign
           @campaign ||= ::Heya::Campaign.where(name: name).first_or_create!.tap do |campaign|
             steps.each.with_index do |name_opts, i|
-              name, opts = name_opts
-              message = ::Heya::Message.where(campaign: campaign, name: name).first_or_create! do |message|
+              name, _opts = name_opts
+              message = ::Heya::Message.where(campaign: campaign, name: name).first_or_create! { |message|
                 message.position = i
-              end
+              }
               message.update_attribute(:position, i)
               messages << message
             end
@@ -55,15 +55,15 @@ module Heya
             self.__segment = block
           end
 
-          self.__segment
+          __segment
         end
 
         def contact_type(value = nil)
           if value.present?
-            self.__contact_type = value.kind_of?(String) ? value.to_s : value.name
+            self.__contact_type = value.is_a?(String) ? value.to_s : value.name
           end
 
-          self.__contact_type
+          __contact_type
         end
 
         delegate :add, :remove, to: :campaign
