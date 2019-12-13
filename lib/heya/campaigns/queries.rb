@@ -2,15 +2,18 @@ module Heya
   module Campaigns
     module Queries
       NEXT_MESSAGE_SUBQUERY = <<~SQL.freeze
-        (SELECT m.message_gid FROM (VALUES :values) AS m (message_gid,campaign_gid,position)
-          WHERE m.campaign_gid = :campaign_gid
-          AND m.position > coalesce((SELECT m.position FROM heya_message_receipts AS r
-            INNER JOIN (VALUES :values) AS m (message_gid,campaign_gid,position) ON m.message_gid = r.message_gid AND m.campaign_gid = :campaign_gid
-            WHERE r.contact_type = heya_campaign_memberships.contact_type AND r.contact_id = heya_campaign_memberships.contact_id
-            ORDER BY m.position DESC
-            LIMIT 1), -1)
-          ORDER BY m.position ASC
-          LIMIT 1
+        (WITH messages AS (SELECT * FROM (VALUES :values) AS m (message_gid,campaign_gid,position))
+         SELECT m.message_gid FROM messages AS m
+         WHERE m.campaign_gid = :campaign_gid
+           AND m.position > coalesce((SELECT m.position FROM heya_message_receipts AS r
+             INNER JOIN messages AS m ON m.message_gid = r.message_gid
+               AND m.campaign_gid = :campaign_gid
+             WHERE r.contact_type = heya_campaign_memberships.contact_type
+               AND r.contact_id = heya_campaign_memberships.contact_id
+             ORDER BY m.position DESC
+             LIMIT 1), -1)
+         ORDER BY m.position ASC
+         LIMIT 1
         ) = :message_gid
       SQL
 
