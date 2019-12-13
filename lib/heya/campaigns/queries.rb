@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Heya
   module Campaigns
     module Queries
-      NEXT_MESSAGE_SUBQUERY = <<~SQL.freeze
-        (WITH messages AS (SELECT * FROM (VALUES :values) AS m (message_gid,campaign_gid,position))
+      NEXT_MESSAGE_SUBQUERY = <<~SQL
+        (WITH messages AS (SELECT * FROM (VALUES :messages_values) AS m (message_gid,campaign_gid,position))
          SELECT m.message_gid FROM messages AS m
          WHERE m.campaign_gid = :campaign_gid
            AND m.position > coalesce((SELECT m.position FROM heya_message_receipts AS r
@@ -29,11 +31,15 @@ module Heya
           .where("heya_message_receipts.message_gid = ?", message.gid)
 
         # https://www.postgresql.org/docs/9.4/queries-values.html
-        values = campaign.messages.map { |m| "('#{m.gid}', '#{campaign.gid}', #{m.position})" }.join(", ")
+        messages_values = campaign.messages.map { |m|
+          ActiveRecord::Base.sanitize_sql_array(
+            ["(?, ?, ?)", m.gid, campaign.gid, m.position]
+          )
+        }.join(", ")
 
         campaign.contacts
           .where.not(id: receipt_query)
-          .where(NEXT_MESSAGE_SUBQUERY.gsub(":values", values), {
+          .where(NEXT_MESSAGE_SUBQUERY.gsub(":messages_values", messages_values), {
             campaign_gid: campaign.gid,
             message_gid: message.gid,
           })
