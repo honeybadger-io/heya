@@ -1,10 +1,67 @@
-require "ostruct"
-
 module Heya
   module Campaigns
     # {Campaigns::Base} provides a Ruby DSL for building campaign sequences.
     # Multiple actions are supported; the default is email.
     class Base
+      include Singleton
+      include GlobalID::Identification
+
+      def self.inherited(campaign)
+        Heya.register_campaign(campaign)
+        super
+      end
+
+      def self.find(_id)
+        instance
+      end
+
+      def initialize
+        self.messages = []
+      end
+
+      def name
+        self.class.name
+      end
+      alias id name
+
+      # Returns String GlobalID.
+      def gid
+        to_gid(app: "heya").to_s
+      end
+
+      def add(contact, restart: false)
+        restart && MessageReceipt
+          .where(contact: contact, message_gid: messages.map(&:gid))
+          .delete_all
+        CampaignMembership.where(contact: contact, campaign_gid: gid).first_or_create!
+      end
+
+      def remove(contact)
+        CampaignMembership.where(contact: contact, campaign_gid: gid).delete_all
+      end
+
+      def contacts
+        base_class = contact_class.base_class
+        contact_class
+          .joins(
+            sanitize_sql_array([
+              "inner join heya_campaign_memberships on heya_campaign_memberships.contact_type = ? and heya_campaign_memberships.contact_id = #{base_class.table_name}.id and heya_campaign_memberships.campaign_gid = ?",
+              base_class.name,
+              gid,
+            ])
+          ).all
+      end
+
+      def contact_class
+        @contact_class ||= self.class.contact_type.constantize
+      end
+
+      attr_accessor :messages
+
+      private
+
+      delegate :sanitize_sql_array, to: ActiveRecord::Base
+
       class << self
         private
 
@@ -21,9 +78,7 @@ module Heya
 
         public
 
-        def steps
-          @steps ||= {}
-        end
+        delegate :messages, :add, :remove, :contacts, :gid, :contact_class, to: :instance
 
         def contact_type(value = nil)
           if value.present?
@@ -48,24 +103,13 @@ module Heya
         def step(name, **props)
           options = props.select { |k, _| __defaults.key?(k) }
           options[:properties] = props.reject { |k, _| __defaults.key?(k) }.stringify_keys
+          options[:id] = "#{self.name}/#{name}"
+          options[:name] = name
+          options[:position] = messages.size
+          options[:campaign] = instance
 
-          steps[name] = OpenStruct.new(__defaults.merge(options))
+          messages << Message.new(__defaults.merge(options))
         end
-
-        def model
-          @model ||= ::Heya::Campaign.where(name: name).first_or_create!.tap do |campaign|
-            steps.each.with_index do |name_opts, i|
-              name, opts = name_opts
-              campaign.messages.where(name: name).first_or_create! { |message|
-                message.position = i
-                message.wait = opts.wait
-              }.update_attributes(position: i, wait: opts.wait)
-            end
-          end
-        end
-        alias load_model model
-
-        delegate :add, :remove, :messages, to: :model
       end
     end
   end

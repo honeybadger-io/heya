@@ -1,5 +1,5 @@
 class Heya::CampaignMailer < ApplicationMailer
-  default from: "badgers@honeybadger.io"
+  default from: "support@honeybadger.io"
 
   def build
     contact = params.fetch(:contact)

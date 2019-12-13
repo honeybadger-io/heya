@@ -10,20 +10,17 @@ module Heya
     #   4. Process job
     class Scheduler
       def run
-        # Creates database records if necessary
-        Campaigns::Base.subclasses.each(&:load_model)
-
-        Campaign.find_each do |campaign|
-          campaign.ordered_messages.each do |message|
+        Heya.campaigns.each do |campaign|
+          campaign.messages.each do |message|
             Queries::ContactsForMessage.call(campaign, message).find_each do |contact|
-              process(contact, message)
+              process(contact, campaign, message)
             end
           end
 
-          if (last_message = campaign.ordered_messages.last)
+          if (last_message = campaign.messages.last)
             CampaignMembership.where(
-              campaign: campaign,
-              contact: Queries::ContactsReceivedMessage.call(campaign, last_message)
+              contact: Queries::ContactsReceivedMessage.call(campaign, last_message),
+              campaign_gid: campaign.gid,
             ).destroy_all
           end
         end
@@ -31,17 +28,17 @@ module Heya
 
       private
 
-      def process(contact, message)
+      def process(contact, campaign, message)
         ActiveRecord::Base.transaction do
-          return if MessageReceipt.where(contact: contact, message: message).exists?
+          return if MessageReceipt.where(contact: contact, message_gid: message.gid).exists?
 
-          if contact.class.merge(message.build_segment).where(id: contact.id).exists?
+          if contact.class.merge(Queries::SegmentForMessage.call(campaign, message)).where(id: contact.id).exists?
             now = Time.now.utc
-            CampaignMembership.where(contact: contact).update_all(last_sent_at: now)
-            MessageReceipt.create!(contact: contact, message: message, sent_at: now)
+            CampaignMembership.where(contact: contact, campaign_gid: campaign.gid).update_all(last_sent_at: now)
+            MessageReceipt.create!(contact: contact, message_gid: message.gid, sent_at: now)
             message.action.call(contact: contact, message: message)
           else
-            MessageReceipt.create!(contact: contact, message: message)
+            MessageReceipt.create!(contact: contact, message_gid: message.gid)
           end
         end
       end
