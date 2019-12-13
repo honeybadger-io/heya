@@ -1,6 +1,5 @@
 module Heya
   class CampaignMembership < ApplicationRecord
-    belongs_to :campaign
     belongs_to :contact, polymorphic: true
 
     before_create do

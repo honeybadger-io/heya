@@ -24,3 +24,5 @@ gem "minitest-ci", group: :test
 gem "timecop", "~> 0.9.1"
 
 gem "pry", "~> 0.12.2"
+
+gem "pry-rails", "~> 0.3.9"

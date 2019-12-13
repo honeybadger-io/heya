@@ -3,17 +3,29 @@ require "test_helper"
 module Heya
   module Campaigns
     class BaseTest < ActiveSupport::TestCase
+      def setup
+        Heya.campaigns = []
+      end
+
+      test "it adds the campaign to Heya.campaigns" do
+        campaign = Class.new(Base) {
+          default wait: 5.years
+        }
+
+        assert_includes Heya.campaigns, campaign
+      end
+
       test "it sets class defaults" do
         assert_kind_of Hash, Base.__defaults
       end
 
       test "it allows subclasses to change defaults" do
-        klass = Class.new(Base) {
+        campaign = Class.new(Base) {
           default wait: 5.years
         }
 
-        assert_equal 5.years, klass.__defaults[:wait]
-        assert_not_equal Base.__defaults, klass.__defaults
+        assert_equal 5.years, campaign.__defaults[:wait]
+        assert_not_equal Base.__defaults, campaign.__defaults
       end
 
       test "it sets class segment" do
@@ -22,12 +34,12 @@ module Heya
 
       test "it allows subclasses to change segment" do
         block = -> { where(id: 1) }
-        klass = Class.new(Base) {
+        campaign = Class.new(Base) {
           segment(&block)
         }
 
-        assert_equal block, klass.segment
-        assert_not_equal Base.segment, klass.segment
+        assert_equal block, campaign.segment
+        assert_not_equal Base.segment, campaign.segment
       end
 
       test "it sets default contact_type" do
@@ -35,77 +47,45 @@ module Heya
       end
 
       test "it allows subclasses to change contact_type" do
-        klass = Class.new(Base) {
+        campaign = Class.new(Base) {
           contact_type "Contact"
         }
 
-        assert_equal "Contact", klass.contact_type
-        assert_not_equal Base.contact_type, klass.contact_type
+        assert_equal "Contact", campaign.contact_type
+        assert_not_equal Base.contact_type, campaign.contact_type
       end
 
-      test "it lazily creates a new campaign model" do
-        klass = assert_no_difference("Heya::Campaign.count") {
-          Class.new(Base) {
-            def self.name
-              "TestCampaign"
-            end
-          }
+      test "it adds and removes contacts from campaign" do
+        campaign = Class.new(Base) {
+          contact_type "Contact"
+          def self.name
+            "Test"
+          end
         }
+        membership = CampaignMembership.where(contact: contacts(:one), campaign_gid: campaign.gid)
 
-        assert_difference("Heya::Campaign.count") do
-          assert_equal "TestCampaign", klass.model.name
-        end
+        refute membership.exists?
+
+        campaign.add(contacts(:one))
+
+        assert membership.exists?
+
+        campaign.remove(contacts(:one))
+
+        refute membership.exists?
       end
 
-      test "it lazily creates message models" do
-        klass = assert_no_difference("Heya::Message.count") {
-          Class.new(Base) {
-            contact_type "Contact"
-
-            step :one
-            step :two
-          }
+      test "it finds contacts for campaign" do
+        campaign = Class.new(Base) {
+          contact_type "Contact"
+          def self.name
+            "Test"
+          end
         }
+        CampaignMembership.create(contact: contacts(:one), campaign_gid: campaign.gid)
+        CampaignMembership.create(contact: contacts(:one), campaign_gid: "gid://dummy/Other/1")
 
-        assert_difference("Heya::Message.count", 2) do
-          assert_equal 2, klass.messages.count
-        end
-      end
-
-      test "it lazily finds an existing campaign model" do
-        klass = assert_no_difference("Heya::Campaign.count") {
-          Class.new(Base) {
-            def self.name
-              "FirstCampaign"
-            end
-          }
-        }
-
-        assert_no_difference("Heya::Campaign.count") do
-          assert_equal heya_campaigns(:one), klass.model
-        end
-      end
-
-      test "it lazily finds existing message models" do
-        klass = assert_no_difference("Heya::Message.count") {
-          Class.new(Base) {
-            def self.name
-              "FirstCampaign"
-            end
-
-            contact_type "Contact"
-
-            step :one
-            step :two
-          }
-        }
-
-        assert_no_difference("Heya::Message.count") do
-          klass.load_model
-        end
-
-        assert_equal heya_messages(:one), klass.messages.first
-        assert_equal heya_messages(:two), klass.messages.second
+        assert_equal [contacts(:one)], campaign.contacts
       end
     end
   end
