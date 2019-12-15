@@ -16,8 +16,8 @@ module Heya
 
     test "it destroys message receipts on destroy" do
       contact = contacts(:one)
-      MessageReceipt.create(contact: contact, message_gid: "foo")
-      receipts = MessageReceipt.where(contact_id: contact.id)
+      CampaignReceipt.create(contact: contact, message_gid: "foo")
+      receipts = CampaignReceipt.where(contact_id: contact.id)
 
       assert receipts.any?
 

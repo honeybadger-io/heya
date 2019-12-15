@@ -30,7 +30,7 @@ module Heya
       end
 
       def add(contact, restart: false)
-        restart && MessageReceipt
+        restart && CampaignReceipt
           .where(contact: contact, message_gid: messages.map(&:gid))
           .delete_all
         CampaignMembership.where(contact: contact, campaign_gid: gid).first_or_create!

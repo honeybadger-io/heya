@@ -6,7 +6,7 @@ module Heya
     #   1. Find contacts who haven't received message, and are outside
     #      the `wait` window
     #   2. Match segment
-    #   3. Create MessageReceipt (excludes contact in subsequent messages)
+    #   3. Create CampaignReceipt (excludes contact in subsequent messages)
     #   4. Process job
     class Scheduler
       def run
@@ -30,15 +30,15 @@ module Heya
 
       def process(contact, campaign, message)
         ActiveRecord::Base.transaction do
-          return if MessageReceipt.where(contact: contact, message_gid: message.gid).exists?
+          return if CampaignReceipt.where(contact: contact, message_gid: message.gid).exists?
 
           if contact.class.merge(Queries::SegmentForMessage.call(campaign, message)).where(id: contact.id).exists?
             now = Time.now.utc
             CampaignMembership.where(contact: contact, campaign_gid: campaign.gid).update_all(last_sent_at: now)
-            MessageReceipt.create!(contact: contact, message_gid: message.gid, sent_at: now)
+            CampaignReceipt.create!(contact: contact, message_gid: message.gid, sent_at: now)
             message.action.call(contact: contact, message: message)
           else
-            MessageReceipt.create!(contact: contact, message_gid: message.gid)
+            CampaignReceipt.create!(contact: contact, message_gid: message.gid)
           end
         end
       end

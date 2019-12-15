@@ -33,15 +33,15 @@ ActiveRecord::Schema.define(version: 2019_06_13_183430) do
     t.index ["contact_type", "contact_id"], name: "index_heya_campaign_memberships_on_contact_type_and_contact_id"
   end
 
-  create_table "heya_message_receipts", force: :cascade do |t|
+  create_table "heya_campaign_receipts", force: :cascade do |t|
     t.string "contact_type", null: false
     t.bigint "contact_id", null: false
     t.string "message_gid", null: false
     t.datetime "sent_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["contact_id", "message_gid"], name: "index_heya_message_receipts_on_contact_id_and_message_gid", unique: true
-    t.index ["contact_type", "contact_id"], name: "index_heya_message_receipts_on_contact_type_and_contact_id"
+    t.index ["contact_id", "message_gid"], name: "index_heya_campaign_receipts_on_contact_id_and_message_gid", unique: true
+    t.index ["contact_type", "contact_id"], name: "index_heya_campaign_receipts_on_contact_type_and_contact_id"
   end
 
 end
