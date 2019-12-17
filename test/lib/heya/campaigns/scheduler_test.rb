@@ -30,7 +30,7 @@ module Heya
         action = Minitest::Mock.new
         campaign = create_test_campaign {
           default action: action
-          contact_type "Contact"
+          user_type "Contact"
           step :one, wait: 5.days
           step :two, wait: 3.days
           step :three, wait: 2.days
@@ -48,7 +48,7 @@ module Heya
 
         Timecop.travel(6.days.from_now)
         action.expect(:call, nil, [{
-          contact: contact,
+          user: contact,
           step: campaign.steps.first,
         }])
         run_twice
@@ -60,7 +60,7 @@ module Heya
 
         Timecop.travel(1.days.from_now)
         action.expect(:call, nil, [{
-          contact: contact,
+          user: contact,
           step: campaign.steps.second,
         }])
         run_twice
@@ -72,7 +72,7 @@ module Heya
 
         Timecop.travel(1.days.from_now)
         action.expect(:call, nil, [{
-          contact: contact,
+          user: contact,
           step: campaign.steps.third,
         }])
         run_twice
@@ -83,7 +83,7 @@ module Heya
         action = Minitest::Mock.new
         campaign = create_test_campaign {
           default wait: 0, action: action
-          contact_type "Contact"
+          user_type "Contact"
           step :one, segment: -> { where(traits: {foo: "bar"}) }
         }
         contact = contacts(:one)
@@ -97,7 +97,7 @@ module Heya
         action = Minitest::Mock.new
         campaign = create_test_campaign {
           default wait: 0, action: action
-          contact_type "Contact"
+          user_type "Contact"
           step :one, segment: -> { where(traits: {foo: "bar"}) }
         }
         contact = contacts(:one)
@@ -105,7 +105,7 @@ module Heya
         campaign.add(contact)
 
         action.expect(:call, nil, [{
-          contact: contact,
+          user: contact,
           step: campaign.steps.first,
         }])
 
@@ -117,7 +117,7 @@ module Heya
         action = Minitest::Mock.new
         campaign = create_test_campaign {
           default action: action
-          contact_type "Contact"
+          user_type "Contact"
           step :one, wait: 0
           step :two, wait: 2.days, segment: -> { where(traits: {foo: "bar"}) }
           step :three, wait: 1.day, segment: -> { where(traits: {bar: "baz"}) }
@@ -127,7 +127,7 @@ module Heya
         campaign.add(contact)
 
         action.expect(:call, nil, [{
-          contact: contact,
+          user: contact,
           step: campaign.steps.first,
         }])
         run_twice
@@ -139,7 +139,7 @@ module Heya
 
         Timecop.travel(1.days.from_now)
         action.expect(:call, nil, [{
-          contact: contact,
+          user: contact,
           step: campaign.steps.third,
         }])
         run_once
@@ -153,7 +153,7 @@ module Heya
         end
         campaign = create_test_campaign {
           default wait: 0, action: action
-          contact_type TestContact
+          user_type TestContact
           step :one
         }
         contact = contacts(:one).becomes(TestContact)
@@ -170,7 +170,7 @@ module Heya
         end
         campaign = create_test_campaign {
           default wait: 0, action: action
-          contact_type TestContact
+          user_type TestContact
           step :one
         }
         contact = contacts(:one).becomes(TestContact)
@@ -178,7 +178,7 @@ module Heya
         campaign.add(contact)
 
         action.expect(:call, nil, [{
-          contact: contact,
+          user: contact,
           step: campaign.steps.first,
         }])
 
@@ -190,7 +190,7 @@ module Heya
         action = Minitest::Mock.new
         campaign = create_test_campaign {
           default wait: 0, action: action
-          contact_type "Contact"
+          user_type "Contact"
           segment { where("traits->>? = ?", "foo", "foo") }
           step :one
         }
@@ -206,7 +206,7 @@ module Heya
         action = Minitest::Mock.new
         campaign = create_test_campaign {
           default wait: 0, action: action
-          contact_type "Contact"
+          user_type "Contact"
           segment { where("traits->>? = ?", "foo", "foo") }
           step :one
         }
@@ -215,7 +215,7 @@ module Heya
         campaign.add(contact)
 
         action.expect(:call, nil, [{
-          contact: contact,
+          user: contact,
           step: campaign.steps.first,
         }])
 
@@ -227,7 +227,7 @@ module Heya
       test "it removes contacts from campaign at end" do
         campaign = create_test_campaign {
           default wait: 0
-          contact_type "Contact"
+          user_type "Contact"
           step :one
           step :two
           step :three
@@ -235,25 +235,25 @@ module Heya
         contact = contacts(:one)
         campaign.add(contact)
 
-        assert CampaignMembership.where(campaign_gid: campaign.gid, contact: contact).exists?
+        assert CampaignMembership.where(campaign_gid: campaign.gid, user: contact).exists?
 
         run_once
 
-        refute CampaignMembership.where(campaign_gid: campaign.gid, contact: contact).exists?
+        refute CampaignMembership.where(campaign_gid: campaign.gid, user: contact).exists?
       end
 
       test "it processes campaign actions concurrently" do
         action = Minitest::Mock.new
         campaign = create_test_campaign {
           default wait: 0, action: action
-          contact_type "Contact"
+          user_type "Contact"
           step :one
         }
         contact = contacts(:one)
         campaign.add(contact)
 
         action.expect(:call, nil, [{
-          contact: contact,
+          user: contact,
           step: campaign.steps.first,
         }])
 

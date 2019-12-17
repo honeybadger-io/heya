@@ -29,31 +29,31 @@ module Heya
         to_gid(app: "heya").to_s
       end
 
-      def add(contact, restart: false)
+      def add(user, restart: false)
         restart && CampaignReceipt
-          .where(contact: contact, step_gid: steps.map(&:gid))
+          .where(user: user, step_gid: steps.map(&:gid))
           .delete_all
-        CampaignMembership.where(contact: contact, campaign_gid: gid).first_or_create!
+        CampaignMembership.where(user: user, campaign_gid: gid).first_or_create!
       end
 
-      def remove(contact)
-        CampaignMembership.where(contact: contact, campaign_gid: gid).delete_all
+      def remove(user)
+        CampaignMembership.where(user: user, campaign_gid: gid).delete_all
       end
 
-      def contacts
-        base_class = contact_class.base_class
-        contact_class
+      def users
+        base_class = user_class.base_class
+        user_class
           .joins(
             sanitize_sql_array([
-              "inner join heya_campaign_memberships on heya_campaign_memberships.contact_type = ? and heya_campaign_memberships.contact_id = #{base_class.table_name}.id and heya_campaign_memberships.campaign_gid = ?",
+              "inner join heya_campaign_memberships on heya_campaign_memberships.user_type = ? and heya_campaign_memberships.user_id = #{base_class.table_name}.id and heya_campaign_memberships.campaign_gid = ?",
               base_class.name,
               gid,
             ])
           ).all
       end
 
-      def contact_class
-        @contact_class ||= self.class.contact_type.constantize
+      def user_class
+        @user_class ||= self.class.user_type.constantize
       end
 
       attr_accessor :steps
@@ -65,7 +65,7 @@ module Heya
       class << self
         private
 
-        class_attribute :__defaults, :__segment, :__contact_type
+        class_attribute :__defaults, :__segment, :__user_type
 
         self.__defaults = {
           action: Actions::Email,
@@ -74,18 +74,18 @@ module Heya
         }.freeze
 
         self.__segment = -> { all }
-        self.__contact_type = "User"
+        self.__user_type = "User"
 
         public
 
-        delegate :steps, :add, :remove, :contacts, :gid, :contact_class, to: :instance
+        delegate :steps, :add, :remove, :users, :gid, :user_class, to: :instance
 
-        def contact_type(value = nil)
+        def user_type(value = nil)
           if value.present?
-            self.__contact_type = value.is_a?(String) ? value.to_s : value.name
+            self.__user_type = value.is_a?(String) ? value.to_s : value.name
           end
 
-          __contact_type
+          __user_type
         end
 
         def default(**props)

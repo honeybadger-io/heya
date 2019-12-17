@@ -4,7 +4,7 @@ require "heya/campaigns/base"
 require "heya/campaigns/queries"
 require "heya/campaigns/scheduler"
 require "heya/campaigns/step"
-require "heya/concerns/models/contact"
+require "heya/concerns/models/user"
 
 module Heya
   extend self

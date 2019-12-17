@@ -1,6 +1,6 @@
 module Heya
   class CampaignMembership < ApplicationRecord
-    belongs_to :contact, polymorphic: true
+    belongs_to :user, polymorphic: true
 
     before_create do
       self.last_sent_at = Time.now

@@ -10,8 +10,8 @@ module Heya
            AND m.position > coalesce((SELECT m.position FROM heya_campaign_receipts AS r
              INNER JOIN steps AS m ON m.step_gid = r.step_gid
                AND m.campaign_gid = :campaign_gid
-             WHERE r.contact_type = heya_campaign_memberships.contact_type
-               AND r.contact_id = heya_campaign_memberships.contact_id
+             WHERE r.user_type = heya_campaign_memberships.user_type
+               AND r.user_id = heya_campaign_memberships.user_id
              ORDER BY m.position DESC
              LIMIT 1), -1)
          ORDER BY m.position ASC
@@ -19,15 +19,15 @@ module Heya
         ) = :step_gid
       SQL
 
-      # Given a campaign and a step, {Queries::ContactsForStep} returns the
-      # contacts who should complete the step.
-      ContactsForStep = ->(campaign, step) {
+      # Given a campaign and a step, {Queries::UsersForStep} returns the
+      # users who should complete the step.
+      UsersForStep = ->(campaign, step) {
         wait_threshold = Time.now.utc - step.wait
 
         # Safeguard to make sure we never complete the same step twice.
         receipt_query = CampaignReceipt
-          .select("heya_campaign_receipts.contact_id")
-          .where(contact_type: campaign.contact_class.name)
+          .select("heya_campaign_receipts.user_id")
+          .where(user_type: campaign.user_class.name)
           .where("heya_campaign_receipts.step_gid = ?", step.gid)
 
         # https://www.postgresql.org/docs/9.4/queries-values.html
@@ -37,7 +37,7 @@ module Heya
           )
         }.join(", ")
 
-        campaign.contacts
+        campaign.users
           .where.not(id: receipt_query)
           .where(NEXT_STEP_SUBQUERY.gsub(":steps_values", steps_values), {
             campaign_gid: campaign.gid,
@@ -48,22 +48,22 @@ module Heya
           )
       }
 
-      # Given a campaign and a step, {Queries::ContactsCompletedStep}
-      # returns the contacts who have completed the step.
-      ContactsCompletedStep = ->(campaign, step) {
+      # Given a campaign and a step, {Queries::UsersCompletedStep}
+      # returns the users who have completed the step.
+      UsersCompletedStep = ->(campaign, step) {
         receipt_query = CampaignReceipt
-          .select("heya_campaign_receipts.contact_id")
-          .where(contact_type: campaign.contact_class.name)
+          .select("heya_campaign_receipts.user_id")
+          .where(user_type: campaign.user_class.name)
           .where("heya_campaign_receipts.step_gid = ?", step.gid)
 
-        campaign.contacts
+        campaign.users
           .where(id: receipt_query)
       }
 
       # Given a campaign and a step, {Queries::SegmentForStep}
-      # returns the contacts who match the step's segment.
+      # returns the users who match the step's segment.
       SegmentForStep = ->(campaign, step) {
-        campaign.contacts
+        campaign.users
           .build_default_segment
           .instance_exec(&campaign.segment)
           .instance_exec(&step.segment)

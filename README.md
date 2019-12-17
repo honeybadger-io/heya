@@ -62,9 +62,9 @@ using Ruby. That could be an argument to host your marketing site with your app
     - `app/views/heya/campaign_mailer/trial_onboarding_campaign/three.md.erb`
     - etc.
 
-3. Add a contact to a campaign:
+3. Add a user to a campaign:
     ```ruby
-    TrialOnboardingCampaign.add(contact)
+    TrialOnboardingCampaign.add(user)
     ```
 
 4. Run the scheduler periodically:

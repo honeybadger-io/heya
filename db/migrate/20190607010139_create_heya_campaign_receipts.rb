@@ -1,7 +1,7 @@
 class CreateHeyaCampaignReceipts < ActiveRecord::Migration[5.2]
   def change
     create_table :heya_campaign_receipts do |t|
-      t.references :contact, null: false, polymorphic: true, index: true
+      t.references :user, null: false, polymorphic: true, index: false
 
       t.string :step_gid, null: false
 
@@ -10,6 +10,6 @@ class CreateHeyaCampaignReceipts < ActiveRecord::Migration[5.2]
       t.timestamps
     end
 
-    add_index :heya_campaign_receipts, [:contact_id, :step_gid], unique: true
+    add_index :heya_campaign_receipts, [:user_type, :user_id, :step_gid], unique: true, name: :user_step_idx
   end
 end

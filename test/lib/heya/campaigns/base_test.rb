@@ -42,27 +42,27 @@ module Heya
         assert_not_equal Base.segment, campaign.segment
       end
 
-      test "it sets default contact_type" do
-        assert_equal "User", Base.contact_type
+      test "it sets default user_type" do
+        assert_equal "User", Base.user_type
       end
 
-      test "it allows subclasses to change contact_type" do
+      test "it allows subclasses to change user_type" do
         campaign = Class.new(Base) {
-          contact_type "Contact"
+          user_type "Contact"
         }
 
-        assert_equal "Contact", campaign.contact_type
-        assert_not_equal Base.contact_type, campaign.contact_type
+        assert_equal "Contact", campaign.user_type
+        assert_not_equal Base.user_type, campaign.user_type
       end
 
-      test "it adds and removes contacts from campaign" do
+      test "it adds and removes users from campaign" do
         campaign = Class.new(Base) {
-          contact_type "Contact"
+          user_type "Contact"
           def self.name
             "Test"
           end
         }
-        membership = CampaignMembership.where(contact: contacts(:one), campaign_gid: campaign.gid)
+        membership = CampaignMembership.where(user: contacts(:one), campaign_gid: campaign.gid)
 
         refute membership.exists?
 
@@ -75,17 +75,17 @@ module Heya
         refute membership.exists?
       end
 
-      test "it finds contacts for campaign" do
+      test "it finds users for campaign" do
         campaign = Class.new(Base) {
-          contact_type "Contact"
+          user_type "Contact"
           def self.name
             "Test"
           end
         }
-        CampaignMembership.create(contact: contacts(:one), campaign_gid: campaign.gid)
-        CampaignMembership.create(contact: contacts(:one), campaign_gid: "gid://dummy/Other/1")
+        CampaignMembership.create(user: contacts(:one), campaign_gid: campaign.gid)
+        CampaignMembership.create(user: contacts(:one), campaign_gid: "gid://dummy/Other/1")
 
-        assert_equal [contacts(:one)], campaign.contacts
+        assert_equal [contacts(:one)], campaign.users
       end
     end
   end

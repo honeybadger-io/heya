@@ -3,7 +3,7 @@ require "test_helper"
 module Heya
   module Models
     module Concerns
-      class ContactTest < ActiveSupport::TestCase
+      class UserTest < ActiveSupport::TestCase
         include ActionMailer::TestHelper
 
         class DefaultSegmentContact < Contact

@@ -1,8 +1,8 @@
 module Heya
   module Actions
-    Email = ->(contact:, step:) do
+    Email = ->(user:, step:) do
       CampaignMailer
-        .with(contact: contact, step: step)
+        .with(user: user, step: step)
         .build
         .deliver_later
     end
