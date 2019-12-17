@@ -2,24 +2,24 @@ module Heya
   module Campaigns
     # {Campaigns::Scheduler} schedules campaign jobs to run for each campaign.
     #
-    # For each message in each campaign:
-    #   1. Find contacts who haven't received message, and are outside
-    #      the `wait` window
+    # For each step in each campaign:
+    #   1. Find contacts who haven't completed step, and are outside the `wait`
+    #   window
     #   2. Match segment
-    #   3. Create CampaignReceipt (excludes contact in subsequent messages)
+    #   3. Create CampaignReceipt (excludes contact in subsequent steps)
     #   4. Process job
     class Scheduler
       def run
         Heya.campaigns.each do |campaign|
-          campaign.messages.each do |message|
-            Queries::ContactsForMessage.call(campaign, message).find_each do |contact|
-              process(contact, campaign, message)
+          campaign.steps.each do |step|
+            Queries::ContactsForStep.call(campaign, step).find_each do |contact|
+              process(contact, campaign, step)
             end
           end
 
-          if (last_message = campaign.messages.last)
+          if (last_step = campaign.steps.last)
             CampaignMembership.where(
-              contact: Queries::ContactsReceivedMessage.call(campaign, last_message),
+              contact: Queries::ContactsCompletedStep.call(campaign, last_step),
               campaign_gid: campaign.gid,
             ).destroy_all
           end
@@ -28,17 +28,17 @@ module Heya
 
       private
 
-      def process(contact, campaign, message)
+      def process(contact, campaign, step)
         ActiveRecord::Base.transaction do
-          return if CampaignReceipt.where(contact: contact, message_gid: message.gid).exists?
+          return if CampaignReceipt.where(contact: contact, step_gid: step.gid).exists?
 
-          if contact.class.merge(Queries::SegmentForMessage.call(campaign, message)).where(id: contact.id).exists?
+          if contact.class.merge(Queries::SegmentForStep.call(campaign, step)).where(id: contact.id).exists?
             now = Time.now.utc
             CampaignMembership.where(contact: contact, campaign_gid: campaign.gid).update_all(last_sent_at: now)
-            CampaignReceipt.create!(contact: contact, message_gid: message.gid, sent_at: now)
-            message.action.call(contact: contact, message: message)
+            CampaignReceipt.create!(contact: contact, step_gid: step.gid, sent_at: now)
+            step.action.call(contact: contact, step: step)
           else
-            CampaignReceipt.create!(contact: contact, message_gid: message.gid)
+            CampaignReceipt.create!(contact: contact, step_gid: step.gid)
           end
         end
       end

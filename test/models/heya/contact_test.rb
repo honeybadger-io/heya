@@ -14,9 +14,9 @@ module Heya
       refute memberships.any?
     end
 
-    test "it destroys message receipts on destroy" do
+    test "it destroys campaign receipts on destroy" do
       contact = contacts(:one)
-      CampaignReceipt.create(contact: contact, message_gid: "foo")
+      CampaignReceipt.create(contact: contact, step_gid: "foo")
       receipts = CampaignReceipt.where(contact_id: contact.id)
 
       assert receipts.any?

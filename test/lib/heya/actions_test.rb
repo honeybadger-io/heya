@@ -6,10 +6,10 @@ module Heya
 
     test "it sends an email to contact" do
       contact = contacts(:one)
-      message = FirstCampaign.messages.first
+      step = FirstCampaign.steps.first
 
-      assert_enqueued_email_with CampaignMailer, :build, args: {contact: contact, message: message} do
-        Actions::Email.call(contact: contact, message: message)
+      assert_enqueued_email_with CampaignMailer, :build, args: {contact: contact, step: step} do
+        Actions::Email.call(contact: contact, step: step)
       end
     end
   end

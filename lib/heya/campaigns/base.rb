@@ -16,7 +16,7 @@ module Heya
       end
 
       def initialize
-        self.messages = []
+        self.steps = []
       end
 
       def name
@@ -31,7 +31,7 @@ module Heya
 
       def add(contact, restart: false)
         restart && CampaignReceipt
-          .where(contact: contact, message_gid: messages.map(&:gid))
+          .where(contact: contact, step_gid: steps.map(&:gid))
           .delete_all
         CampaignMembership.where(contact: contact, campaign_gid: gid).first_or_create!
       end
@@ -56,7 +56,7 @@ module Heya
         @contact_class ||= self.class.contact_type.constantize
       end
 
-      attr_accessor :messages
+      attr_accessor :steps
 
       private
 
@@ -78,7 +78,7 @@ module Heya
 
         public
 
-        delegate :messages, :add, :remove, :contacts, :gid, :contact_class, to: :instance
+        delegate :steps, :add, :remove, :contacts, :gid, :contact_class, to: :instance
 
         def contact_type(value = nil)
           if value.present?
@@ -105,10 +105,10 @@ module Heya
           options[:properties] = props.reject { |k, _| __defaults.key?(k) }.stringify_keys
           options[:id] = "#{self.name}/#{name}"
           options[:name] = name
-          options[:position] = messages.size
+          options[:position] = steps.size
           options[:campaign] = instance
 
-          messages << Message.new(__defaults.merge(options))
+          steps << Step.new(__defaults.merge(options))
         end
       end
     end

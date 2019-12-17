@@ -2,12 +2,12 @@ require "ostruct"
 
 module Heya
   module Campaigns
-    class Message < OpenStruct
+    class Step < OpenStruct
       include GlobalID::Identification
 
       def self.find(id)
-        campaign_name, _message_name = id.to_s.split("/")
-        campaign_name.constantize.messages.find { |m| m.id == id }
+        campaign_name, _step_name = id.to_s.split("/")
+        campaign_name.constantize.steps.find { |s| s.id == id }
       end
 
       def gid

@@ -49,7 +49,7 @@ module Heya
         Timecop.travel(6.days.from_now)
         action.expect(:call, nil, [{
           contact: contact,
-          message: campaign.messages.first,
+          step: campaign.steps.first,
         }])
         run_twice
         assert_mock action
@@ -61,7 +61,7 @@ module Heya
         Timecop.travel(1.days.from_now)
         action.expect(:call, nil, [{
           contact: contact,
-          message: campaign.messages.second,
+          step: campaign.steps.second,
         }])
         run_twice
         assert_mock action
@@ -73,7 +73,7 @@ module Heya
         Timecop.travel(1.days.from_now)
         action.expect(:call, nil, [{
           contact: contact,
-          message: campaign.messages.third,
+          step: campaign.steps.third,
         }])
         run_twice
         assert_mock action
@@ -106,7 +106,7 @@ module Heya
 
         action.expect(:call, nil, [{
           contact: contact,
-          message: campaign.messages.first,
+          step: campaign.steps.first,
         }])
 
         run_twice
@@ -128,7 +128,7 @@ module Heya
 
         action.expect(:call, nil, [{
           contact: contact,
-          message: campaign.messages.first,
+          step: campaign.steps.first,
         }])
         run_twice
         assert_mock action
@@ -140,7 +140,7 @@ module Heya
         Timecop.travel(1.days.from_now)
         action.expect(:call, nil, [{
           contact: contact,
-          message: campaign.messages.third,
+          step: campaign.steps.third,
         }])
         run_once
         assert_mock action
@@ -179,7 +179,7 @@ module Heya
 
         action.expect(:call, nil, [{
           contact: contact,
-          message: campaign.messages.first,
+          step: campaign.steps.first,
         }])
 
         run_once
@@ -216,7 +216,7 @@ module Heya
 
         action.expect(:call, nil, [{
           contact: contact,
-          message: campaign.messages.first,
+          step: campaign.steps.first,
         }])
 
         run_once
@@ -254,7 +254,7 @@ module Heya
 
         action.expect(:call, nil, [{
           contact: contact,
-          message: campaign.messages.first,
+          step: campaign.steps.first,
         }])
 
         # Make sure missing constants are autoloaded >:]
