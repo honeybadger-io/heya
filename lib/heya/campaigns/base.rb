@@ -19,9 +19,7 @@ module Heya
         self.steps = []
       end
 
-      def name
-        self.class.name
-      end
+      delegate :name, :segment, to: :class
       alias id name
 
       # Returns String GlobalID.
@@ -69,11 +67,11 @@ module Heya
 
         self.__defaults = {
           action: Actions::Email,
-          segment: -> { all },
           wait: 2.days,
+          segment: nil,
         }.freeze
 
-        self.__segment = -> { all }
+        self.__segment = nil
         self.__user_type = "User"
 
         public

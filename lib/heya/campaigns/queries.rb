@@ -59,15 +59,6 @@ module Heya
         campaign.users
           .where(id: receipt_query)
       }
-
-      # Given a campaign and a step, {Queries::SegmentForStep}
-      # returns the users who match the step's segment.
-      SegmentForStep = ->(campaign, step) {
-        campaign.users
-          .build_default_segment
-          .instance_exec(&campaign.segment)
-          .instance_exec(&step.segment)
-      }
     end
   end
 end

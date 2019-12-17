@@ -84,7 +84,7 @@ module Heya
         campaign = create_test_campaign {
           default wait: 0, action: action
           user_type "Contact"
-          step :one, segment: -> { where(traits: {foo: "bar"}) }
+          step :one, segment: ->(u) { u.traits["foo"] == "bar" }
         }
         contact = contacts(:one)
         campaign.add(contact)
@@ -98,7 +98,7 @@ module Heya
         campaign = create_test_campaign {
           default wait: 0, action: action
           user_type "Contact"
-          step :one, segment: -> { where(traits: {foo: "bar"}) }
+          step :one, segment: ->(u) { u.traits["foo"] == "bar" }
         }
         contact = contacts(:one)
         contact.update_attribute(:traits, {foo: "bar"})
@@ -119,8 +119,8 @@ module Heya
           default action: action
           user_type "Contact"
           step :one, wait: 0
-          step :two, wait: 2.days, segment: -> { where(traits: {foo: "bar"}) }
-          step :three, wait: 1.day, segment: -> { where(traits: {bar: "baz"}) }
+          step :two, wait: 2.days, segment: ->(u) { u.traits["foo"] == "bar" }
+          step :three, wait: 1.day, segment: ->(u) { u.traits["bar"] == "baz" }
         }
         contact = contacts(:one)
         contact.update_attribute(:traits, {bar: "baz"})
@@ -149,7 +149,7 @@ module Heya
       test "it skips actions that don't match default segments" do
         action = Minitest::Mock.new
         class TestContact < Contact
-          default_segment { where(traits: {foo: "bar"}) }
+          default_segment { |u| u.traits["foo"] == "bar" }
         end
         campaign = create_test_campaign {
           default wait: 0, action: action
@@ -166,7 +166,7 @@ module Heya
       test "it processes actions that match default segments" do
         action = Minitest::Mock.new
         class TestContact < Contact
-          default_segment { where(traits: {foo: "bar"}) }
+          default_segment { |u| u.traits["foo"] == "bar" }
         end
         campaign = create_test_campaign {
           default wait: 0, action: action
@@ -191,7 +191,7 @@ module Heya
         campaign = create_test_campaign {
           default wait: 0, action: action
           user_type "Contact"
-          segment { where("traits->>? = ?", "foo", "foo") }
+          segment { |u| u.traits["foo"] == "foo" }
           step :one
         }
         contact = contacts(:one)
@@ -207,7 +207,7 @@ module Heya
         campaign = create_test_campaign {
           default wait: 0, action: action
           user_type "Contact"
-          segment { where("traits->>? = ?", "foo", "foo") }
+          segment { |u| u.traits["foo"] == "foo" }
           step :one
         }
         contact = contacts(:one)

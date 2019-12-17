@@ -28,8 +28,8 @@ module Heya
         assert_not_equal Base.__defaults, campaign.__defaults
       end
 
-      test "it sets class segment" do
-        assert_kind_of Proc, Base.segment
+      test "it has class segment" do
+        assert_nil Base.segment
       end
 
       test "it allows subclasses to change segment" do
