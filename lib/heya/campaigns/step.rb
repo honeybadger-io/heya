@@ -13,25 +13,6 @@ module Heya
       def gid
         to_gid(app: "heya").to_s
       end
-
-      def process_action?(user)
-        in_segments?(user,
-          user.class.__heya_default_segment,
-          campaign.segment,
-          segment)
-      end
-
-      private
-
-      def in_segments?(user, *segments)
-        return false if segments.any? { |s| !in_segment?(user, s) }
-        true
-      end
-
-      def in_segment?(user, segment)
-        return true if segment.nil?
-        segment.call(user)
-      end
     end
   end
 end
