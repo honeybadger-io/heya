@@ -23,6 +23,7 @@ module Heya
 
   def in_segment?(user, segment)
     return true if segment.nil?
+    return user.send(segment) if segment.is_a?(Symbol)
     segment.call(user)
   end
 end
