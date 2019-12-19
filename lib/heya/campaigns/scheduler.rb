@@ -34,7 +34,7 @@ module Heya
 
           if Heya.in_segments?(user, user.class.__heya_default_segment, campaign.segment, step.segment)
             now = Time.now.utc
-            CampaignMembership.where(user: user, campaign_gid: campaign.gid).update_all(last_sent_at: now)
+            CampaignMembership.where(user: user).update_all(last_sent_at: now)
             CampaignReceipt.create!(user: user, step_gid: step.gid, sent_at: now)
             step.action.call(user: user, step: step)
           else

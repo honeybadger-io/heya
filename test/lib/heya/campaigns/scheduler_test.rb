@@ -13,13 +13,15 @@ module Heya
         }
       end
 
-      def create_test_campaign(&block)
-        Class.new(Campaigns::Base) {
-          def self.name
-            "TestCampaign"
+      def create_test_campaign(name = "TestCampaign", &block)
+        klass = Class.new(Campaigns::Base) {
+          class << self
+            attr_accessor :name
           end
-          instance_exec(&block)
         }
+        klass.name = name
+        klass.instance_exec(&block)
+        klass
       end
 
       def setup
@@ -266,6 +268,77 @@ module Heya
           }
         }.each(&:join)
 
+        assert_mock action
+      end
+
+      test "it processes multiple campaign actions in order" do
+        action = Minitest::Mock.new
+        campaign1 = create_test_campaign("TestCampaign1") {
+          default action: action
+          user_type "Contact"
+          step :one, wait: 5.days
+        }
+        campaign2 = create_test_campaign("TestCampaign2") {
+          default action: action
+          user_type "Contact"
+          step :one, wait: 3.days
+        }
+        campaign3 = create_test_campaign("TestCampaign3") {
+          default action: action
+          user_type "Contact"
+          step :one, wait: 2.days
+        }
+        contact = contacts(:one)
+        campaign1.add(contact)
+        campaign2.add(contact)
+        campaign3.add(contact)
+
+        Heya.configure do |config|
+          config.priority = [
+            campaign1,
+            campaign2,
+            campaign3,
+          ]
+        end
+
+        Timecop.travel(1.days.from_now)
+        run_twice
+        assert_mock action
+
+        Timecop.travel(1.days.from_now)
+        run_twice
+        assert_mock action
+
+        Timecop.travel(6.days.from_now)
+        action.expect(:call, nil, [{
+          user: contact,
+          step: campaign1.steps.first,
+        }])
+        run_twice
+        assert_mock action
+
+        Timecop.travel(2.days.from_now)
+        run_twice
+        assert_mock action
+
+        Timecop.travel(1.days.from_now)
+        action.expect(:call, nil, [{
+          user: contact,
+          step: campaign2.steps.first,
+        }])
+        run_twice
+        assert_mock action
+
+        Timecop.travel(1.days.from_now)
+        run_twice
+        assert_mock action
+
+        Timecop.travel(1.days.from_now)
+        action.expect(:call, nil, [{
+          user: contact,
+          step: campaign3.steps.first,
+        }])
+        run_twice
         assert_mock action
       end
     end
