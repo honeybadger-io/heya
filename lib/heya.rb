@@ -1,4 +1,5 @@
 require "heya/engine"
+require "heya/config"
 require "heya/actions"
 require "heya/campaigns/base"
 require "heya/campaigns/queries"
@@ -14,6 +15,15 @@ module Heya
 
   def register_campaign(subclass)
     campaigns << subclass
+  end
+
+  def configure
+    yield(config) if block_given?
+    config
+  end
+
+  def config
+    @config ||= Config.new
   end
 
   def in_segments?(user, *segments)

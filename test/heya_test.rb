@@ -31,4 +31,22 @@ class Heya::Test < ActiveSupport::TestCase
     assert Heya.in_segments?(User.new, :true?)
     refute Heya.in_segments?(User.new, :false?)
   end
+
+  test "#configure yields configuration object" do
+    config = Minitest::Mock.new
+
+    config.expect(:value=, nil, ["expected value"])
+
+    Heya.stub(:config, config) do
+      Heya.configure do |config|
+        config.value = "expected value"
+      end
+    end
+
+    assert_mock config
+  end
+
+  test "#config is a Config" do
+    assert_kind_of Heya::Config, Heya.config
+  end
 end

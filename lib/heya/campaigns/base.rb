@@ -72,7 +72,7 @@ module Heya
         }.freeze
 
         self.__segment = nil
-        self.__user_type = "User"
+        self.__user_type = nil
 
         public
 
@@ -83,7 +83,7 @@ module Heya
             self.__user_type = value.is_a?(String) ? value.to_s : value.name
           end
 
-          __user_type
+          __user_type || Heya.config.user_type
         end
 
         def default(**props)
