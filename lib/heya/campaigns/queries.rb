@@ -27,7 +27,7 @@ module Heya
          WHERE memberships.user_type = heya_campaign_memberships.user_type
            AND memberships.user_id = heya_campaign_memberships.user_id
            AND memberships.concurrent = FALSE
-         ORDER BY campaigns.position DESC, memberships.created_at DESC
+         ORDER BY campaigns.position DESC, memberships.created_at ASC
          LIMIT 1
         ) = :campaign_gid
       SQL
