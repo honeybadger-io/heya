@@ -26,6 +26,7 @@ module Heya
            ON campaigns.campaign_gid = memberships.campaign_gid
          WHERE memberships.user_type = heya_campaign_memberships.user_type
            AND memberships.user_id = heya_campaign_memberships.user_id
+           AND memberships.concurrent = FALSE
          ORDER BY campaigns.position DESC, memberships.created_at DESC
          LIMIT 1
         ) = :campaign_gid
@@ -56,15 +57,22 @@ module Heya
           )
         }.join(", ")
 
-        campaign.users
+        users = campaign.users
+        users
           .where.not(id: receipt_query)
           .where(NEXT_STEP_SUBQUERY.gsub(":steps_values", steps_values), {
             campaign_gid: campaign.gid,
             step_gid: step.gid,
           })
-          .where(ACTIVE_CAMPAIGN_SUBQUERY.gsub(":campaigns_values", campaigns_values), {
-            campaign_gid: campaign.gid,
-          })
+          .merge(
+            users
+              .where("heya_campaign_memberships.concurrent = ?", true)
+              .or(
+                users.where(ACTIVE_CAMPAIGN_SUBQUERY.gsub(":campaigns_values", campaigns_values), {
+                  campaign_gid: campaign.gid,
+                })
+              )
+          )
           .where(
             "heya_campaign_memberships.last_sent_at <= ?", wait_threshold
           )

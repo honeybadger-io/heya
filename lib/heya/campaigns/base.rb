@@ -27,11 +27,11 @@ module Heya
         to_gid(app: "heya").to_s
       end
 
-      def add(user, restart: false)
+      def add(user, restart: false, concurrent: false)
         restart && CampaignReceipt
           .where(user: user, step_gid: steps.map(&:gid))
           .delete_all
-        CampaignMembership.where(user: user, campaign_gid: gid).first_or_create!
+        CampaignMembership.where(user: user, campaign_gid: gid, concurrent: concurrent).first_or_create!
       end
 
       def remove(user)

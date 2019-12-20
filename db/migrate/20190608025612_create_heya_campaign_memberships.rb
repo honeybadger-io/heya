@@ -4,6 +4,7 @@ class CreateHeyaCampaignMemberships < ActiveRecord::Migration[5.2]
       t.references :user, null: false, polymorphic: true, index: false
 
       t.string :campaign_gid, null: false
+      t.boolean :concurrent, null: false, default: false
 
       t.datetime :last_sent_at, null: false
 

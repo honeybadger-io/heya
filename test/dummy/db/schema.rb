@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 2019_06_13_183430) do
     t.string "user_type", null: false
     t.bigint "user_id", null: false
     t.string "campaign_gid", null: false
+    t.boolean "concurrent", default: false, null: false
     t.datetime "last_sent_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
