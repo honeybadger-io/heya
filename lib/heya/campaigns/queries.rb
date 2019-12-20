@@ -89,6 +89,20 @@ module Heya
         campaign.users
           .where(id: receipt_query)
       }
+
+      # Given a campaign and a user, {Queries::CampaignMembershipsForUpdate}
+      # returns the user's campaign memberships which should be updated
+      # concurrently.
+      CampaignMembershipsForUpdate = ->(campaign, user) {
+        membership = CampaignMembership.where(user: user, campaign_gid: campaign.gid).first
+        if membership.concurrent?
+          CampaignMembership
+            .where(user: user, campaign_gid: campaign.gid)
+        else
+          CampaignMembership
+            .where(user: user, concurrent: false)
+        end
+      }
     end
   end
 end

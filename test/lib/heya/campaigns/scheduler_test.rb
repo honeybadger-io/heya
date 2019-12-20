@@ -349,6 +349,7 @@ module Heya
           user_type "Contact"
           step :one, wait: 5.days
           step :two, wait: 2.days
+          step :three, wait: 1.days
         }
         campaign2 = create_test_campaign("TestCampaign2") {
           default action: action
@@ -357,8 +358,8 @@ module Heya
           step :two, wait: 3.days
         }
         contact = contacts(:one)
-        campaign1.add(contact)
-        campaign2.add(contact, concurrent: true)
+        campaign1.add(contact, concurrent: true)
+        campaign2.add(contact)
 
         Timecop.travel(2.days.from_now)
         run_once
@@ -389,6 +390,10 @@ module Heya
         assert_mock action
 
         Timecop.travel(1.days.from_now)
+        action.expect(:call, nil, [{
+          user: contact,
+          step: campaign1.steps.third,
+        }])
         action.expect(:call, nil, [{
           user: contact,
           step: campaign2.steps.second,
