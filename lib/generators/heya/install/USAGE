@@ -1,0 +1,10 @@
+Description:
+    Install Heya initializer and migrations
+
+Example:
+    rails generate heya:install
+
+    This will create:
+        db/migrate/*_create_heya_campaign_receipts.heya.rb
+        db/migrate/*_create_heya_campaign_memberships.heya.rb
+        config/initializers/heya.rb
