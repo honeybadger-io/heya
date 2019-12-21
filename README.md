@@ -71,7 +71,7 @@ end
 ### Creating your first campaign
 1. Create a campaign:
 
-  ```ruby
+  ```bash
   rails generate heya:campaign Onboarding welcome
   ```
 
@@ -84,7 +84,7 @@ end
 ### Running the scheduler
 To start sending emails, run the scheduler periodically:
 
-```ruby
+```bash
 rails heya:scheduler
 ```
 
