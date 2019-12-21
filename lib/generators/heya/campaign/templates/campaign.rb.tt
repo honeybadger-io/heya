@@ -1,0 +1,7 @@
+class <%= file_name.camelcase %>Campaign < Heya::Campaigns::Base
+<% steps.each do |step| %>
+  step :<%= step.underscore.to_sym %>,
+    subject: "<%= step.humanize %> Message"
+
+<% end -%>
+end

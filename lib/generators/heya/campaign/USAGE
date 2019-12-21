@@ -1,0 +1,14 @@
+Description:
+    Generate a new campaign
+
+Example:
+    rails generate heya:campaign Onboarding first second third
+
+    This will create:
+        app/campaigns/onboarding_campaign.rb
+        app/views/heya/campaign_mailer/onboarding_campaign/first.text.erb
+        app/views/heya/campaign_mailer/onboarding_campaign/first.html.erb
+        app/views/heya/campaign_mailer/onboarding_campaign/second.text.erb
+        app/views/heya/campaign_mailer/onboarding_campaign/second.html.erb
+        app/views/heya/campaign_mailer/onboarding_campaign/third.text.erb
+        app/views/heya/campaign_mailer/onboarding_campaign/third.html.erb
