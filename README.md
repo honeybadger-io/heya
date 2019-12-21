@@ -72,13 +72,13 @@ end
 1. Create a campaign:
 
   ```ruby
-  rails generate heya:campaign "User Onboarding" welcome
+  rails generate heya:campaign Onboarding welcome
   ```
 
 2. Add a user to your campaign:
 
   ```ruby
-  UserOnboardingCampaign.add(user)
+  OnboardingCampaign.add(user)
   ```
 
 ### Running the scheduler
@@ -94,20 +94,20 @@ rails heya:scheduler
 Heya stores campaigns in *app/campaigns/*, similar to how Rails stores mailers in *app/mailers/*. To create a campaign, run the following command inside your Rails project:
 
 ```bash
-rails generate heya:campaign "User Onboarding" first second third
+rails generate heya:campaign Onboarding first second third
 ```
 
 This will do three things:
 
-- Create the file *app/campaigns/user_onboarding_campaign.rb*
-- Create the directory *app/views/heya/campaign_mailer/user_onboarding_campaign/*
-- Create email templates inside of *app/views/heya/campaign_mailer/user_onboarding_campaign/*
+- Create the file *app/campaigns/onboarding_campaign.rb*
+- Create the directory *app/views/heya/campaign_mailer/onboarding_campaign/*
+- Create email templates inside of *app/views/heya/campaign_mailer/onboarding_campaign/*
 
 Here's the campaign that the above command generates:
 
 ```ruby
-class UserOnboardingCampaign < Heya::Campaigns::Base
-  step :first, wait: 0.days,
+class OnboardingCampaign < Heya::Campaigns::Base
+  step :first,
     subject: 'First subject',
 
   step :second,
@@ -133,7 +133,7 @@ Messages are defined inside Heya campaigns using the `step` method. When you add
 Here's an example of defining a message inside a campaign:
 
 ```ruby
-class UserOnboardingCampaign < Heya::Campaigns::Base
+class OnboardingCampaign < Heya::Campaigns::Base
   step :welcome, wait: 1.day,
     subject: "Welcome to my app!"
 end
@@ -159,7 +159,7 @@ Heya uses the following additional options to build the message itself:
 You can change the default options using the `default` method at the top of the campaign. Heya applies default options to each step which doesn't supply its own:
 
 ```ruby
-class UserOnboardingCampaign < Heya::Campaigns::Base
+class OnboardingCampaign < Heya::Campaigns::Base
   default wait: 1.day,
     from: "support@example.com"
 
@@ -174,13 +174,13 @@ end
 Heya leaves *when* to add users to campaigns completely up to you; here's how to add a user to a campaign from anywhere in your app:
 
 ```ruby
-UserOnboardingCampaign.add(user)
+OnboardingCampaign.add(user)
 ```
 
 To remove a user from a campaign:
 
 ```ruby
-UserOnboardingCampaign.remove(user)
+OnboardingCampaign.remove(user)
 ```
 
 Adding users to campaigns from Rails opens up some interesting automation possibilities--for instance, you can start or stop campaigns from `ActiveRecord` callbacks, or in response to other events that you're already tracking in your application. [See here for a list of ideas](#).
