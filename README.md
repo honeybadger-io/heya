@@ -47,8 +47,9 @@ Getting started with Heya is easy:
 3. Then execute:
 
   ```bash
-  bundle
-  rails heya:install db:migrate
+  bundle install
+  rails generate heya:install
+  rails db:migrate
   ```
 
   This will do 3 things:
