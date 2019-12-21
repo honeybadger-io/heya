@@ -87,6 +87,13 @@ module Heya
 
         assert_equal [contacts(:one)], campaign.users
       end
+
+      test "it creates steps with String names" do
+        campaign = Class.new(Base) {
+          step :expected_name
+        }
+        assert_equal "expected_name", campaign.steps.first.name
+      end
     end
   end
 end

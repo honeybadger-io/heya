@@ -102,7 +102,7 @@ module Heya
           options = props.select { |k, _| __defaults.key?(k) }
           options[:properties] = props.reject { |k, _| __defaults.key?(k) }.stringify_keys
           options[:id] = "#{self.name}/#{name}"
-          options[:name] = name
+          options[:name] = name.to_s
           options[:position] = steps.size
           options[:campaign] = instance
 
