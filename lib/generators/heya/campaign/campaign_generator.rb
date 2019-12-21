@@ -10,8 +10,8 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
   def copy_view_templates
     steps.each do |step|
       @step = step
-      template "message.text.erb", "app/views/heya/#{file_name.underscore}_campaign/#{step.underscore.to_sym}.text.erb"
-      template "message.html.erb", "app/views/heya/#{file_name.underscore}_campaign/#{step.underscore.to_sym}.html.erb"
+      template "message.text.erb", "app/views/heya/campaign_mailer/#{file_name.underscore}_campaign/#{step.underscore.to_sym}.text.erb"
+      template "message.html.erb", "app/views/heya/campaign_mailer/#{file_name.underscore}_campaign/#{step.underscore.to_sym}.html.erb"
     end
   end
 end
