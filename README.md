@@ -41,7 +41,7 @@ Getting started with Heya is easy:
 2. Add this line to your application's Gemfile:
 
   ```ruby
-  gem 'heya', path: '../heya'
+  gem "heya", path: "../heya"
   ```
 
 3. Then execute:
@@ -63,7 +63,7 @@ Getting started with Heya is easy:
 ```ruby
 # config/initializers/heya.rb
 Heya.configure do |config|
-  config.user_type = 'MyUser'
+  config.user_type = "MyUser"
 end
 ```
 </details>
@@ -108,13 +108,13 @@ Here's the campaign that the above command generates:
 ```ruby
 class OnboardingCampaign < Heya::Campaigns::Base
   step :first,
-    subject: 'First subject',
+    subject: "First subject",
 
   step :second,
-    subject: 'Second subject',
+    subject: "Second subject",
 
   step :third,
-    subject: 'Third subject'
+    subject: "Third subject"
 end
 ```
 
