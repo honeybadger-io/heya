@@ -143,7 +143,7 @@ GEM
     websocket-driver (0.7.1)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.4)
-    yard (0.9.20)
+    yard (0.9.23)
 
 PLATFORMS
   ruby
@@ -156,7 +156,7 @@ DEPENDENCIES
   pry-rails (~> 0.3.9)
   standard (~> 0.0.40)
   timecop (~> 0.9.1)
-  yard (~> 0.9.19)
+  yard (~> 0.9.23)
 
 BUNDLED WITH
    2.0.2
