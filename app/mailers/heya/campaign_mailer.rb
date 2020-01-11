@@ -1,6 +1,8 @@
 class Heya::CampaignMailer < ApplicationMailer
   default from: "support@honeybadger.io"
 
+  layout "heya/campaign_mailer"
+
   def build
     user = params.fetch(:user)
 
