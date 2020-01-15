@@ -9,7 +9,7 @@ module Heya
       step = FirstCampaign.steps.first
 
       assert_enqueued_email_with CampaignMailer, :build, args: {user: contact, step: step} do
-        Actions::Email.call(user: contact, step: step)
+        Actions::Email.call(user: contact, step: step).deliver_later
       end
     end
   end

@@ -4,7 +4,6 @@ module Heya
       CampaignMailer
         .with(user: user, step: step)
         .build
-        .deliver_later
     end
   end
 end

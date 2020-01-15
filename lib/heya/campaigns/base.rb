@@ -106,7 +106,16 @@ module Heya
           options[:position] = steps.size
           options[:campaign] = instance
 
-          steps << Step.new(__defaults.merge(options))
+          step = Step.new(__defaults.merge(options))
+          method_name = :"#{step.name.underscore}"
+          raise "Invalid step name: #{step.name}\n  Step names must not conflict with method names on Heya::Campaigns::Base" if respond_to?(method_name)
+
+          define_singleton_method method_name do |user|
+            step.action.call(step: step, user: user)
+          end
+          steps << step
+
+          step
         end
       end
     end

@@ -94,6 +94,26 @@ module Heya
         }
         assert_equal "expected_name", campaign.steps.first.name
       end
+
+      test "generates an action method for each step" do
+        mock = MiniTest::Mock.new
+        campaign = Class.new(Base) {
+          step :expected_name, action: ->(user:,step:) { mock.call(user, step.name) }
+        }
+        user = Object.new
+
+        mock.expect(:call, nil, [user, "expected_name"])
+
+        campaign.expected_name(user)
+      end
+
+      test "doesn't allow existing method names as step names" do
+        assert_raise RuntimeError, /Invalid/ do
+          Class.new(Base) {
+            step :default
+          }
+        end
+      end
     end
   end
 end
