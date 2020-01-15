@@ -1,6 +1,6 @@
 require "heya/engine"
 require "heya/config"
-require "heya/actions"
+require "heya/campaigns/actions"
 require "heya/campaigns/base"
 require "heya/campaigns/queries"
 require "heya/campaigns/scheduler"
