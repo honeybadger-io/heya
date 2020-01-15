@@ -98,7 +98,7 @@ module Heya
       test "generates an action method for each step" do
         mock = MiniTest::Mock.new
         campaign = Class.new(Base) {
-          step :expected_name, action: ->(user:,step:) { mock.call(user, step.name) }
+          step :expected_name, action: ->(user:, step:) { mock.call(user, step.name) }
         }
         user = Object.new
 

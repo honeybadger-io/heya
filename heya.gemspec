@@ -5,12 +5,12 @@ require "heya/version"
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |spec|
-  spec.name        = "heya"
-  spec.version     = Heya::VERSION
-  spec.authors     = ["Joshua Wood"]
-  spec.email       = ["josh@honeybadger.io"]
-  spec.homepage    = "https://www.honeybadger.io"
-  spec.summary     = "Heya 👋"
+  spec.name = "heya"
+  spec.version = Heya::VERSION
+  spec.authors = ["Joshua Wood"]
+  spec.email = ["josh@honeybadger.io"]
+  spec.homepage = "https://www.honeybadger.io"
+  spec.summary = "Heya 👋"
   spec.description = "Heya 👋"
   # spec.license     = "TODO"
 
