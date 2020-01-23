@@ -372,6 +372,4 @@ status.
 TODO: Contribution directions go here.
 
 ## License
-The gem is copyright 2019 Honeybadger Industries LLC. All rights reserved.
-
-(TODO: Figure out the license.)
+This package is free to use for noncommercial purposes and for commercial purposes during a trial period under the terms of the [Prosperity Public License](./LICENSE).
