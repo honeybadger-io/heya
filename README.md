@@ -377,4 +377,4 @@ status.
 6. Send a [pull request](https://github.com/honeybadger-io/heya/pulls)
 
 ## License
-This package is free to use for noncommercial purposes and for commercial purposes during a trial period under the terms of the [Prosperity Public License](./LICENSE).
+This package is free to use for noncommercial purposes and for commercial purposes during a trial period under the terms of the [Prosperity Public License](LICENSE).
