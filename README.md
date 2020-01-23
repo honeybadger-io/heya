@@ -369,7 +369,12 @@ status.
 [TBD](https://github.com/honeybadger-io/heya/issues?q=is%3Aopen+is%3Aissue+label%3Aidea)
 
 ## Contributing
-TODO: Contribution directions go here.
+1. Fork it.
+2. Create a topic branch `git checkout -b my_branch`
+3. Make your changes and add an entry to the [CHANGELOG](CHANGELOG.md).
+4. Commit your changes `git commit -am "Boom"`
+5. Push to your branch `git push origin my_branch`
+6. Send a [pull request](https://github.com/honeybadger-io/heya/pulls)
 
 ## License
 This package is free to use for noncommercial purposes and for commercial purposes during a trial period under the terms of the [Prosperity Public License](./LICENSE).
