@@ -13,7 +13,7 @@ module Heya
         Heya.campaigns.each do |campaign|
           campaign.steps.each do |step|
             Queries::UsersForStep.call(campaign, step).find_each do |user|
-              process(user, campaign, step)
+              self.class.process(campaign, step, user)
             end
           end
 
@@ -26,9 +26,7 @@ module Heya
         end
       end
 
-      private
-
-      def process(user, campaign, step)
+      def self.process(campaign, step, user)
         ActiveRecord::Base.transaction do
           return if CampaignReceipt.where(user: user, step_gid: step.gid).exists?
 

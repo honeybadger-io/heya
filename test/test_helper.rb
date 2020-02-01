@@ -19,3 +19,8 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
 end
 
 require "minitest/mock"
+
+class NullMail
+  def self.deliver_later
+  end
+end

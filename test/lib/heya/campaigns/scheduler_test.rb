@@ -3,11 +3,6 @@ require "test_helper"
 module Heya
   module Campaigns
     class SchedulerTest < ActiveSupport::TestCase
-      class NullMail
-        def self.deliver_later
-        end
-      end
-
       def run_once
         Scheduler.new.run
       end
@@ -43,7 +38,7 @@ module Heya
           step :three, wait: 2.days
         }
         contact = contacts(:one)
-        campaign.add(contact)
+        campaign.add(contact, send_now: false)
 
         Timecop.travel(1.days.from_now)
         run_twice
@@ -94,7 +89,7 @@ module Heya
           step :one, segment: ->(u) { u.traits["foo"] == "bar" }
         }
         contact = contacts(:one)
-        campaign.add(contact)
+        campaign.add(contact, send_now: false)
 
         run_twice
         assert_mock action
@@ -109,7 +104,7 @@ module Heya
         }
         contact = contacts(:one)
         contact.update_attribute(:traits, {foo: "bar"})
-        campaign.add(contact)
+        campaign.add(contact, send_now: false)
 
         action.expect(:call, NullMail, [{
           user: contact,
@@ -131,7 +126,7 @@ module Heya
         }
         contact = contacts(:one)
         contact.update_attribute(:traits, {bar: "baz"})
-        campaign.add(contact)
+        campaign.add(contact, send_now: false)
 
         action.expect(:call, NullMail, [{
           user: contact,
@@ -164,7 +159,7 @@ module Heya
           step :one
         }
         contact = contacts(:one).becomes(TestContact)
-        campaign.add(contact)
+        campaign.add(contact, send_now: false)
 
         run_once
         assert_mock action
@@ -182,7 +177,7 @@ module Heya
         }
         contact = contacts(:one).becomes(TestContact)
         contact.update_attribute(:traits, {foo: "bar"})
-        campaign.add(contact)
+        campaign.add(contact, send_now: false)
 
         action.expect(:call, NullMail, [{
           user: contact,
@@ -202,7 +197,7 @@ module Heya
           step :one
         }
         contact = contacts(:one)
-        campaign.add(contact)
+        campaign.add(contact, send_now: false)
 
         run_once
 
@@ -219,7 +214,7 @@ module Heya
         }
         contact = contacts(:one)
         contact.update_attribute(:traits, {foo: "foo"})
-        campaign.add(contact)
+        campaign.add(contact, send_now: false)
 
         action.expect(:call, NullMail, [{
           user: contact,
@@ -240,7 +235,7 @@ module Heya
           step :three
         }
         contact = contacts(:one)
-        campaign.add(contact)
+        campaign.add(contact, send_now: false)
 
         assert CampaignMembership.where(campaign_gid: campaign.gid, user: contact).exists?
 
@@ -257,7 +252,7 @@ module Heya
           step :one
         }
         contact = contacts(:one)
-        campaign.add(contact)
+        campaign.add(contact, send_now: false)
 
         action.expect(:call, NullMail, [{
           user: contact,
@@ -294,9 +289,9 @@ module Heya
           step :one, wait: 2.days
         }
         contact = contacts(:one)
-        campaign1.add(contact)
-        campaign2.add(contact)
-        campaign3.add(contact)
+        campaign1.add(contact, send_now: false)
+        campaign2.add(contact, send_now: false)
+        campaign3.add(contact, send_now: false)
 
         Heya.configure do |config|
           config.priority = [
@@ -368,9 +363,9 @@ module Heya
           step :one, wait: 2.days
         }
         contact = contacts(:one)
-        campaign1.add(contact, concurrent: true)
-        campaign2.add(contact)
-        campaign3.add(contact)
+        campaign1.add(contact, send_now: false, concurrent: true)
+        campaign2.add(contact, send_now: false)
+        campaign3.add(contact, send_now: false)
 
         Timecop.travel(2.days.from_now)
         run_once

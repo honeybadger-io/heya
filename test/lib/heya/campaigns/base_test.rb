@@ -75,6 +75,59 @@ module Heya
         refute membership.exists?
       end
 
+      test "#add sends first step in campaign by default" do
+        action = Minitest::Mock.new
+        campaign = Class.new(Base) {
+          default action: action
+          user_type "Contact"
+          step :one, wait: 0
+          def self.name
+            "TestCampaign"
+          end
+        }
+        contact = contacts(:one)
+
+        action.expect(:call, NullMail, [{
+          user: contact,
+          step: campaign.steps.first,
+        }])
+
+        campaign.add(contact)
+        assert_mock action
+      end
+
+      test "#add sends first step in campaign with send_now: false" do
+        action = Minitest::Mock.new
+        campaign = Class.new(Base) {
+          default action: action
+          user_type "Contact"
+          step :one, wait: 0
+          def self.name
+            "TestCampaign"
+          end
+        }
+        contact = contacts(:one)
+
+        campaign.add(contact, send_now: false)
+        assert_mock action
+      end
+
+      test "#add skips first step in campaign with wait > 0" do
+        action = Minitest::Mock.new
+        campaign = Class.new(Base) {
+          default action: action
+          user_type "Contact"
+          step :one, wait: 1
+          def self.name
+            "TestCampaign"
+          end
+        }
+        contact = contacts(:one)
+
+        campaign.add(contact)
+        assert_mock action
+      end
+
       test "it finds users for campaign" do
         campaign = Class.new(Base) {
           user_type "Contact"
