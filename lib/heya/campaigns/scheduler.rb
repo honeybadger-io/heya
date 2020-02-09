@@ -30,7 +30,7 @@ module Heya
         ActiveRecord::Base.transaction do
           return if CampaignReceipt.where(user: user, step_gid: step.gid).exists?
 
-          if Heya.in_segments?(user, user.class.__heya_default_segment, campaign.segment, step.segment)
+          if step.in_segment?(user)
             now = Time.now.utc
             Queries::CampaignMembershipsForUpdate.call(campaign, user).update_all(last_sent_at: now)
             CampaignReceipt.create!(user: user, step_gid: step.gid, sent_at: now)

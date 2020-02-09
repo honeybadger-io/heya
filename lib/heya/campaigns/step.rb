@@ -13,6 +13,10 @@ module Heya
       def gid
         to_gid(app: "heya").to_s
       end
+
+      def in_segment?(user)
+        Heya.in_segments?(user, user.class.__heya_default_segment, campaign.segment, segment)
+      end
     end
   end
 end
