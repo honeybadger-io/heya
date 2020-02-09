@@ -24,3 +24,16 @@ class NullMail
   def self.deliver_later
   end
 end
+
+class ActiveSupport::TestCase
+  def create_test_campaign(name = "TestCampaign", &block)
+    klass = Class.new(Heya::Campaigns::Base) {
+      class << self
+        attr_accessor :name
+      end
+    }
+    klass.name = name
+    klass.instance_exec(&block)
+    klass
+  end
+end

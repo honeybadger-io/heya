@@ -13,17 +13,6 @@ module Heya
         }
       end
 
-      def create_test_campaign(name = "TestCampaign", &block)
-        klass = Class.new(Campaigns::Base) {
-          class << self
-            attr_accessor :name
-          end
-        }
-        klass.name = name
-        klass.instance_exec(&block)
-        klass
-      end
-
       def setup
         Heya.campaigns = []
       end

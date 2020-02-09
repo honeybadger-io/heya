@@ -28,6 +28,8 @@ module Heya
       end
 
       def add(user, restart: false, concurrent: false, send_now: true)
+        return false unless Heya.in_segments?(user, user.class.__heya_default_segment, segment)
+
         restart && CampaignReceipt
           .where(user: user, step_gid: steps.map(&:gid))
           .delete_all
