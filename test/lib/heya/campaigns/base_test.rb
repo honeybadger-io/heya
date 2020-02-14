@@ -43,15 +43,15 @@ module Heya
       end
 
       test "it sets default user_type" do
-        assert_equal "User", Base.user_type
+        assert_equal "Contact", Base.user_type
       end
 
       test "it allows subclasses to change user_type" do
         campaign = Class.new(Base) {
-          user_type "Contact"
+          user_type "Expected"
         }
 
-        assert_equal "Contact", campaign.user_type
+        assert_equal "Expected", campaign.user_type
         assert_not_equal Base.user_type, campaign.user_type
       end
 

@@ -2,6 +2,9 @@ Heya.configure do |config|
   # The name of the model you want to use with Heya.
   config.user_type = "User"
 
+  # The default from address to use when sending campaigns.
+  config.from = "user@example.com"
+
   # Campaign priority. When a user is added to multiple campaigns, they are
   # sent in this order. Campaigns are sent in the order that the users were
   # added if no priority is configured.

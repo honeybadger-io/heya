@@ -6,6 +6,7 @@ module Heya
       super({
         user_type: "User",
         priority: [],
+        from: nil,
       }.merge(opts))
     end
   end

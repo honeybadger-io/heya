@@ -10,7 +10,7 @@ class Heya::CampaignMailer < ApplicationMailer
     instance_variable_set(:"@#{user.model_name.element}", user)
 
     mail(
-      from: step.from,
+      from: step.from || Heya.config.from,
       to: user.email,
       subject: step.properties.fetch("subject"),
       template_path: "heya/campaign_mailer/#{campaign.name.underscore}",
