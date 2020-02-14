@@ -82,6 +82,30 @@ To start sending emails, run the scheduler periodically:
 rails heya:scheduler
 ```
 
+## Configuration
+
+You can use the following options to configure Heya (this file is automatically
+created in *config/initializers/heya.rb*):
+
+```ruby
+Heya.configure do |config|
+  # The name of the model you want to use with Heya.
+  config.user_type = "User"
+
+  # The default from address to use when sending campaigns.
+  config.from = "user@example.com"
+
+  # Campaign priority. When a user is added to multiple campaigns, they are
+  # sent in this order. Campaigns are sent in the order that the users were
+  # added if no priority is configured.
+  config.priority = [
+    FirstCampaign
+    SecondCampaign
+    ThirdCampaign
+  ]
+end
+```
+
 ## Campaigns
 
 ### Creating campaigns
