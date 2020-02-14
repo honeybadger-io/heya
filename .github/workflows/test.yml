@@ -42,5 +42,6 @@ jobs:
         gem install bundler
         bundle config path vendor/bundle
         bundle install --jobs 4 --retry 3
+        bundle exec appraisal install
         bundle exec rake db:create db:schema:load
         bundle exec appraisal rake
