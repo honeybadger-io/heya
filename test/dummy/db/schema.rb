@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_13_183430) do
+ActiveRecord::Schema.define(version: 2020_02_14_174703) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,8 +28,8 @@ ActiveRecord::Schema.define(version: 2019_06_13_183430) do
     t.string "campaign_gid", null: false
     t.boolean "concurrent", default: false, null: false
     t.datetime "last_sent_at", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["user_type", "user_id", "campaign_gid"], name: "user_campaign_idx", unique: true
   end
 
@@ -38,8 +38,8 @@ ActiveRecord::Schema.define(version: 2019_06_13_183430) do
     t.bigint "user_id", null: false
     t.string "step_gid", null: false
     t.datetime "sent_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["user_type", "user_id", "step_gid"], name: "user_step_idx", unique: true
   end
 
