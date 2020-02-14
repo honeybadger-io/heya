@@ -11,3 +11,5 @@ test/dummy/tmp/
 doc/
 
 test/reports/
+
+gemfiles/*.lock

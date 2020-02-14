@@ -28,4 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rails", ">= 5.2.3", "< 6.1.0"
 
   spec.add_development_dependency "pg"
+  spec.add_development_dependency "appraisal"
 end
