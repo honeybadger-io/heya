@@ -32,19 +32,13 @@ Getting started with Heya is easy:
 3. [Run the scheduler](#running-the-scheduler)
 
 ### Installing the Heya gem
-1. Clone this repo in your project's parent directory:
-
-  ```bash
-  git clone https://github.com/honeybadger-io/heya.git
-  ```
-
-2. Add this line to your application's Gemfile:
+1. Add this line to your application's Gemfile:
 
   ```ruby
-  gem "heya", path: "../heya"
+  gem "heya", github: "honeybadger-io/heya"
   ```
 
-3. Then execute:
+2. Then execute:
 
   ```bash
   bundle install
@@ -58,7 +52,7 @@ Getting started with Heya is easy:
   2. Copy Heya's default initializer to *config/initializers/heya.rb*
   3. Run local migrations
 
-<details><summary>Note: Heya doesn't store a copy of your user data; instead, it reads from your existing `User` model (it never writes). If you have a different user model, change the `user_type` configuration option in *config/initializers/heya.rb*.</summary>
+<details><summary>Note: Heya doesn't store a copy of your user data; instead, it reads from your existing <code>User</code> model (it never writes). If you have a different user model, change the <code>user_type</code> configuration option in <em>config/initializers/heya.rb</em>.</summary>
 
 ```ruby
 # config/initializers/heya.rb
@@ -108,10 +102,10 @@ Here's the campaign that the above command generates:
 ```ruby
 class OnboardingCampaign < Heya::Campaigns::Base
   step :first,
-    subject: "First subject",
+    subject: "First subject"
 
   step :second,
-    subject: "Second subject",
+    subject: "Second subject"
 
   step :third,
     subject: "Third subject"
@@ -123,7 +117,7 @@ The `step` command defines a new step in the sequence. When you add a user to th
 
 The default time to wait between steps is *two days*, calculated from the time the user completed the previous step (or the time the user entered the campaign, in the case of the first step).
 
-Each step has several options available (see the section [Creating messages](#)).
+Each step has several options available (see the section [Creating messages](#creating-messages)).
 
 ### Creating messages
 Messages are defined inside Heya campaigns using the `step` method. When you add a user to a campaign, Heya completes each step in the order that it appears.
