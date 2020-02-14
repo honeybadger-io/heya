@@ -108,20 +108,21 @@ module Heya
           __segment
         end
 
-        def step(name, **props)
+        def step(name, **props, &block)
           options = props.select { |k, _| __defaults.key?(k) }
           options[:properties] = props.reject { |k, _| __defaults.key?(k) }.stringify_keys
           options[:id] = "#{self.name}/#{name}"
           options[:name] = name.to_s
           options[:position] = steps.size
           options[:campaign] = instance
+          options[:action] = Actions::Block.build(block) if block_given?
 
           step = Step.new(__defaults.merge(options))
           method_name = :"#{step.name.underscore}"
           raise "Invalid step name: #{step.name}\n  Step names must not conflict with method names on Heya::Campaigns::Base" if respond_to?(method_name)
 
           define_singleton_method method_name do |user|
-            step.action.call(step: step, user: user)
+            step.action.call(user: user, step: step)
           end
           steps << step
 

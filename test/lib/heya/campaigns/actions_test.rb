@@ -13,6 +13,42 @@ module Heya
           Actions::Email.call(user: contact, step: step).deliver_later
         end
       end
+
+      test "block actions respond to ActionMailer::MessageDelivery API subset" do
+        mock = MiniTest::Mock.new
+        block = Proc.new { |user, step|
+          mock.call(user, step)
+        }
+        action = Actions::Block.build(block)
+
+        mock.expect(:call, nil, [:user, :step])
+        mock.expect(:call, nil, [:user, :step])
+
+        action.call(user: :user, step: :step).deliver_now
+        action.call(user: :user, step: :step).deliver_later
+
+        assert_mock mock
+      end
+
+      test "block actions can be called with one argument" do
+        mock = MiniTest::Mock.new
+        block = Proc.new { |u| mock.call(u) }
+        action = Actions::Block.build(block)
+
+        mock.expect(:call, nil, [:user])
+        action.call(user: :user, step: :step).deliver_now
+        assert_mock mock
+      end
+
+      test "block actions can be called with no arguments" do
+        mock = MiniTest::Mock.new
+        block = Proc.new { mock.call }
+        action = Actions::Block.build(block)
+
+        mock.expect(:call, nil, [])
+        action.call(user: :user, step: :step).deliver_now
+        assert_mock mock
+      end
     end
   end
 end

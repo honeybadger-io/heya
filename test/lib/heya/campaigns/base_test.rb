@@ -197,6 +197,20 @@ module Heya
           }
         end
       end
+
+      test "executes block actions" do
+        mock = MiniTest::Mock.new
+        campaign = Class.new(Base) {
+          step :expected_name do |user, step|
+            mock.call(user, step.name)
+          end
+        }
+        user = Object.new
+
+        mock.expect(:call, nil, [user, "expected_name"])
+
+        campaign.expected_name(user).deliver_now
+      end
     end
   end
 end

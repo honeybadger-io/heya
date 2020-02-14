@@ -137,7 +137,7 @@ end
 ```
 
 #### Steps
-The `step` command defines a new step in the sequence. When you add a user to the campaign, Heya completes each step in the order that it appears.
+The `step` method defines a new step in the sequence. When you add a user to the campaign, Heya completes each step in the order that it appears.
 
 The default time to wait between steps is *two days*, calculated from the time the user completed the previous step (or the time the user entered the campaign, in the case of the first step).
 
@@ -187,6 +187,27 @@ class OnboardingCampaign < Heya::Campaigns::Base
     subject: "Welcome to my app!"
 end
 ```
+
+### Custom Actions
+
+You can override the default step behavior to perform custom actions by passing
+a block to the `step` method:
+
+```ruby
+class OnboardingCampaign < Heya::Campaigns::Base
+  step :first_email,
+    subject: "You're about to receive a txt"
+
+  step :sms do |user|
+    SMSJob.perform_later(to: user.cell, body: "Hi, #{user.first_name}!")
+  end
+
+  step :second_email,
+    subject: "Did you get it?"
+end
+```
+
+Step blocks receive two optional arguments: `user` and `step`.
 
 ### Adding users to campaigns
 Heya leaves *when* to add users to campaigns completely up to you; here's how to add a user to a campaign from anywhere in your app:
