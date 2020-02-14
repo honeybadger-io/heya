@@ -84,8 +84,8 @@ rails heya:scheduler
 
 ## Configuration
 
-You can use the following options to configure Heya (this file is automatically
-created in *config/initializers/heya.rb*):
+You can use the following options to configure Heya (find this file in
+*config/initializers/heya.rb*):
 
 ```ruby
 Heya.configure do |config|
