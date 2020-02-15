@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.version = Heya::VERSION
   spec.authors = ["Joshua Wood"]
   spec.email = ["josh@honeybadger.io"]
-  spec.homepage = "https://www.honeybadger.io"
+  spec.homepage = "https://github.com/honeybadger-io/heya"
   spec.summary = "Heya 👋"
   spec.description = "Heya 👋"
   spec.license     = "Prosperity Public License"
