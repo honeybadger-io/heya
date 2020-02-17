@@ -34,7 +34,7 @@ module Heya
             now = Time.now.utc
             Queries::CampaignMembershipsForUpdate.call(campaign, user).update_all(last_sent_at: now)
             CampaignReceipt.create!(user: user, step_gid: step.gid, sent_at: now)
-            step.action.call(user: user, step: step).deliver_later
+            step.action.new(user: user, step: step).deliver_later
           else
             CampaignReceipt.create!(user: user, step_gid: step.gid)
           end

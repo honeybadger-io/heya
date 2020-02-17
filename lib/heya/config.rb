@@ -7,6 +7,7 @@ module Heya
         user_type: "User",
         priority: [],
         from: nil,
+        queue: "heya",
       }.merge(opts))
     end
   end

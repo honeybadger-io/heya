@@ -38,7 +38,7 @@ module Heya
         assert_mock action
 
         Timecop.travel(6.days.from_now)
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign.steps.first,
         }])
@@ -50,7 +50,7 @@ module Heya
         assert_mock action
 
         Timecop.travel(1.days.from_now)
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign.steps.second,
         }])
@@ -62,7 +62,7 @@ module Heya
         assert_mock action
 
         Timecop.travel(1.days.from_now)
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign.steps.third,
         }])
@@ -95,7 +95,7 @@ module Heya
         contact.update_attribute(:traits, {foo: "bar"})
         campaign.add(contact, send_now: false)
 
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign.steps.first,
         }])
@@ -117,7 +117,7 @@ module Heya
         contact.update_attribute(:traits, {bar: "baz"})
         campaign.add(contact, send_now: false)
 
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign.steps.first,
         }])
@@ -129,7 +129,7 @@ module Heya
         assert_mock action
 
         Timecop.travel(1.days.from_now)
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign.steps.third,
         }])
@@ -168,7 +168,7 @@ module Heya
         contact.update_attribute(:traits, {foo: "bar"})
         campaign.add(contact, send_now: false)
 
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign.steps.first,
         }])
@@ -205,7 +205,7 @@ module Heya
         contact.update_attribute(:traits, {foo: "foo"})
         campaign.add(contact, send_now: false)
 
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign.steps.first,
         }])
@@ -243,7 +243,7 @@ module Heya
         contact = contacts(:one)
         campaign.add(contact, send_now: false)
 
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign.steps.first,
         }])
@@ -299,7 +299,7 @@ module Heya
         assert_mock action
 
         Timecop.travel(6.days.from_now)
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign1.steps.first,
         }])
@@ -311,7 +311,7 @@ module Heya
         assert_mock action
 
         Timecop.travel(1.days.from_now)
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign2.steps.first,
         }])
@@ -323,7 +323,7 @@ module Heya
         assert_mock action
 
         Timecop.travel(1.days.from_now)
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign3.steps.first,
         }])
@@ -361,11 +361,11 @@ module Heya
         assert_mock action
 
         Timecop.travel(3.days.from_now)
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign1.steps.first,
         }])
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign2.steps.first,
         }])
@@ -377,7 +377,7 @@ module Heya
         assert_mock action
 
         Timecop.travel(1.days.from_now)
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign1.steps.second,
         }])
@@ -385,11 +385,11 @@ module Heya
         assert_mock action
 
         Timecop.travel(1.days.from_now)
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign1.steps.third,
         }])
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign2.steps.second,
         }])
@@ -401,7 +401,7 @@ module Heya
         assert_mock action
 
         Timecop.travel(1.days.from_now)
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign3.steps.first,
         }])
