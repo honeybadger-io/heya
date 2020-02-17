@@ -87,7 +87,7 @@ module Heya
         }
         contact = contacts(:one)
 
-        action.expect(:call, NullMail, [{
+        action.expect(:new, NullMail, [{
           user: contact,
           step: campaign.steps.first,
         }])
@@ -179,15 +179,16 @@ module Heya
       end
 
       test "generates an action method for each step" do
-        mock = MiniTest::Mock.new
-        campaign = Class.new(Base) {
-          step :expected_name, action: ->(user:, step:) { mock.call(user, step.name) }
+        action = Class.new(Action) {
+          def build
+            :expected
+          end
         }
-        user = Object.new
+        campaign = Class.new(Base) {
+          step :expected_name, action: action
+        }
 
-        mock.expect(:call, nil, [user, "expected_name"])
-
-        campaign.expected_name(user)
+        assert_equal :expected, campaign.expected_name(:user)
       end
 
       test "doesn't allow existing method names as step names" do
@@ -209,7 +210,7 @@ module Heya
 
         mock.expect(:call, nil, [user, "expected_name"])
 
-        campaign.expected_name(user).deliver_now
+        campaign.expected_name(user).deliver
       end
     end
   end

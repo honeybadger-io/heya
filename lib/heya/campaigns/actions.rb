@@ -1,31 +1,30 @@
 module Heya
-  module Actions
-    Email = ->(user:, step:) do
-      CampaignMailer
-        .with(user: user, step: step)
-        .build
-    end
-
-    class Block
-      class Execution; end
-
-      def self.build(block)
-        ->(user:, step:) {
-          new(user, step, block)
-        }
+  module Campaigns
+    module Actions
+      class Email < Action
+        def build
+          CampaignMailer
+            .with(user: user, step: step)
+            .build
+        end
       end
 
-      def initialize(user, step, block)
-        @user = user
-        @step = step
-        @block = block
-        @execution = Execution.new
-      end
+      class Block < Action
+        class Execution
+          def initialize(user:, step:, &block)
+            @user, @step, @block = user, step, block
+          end
 
-      def deliver_now
-        @execution.instance_exec(@user, @step, &@block)
+          def deliver
+            instance_exec(@user, @step, &@block)
+          end
+        end
+
+        def build
+          block = step.properties.fetch(:block)
+          Execution.new(user: user, step: step, &block)
+        end
       end
-      alias deliver_later deliver_now
     end
   end
 end

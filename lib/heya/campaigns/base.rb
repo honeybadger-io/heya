@@ -64,6 +64,10 @@ module Heya
         @user_class ||= self.class.user_type.constantize
       end
 
+      def handle_exception(exception)
+        raise exception
+      end
+
       attr_accessor :steps
 
       private
@@ -79,6 +83,7 @@ module Heya
           action: Actions::Email,
           wait: 2.days,
           segment: nil,
+          queue: nil,
         }.freeze
 
         self.__segment = nil
@@ -115,14 +120,18 @@ module Heya
           options[:name] = name.to_s
           options[:position] = steps.size
           options[:campaign] = instance
-          options[:action] = Actions::Block.build(block) if block_given?
+
+          if block_given?
+            options[:properties][:block] = block
+            options[:action] = Actions::Block
+          end
 
           step = Step.new(__defaults.merge(options))
           method_name = :"#{step.name.underscore}"
           raise "Invalid step name: #{step.name}\n  Step names must not conflict with method names on Heya::Campaigns::Base" if respond_to?(method_name)
 
           define_singleton_method method_name do |user|
-            step.action.call(user: user, step: step)
+            step.action.new(user: user, step: step).build
           end
           steps << step
 

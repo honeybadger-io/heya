@@ -199,7 +199,7 @@ class OnboardingCampaign < Heya::Campaigns::Base
     subject: "You're about to receive a txt"
 
   step :sms do |user|
-    SMSJob.perform_later(to: user.cell, body: "Hi, #{user.first_name}!")
+    SMS.new(to: user.cell, body: "Hi, #{user.first_name}!").deliver
   end
 
   step :second_email,
@@ -207,7 +207,8 @@ class OnboardingCampaign < Heya::Campaigns::Base
 end
 ```
 
-Step blocks receive two optional arguments: `user` and `step`.
+Step blocks receive two optional arguments: `user` and `step`, and are processed
+in a background job alongside other actions.
 
 ### Adding users to campaigns
 Heya leaves *when* to add users to campaigns completely up to you; here's how to add a user to a campaign from anywhere in your app:

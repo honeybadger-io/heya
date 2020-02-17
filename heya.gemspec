@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://github.com/honeybadger-io/heya"
   spec.summary = "Heya 👋"
   spec.description = "Heya 👋"
-  spec.license     = "Prosperity Public License"
+  spec.license = "Prosperity Public License"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
