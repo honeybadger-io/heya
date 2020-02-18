@@ -1,14 +1,6 @@
 module Heya
   module Campaigns
     module Actions
-      class Email < Action
-        def build
-          CampaignMailer
-            .with(user: user, step: step)
-            .build
-        end
-      end
-
       class Block < Action
         class Execution
           def initialize(user:, step:, &block)
