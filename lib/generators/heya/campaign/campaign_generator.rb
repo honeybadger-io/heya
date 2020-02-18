@@ -10,10 +10,10 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
   def copy_view_templates
     selection =
       if defined?(Maildown)
-        puts <<-MSG
-What type of views would you like to generate?
-  1. Multipart (text/html)
-  2. Maildown (markdown)
+        puts <<~MSG
+          What type of views would you like to generate?
+            1. Multipart (text/html)
+            2. Maildown (markdown)
         MSG
 
         ask(">")
@@ -33,7 +33,7 @@ What type of views would you like to generate?
 
     steps.each do |step|
       @step = step
-      template_method.(step)
+      template_method.call(step)
     end
   end
 
