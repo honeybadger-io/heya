@@ -27,7 +27,7 @@ end
 
 module Heya::Campaigns
   class TestAction < Action
-    class Result
+    class Message
       def initialize(mock, *args)
         @mock, @args = mock, args
       end
@@ -37,15 +37,17 @@ module Heya::Campaigns
       end
     end
 
+    class_attribute :__mock
+
     def self.mock(mock)
-      @@mock = mock
+      self.__mock = mock
       yield
     ensure
-      @@mock = nil
+      self.__mock = nil
     end
 
     def build
-      Result.new(@@mock, user, step)
+      Message.new(__mock, user, step)
     end
   end
 end

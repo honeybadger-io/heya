@@ -14,15 +14,6 @@ module Heya
             Email.new(user: contact, step: step).deliver_now
           end
         end
-
-        test "it queues a default job for step" do
-          contact = contacts(:one)
-          step = FirstCampaign.steps.first
-
-          assert_enqueued_with(job: StepActionJob, queue: "heya") do
-            Email.new(user: contact, step: step).deliver_later
-          end
-        end
       end
     end
   end
