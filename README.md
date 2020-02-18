@@ -169,7 +169,7 @@ The `wait` option tells Heya how long to wait before sending each message (the d
 |:--|:--|:--|
 | `wait`  | `2.days` | The duration of time to wait before sending each message |
 | `segment`  | `nil` | The segment who should receive the message |
-| `action` | `Heya::Actions::Email` | The action to perform (usually sending an email) |
+| `action` | `Heya::Campaigns::Actions::Email` | The action to perform (usually sending an email) |
 | `queue` | `"heya"` | The ActiveJob queue |
 
 Heya uses the following additional options to build the message itself:
