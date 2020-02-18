@@ -61,15 +61,16 @@ module Heya
 
       delegate :sanitize_sql_array, to: ActiveRecord::Base
 
-      class_attribute :__defaults, default: {
+      class_attribute :__defaults, default: {}.freeze
+      class_attribute :__segments, default: [].freeze
+      class_attribute :__user_type, default: nil
+
+      STEP_ATTRS = {
         action: Actions::Email,
         wait: 2.days,
         segment: nil,
-        queue: nil,
+        queue: "heya",
       }.freeze
-
-      class_attribute :__segments, default: [].freeze
-      class_attribute :__user_type, default: nil
 
       class << self
         def inherited(campaign)
@@ -108,20 +109,26 @@ module Heya
           end
         end
 
-        def step(name, **params, &block)
-          options = params.select { |k, _| __defaults.key?(k) }
-          options[:params] = params.reject { |k, _| __defaults.key?(k) }.stringify_keys
-          options[:id] = "#{self.name}/#{name}"
-          options[:name] = name.to_s
-          options[:position] = steps.size
-          options[:campaign] = instance
-
+        def step(name, **opts, &block)
           if block_given?
-            options[:params][:block] = block
-            options[:action] ||= Actions::Block
+            opts[:block] ||= block
+            opts[:action] ||= Actions::Block
           end
 
-          step = Step.new(__defaults.merge(options))
+          opts =
+            STEP_ATTRS
+            .merge(Heya.config.campaigns.default_options)
+            .merge(__defaults)
+            .merge(opts)
+
+          attrs = opts.select { |k, _| STEP_ATTRS.key?(k) }
+          attrs[:params] = opts.reject { |k, _| STEP_ATTRS.key?(k) }.stringify_keys
+          attrs[:id] = "#{self.name}/#{name}"
+          attrs[:name] = name.to_s
+          attrs[:position] = steps.size
+          attrs[:campaign] = instance
+
+          step = Step.new(attrs)
           method_name = :"#{step.name.underscore}"
           raise "Invalid step name: #{step.name}\n  Step names must not conflict with method names on Heya::Campaigns::Base" if respond_to?(method_name)
 

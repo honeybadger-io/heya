@@ -1,7 +1,7 @@
 module Heya
   module Campaigns
     class StepActionJob < ActiveJob::Base
-      queue_as { Heya.config.queue }
+      queue_as { Heya.config.campaigns.queue }
 
       rescue_from StandardError, with: :handle_exception_with_campaign_class
 

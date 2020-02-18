@@ -237,6 +237,8 @@ module Heya
         mock.expect(:call, nil, [user, "expected_name"])
 
         campaign.expected_name(user).deliver
+
+        assert_mock mock
       end
     end
   end

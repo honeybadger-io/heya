@@ -94,16 +94,13 @@ Heya.configure do |config|
   # The name of the model you want to use with Heya.
   config.user_type = "User"
 
-  # The name of the default ActiveJob queue to use when sending campaigns.
-  config.queue = "heya"
-
-  # The default from address to use when sending campaigns.
-  config.from = "user@example.com"
+  # The default options to use when processing campaign steps.
+  config.campaigns.default_options = {from: "user@example.com"}
 
   # Campaign priority. When a user is added to multiple campaigns, they are
   # sent in this order. Campaigns are sent in the order that the users were
   # added if no priority is configured.
-  config.priority = [
+  config.campaigns.priority = [
     FirstCampaign
     SecondCampaign
     ThirdCampaign

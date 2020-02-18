@@ -50,7 +50,7 @@ module Heya
           )
         }.join(", ")
 
-        priority = Heya.config.priority.reverse
+        priority = Heya.config.campaigns.priority.reverse
         campaigns_values = Heya.campaigns.map { |c|
           ActiveRecord::Base.sanitize_sql_array(
             ["(?, ?)", c.gid, priority.index(c) || -1]

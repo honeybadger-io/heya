@@ -6,7 +6,7 @@ module Heya
       user = params.fetch(:user)
       step = params.fetch(:step)
       campaign = step.campaign
-      from = step.params.fetch("from", Heya.config.from)
+      from = step.params.fetch("from")
       subject = step.params.fetch("subject")
 
       instance_variable_set(:"@#{user.model_name.element}", user)

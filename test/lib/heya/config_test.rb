@@ -1,6 +1,16 @@
 require "test_helper"
 
 class Heya::ConfigTest < ActiveSupport::TestCase
+  test "has default priority" do
+    assert_equal [], Heya::Config.new.campaigns.priority
+  end
+
+  test "assigns priority" do
+    config = Heya::Config.new
+    config.campaigns.priority = ["Expected"]
+    assert_equal ["Expected"], config.campaigns.priority
+  end
+
   test "has default user_type" do
     assert_equal "User", Heya::Config.new.user_type
   end
@@ -11,23 +21,13 @@ class Heya::ConfigTest < ActiveSupport::TestCase
     assert_equal "ExpectedUser", config.user_type
   end
 
-  test "has default priority" do
-    assert_equal [], Heya::Config.new.priority
+  test "has default_options" do
+    assert_equal({}, Heya::Config.new.campaigns.default_options)
   end
 
-  test "assigns priority" do
+  test "assigns default_options" do
     config = Heya::Config.new
-    config.priority = ["Expected"]
-    assert_equal ["Expected"], config.priority
-  end
-
-  test "has default from" do
-    assert_nil Heya::Config.new.from
-  end
-
-  test "assigns from" do
-    config = Heya::Config.new
-    config.from = "expected@example.com"
-    assert_equal "expected@example.com", config.from
+    config.campaigns.default_options = {from: "expected@example.com"}
+    assert_equal({from: "expected@example.com"}, config.campaigns.default_options)
   end
 end

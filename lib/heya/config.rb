@@ -2,13 +2,14 @@ require "ostruct"
 
 module Heya
   class Config < OpenStruct
-    def initialize(**opts)
-      super({
+    def initialize
+      super(
         user_type: "User",
-        priority: [],
-        from: nil,
-        queue: "heya",
-      }.merge(opts))
+        campaigns: OpenStruct.new(
+          priority: [],
+          default_options: {},
+        ),
+      )
     end
   end
 end

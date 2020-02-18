@@ -17,7 +17,7 @@ module Heya
 
       def deliver_later
         StepActionJob
-          .set(queue: step.queue || Heya.config.queue)
+          .set(queue: step.queue)
           .perform_later(step.campaign.class.name, user, step)
       end
     end

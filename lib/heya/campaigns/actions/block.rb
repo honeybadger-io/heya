@@ -13,7 +13,7 @@ module Heya
         end
 
         def build
-          block = step.params.fetch(:block)
+          block = step.params.fetch("block")
           Execution.new(user: user, step: step, &block)
         end
       end
