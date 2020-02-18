@@ -92,6 +92,9 @@ Heya.configure do |config|
   # The name of the model you want to use with Heya.
   config.user_type = "User"
 
+  # The name of the default ActiveJob queue to use when sending campaigns.
+  config.queue = "heya"
+
   # The default from address to use when sending campaigns.
   config.from = "user@example.com"
 
@@ -166,6 +169,7 @@ The `wait` option tells Heya how long to wait before sending each message (the d
 | `wait`  | `2.days` | The duration of time to wait before sending each message |
 | `segment`  | `nil` | The segment who should receive the message |
 | `action` | `Heya::Actions::Email` | The action to perform (usually sending an email) |
+| `queue` | `"heya"` | The ActiveJob queue |
 
 Heya uses the following additional options to build the message itself:
 
@@ -179,6 +183,7 @@ You can change the default options using the `default` method at the top of the 
 ```ruby
 class OnboardingCampaign < Heya::Campaigns::Base
   default wait: 1.day,
+    queue: "onboarding",
     from: "support@example.com"
 
   # Will still be sent after one day from the

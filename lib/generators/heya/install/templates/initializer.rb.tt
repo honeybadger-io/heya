@@ -5,6 +5,9 @@ Heya.configure do |config|
   # The default from address to use when sending campaigns.
   config.from = "from@example.com"
 
+  # The name of the default ActiveJob queue to use when sending campaigns.
+  config.queue = "heya"
+
   # Campaign priority. When a user is added to multiple campaigns, they are
   # sent in this order. Campaigns are sent in the order that the users were
   # added if no priority is configured.
