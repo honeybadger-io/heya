@@ -21,6 +21,8 @@ end
 
 gem "minitest-ci", group: :test
 
+gem 'simplecov', require: false, group: :test
+
 gem "timecop", "~> 0.9.1"
 
 gem "pry", "~> 0.12.2"
