@@ -123,7 +123,7 @@ module Heya
 
           if block_given?
             options[:params][:block] = block
-            options[:action] = Actions::Block
+            options[:action] ||= Actions::Block
           end
 
           step = Step.new(__defaults.merge(options))
