@@ -126,7 +126,13 @@ This will do three things:
 Here's the campaign that the above command generates:
 
 ```ruby
-class OnboardingCampaign < Heya::Campaigns::Base
+# app/campaigns/application_campaign.rb
+class ApplicationCampaign < Heya::Campaigns::Base
+  default from: "from@example.com"
+end
+
+# app/campaigns/onboarding_campaign.rb
+class OnboardingCampaign < ApplicationCampaign
   step :first,
     subject: "First subject"
 
@@ -153,7 +159,7 @@ Messages are defined inside Heya campaigns using the `step` method. When you add
 Here's an example of defining a message inside a campaign:
 
 ```ruby
-class OnboardingCampaign < Heya::Campaigns::Base
+class OnboardingCampaign < ApplicationCampaign
   step :welcome, wait: 1.day,
     subject: "Welcome to my app!"
 end
@@ -180,7 +186,7 @@ Heya uses the following additional options to build the message itself:
 You can change the default options using the `default` method at the top of the campaign. Heya applies default options to each step which doesn't supply its own:
 
 ```ruby
-class OnboardingCampaign < Heya::Campaigns::Base
+class OnboardingCampaign < ApplicationCampaign
   default wait: 1.day,
     queue: "onboarding",
     from: "support@example.com"
@@ -198,7 +204,7 @@ You can override the default step behavior to perform custom actions by passing
 a block to the `step` method:
 
 ```ruby
-class OnboardingCampaign < Heya::Campaigns::Base
+class OnboardingCampaign < ApplicationCampaign
   step :first_email,
     subject: "You're about to receive a txt"
 
@@ -280,7 +286,7 @@ end
 Heya can send individual messages to certain users using the `segment` option. The following campaign will send the message to inactive users--active users will be skipped:
 
 ```ruby
-class ActivationCampaign < Heya::Campaigns::Base
+class ActivationCampaign < ApplicationCampaign
   step :activate, segment: ->(user) { user.inactive? }
 end
 ```
@@ -288,7 +294,7 @@ end
 When you're checking the value of a single method on the user, the segment can be simplified to the symbol version:
 
 ```ruby
-class ActivationCampaign < Heya::Campaigns::Base
+class ActivationCampaign < ApplicationCampaign
   step :activate, segment: :inactive?
 end
 ```
@@ -297,7 +303,7 @@ end
 You can also narrow entire campaigns to certain users using the `segment` method. For instance, if you have a campaign with a specific goal such as performing an action in your app, then you can send the campaign only to the users who haven't performed the action:
 
 ```ruby
-class UpgradeCampaign < Heya::Campaigns::Base
+class UpgradeCampaign < ApplicationCampaign
   segment { |u| !u.upgraded? }
 
   step :one
@@ -311,7 +317,7 @@ If they upgrade half way through the campaign, Heya will stop sending messages a
 Likewise, you can require that users meet conditions to continue receiving a campaign. Here's a campaign which sends messages only to trial users--non-trial users will be removed from the campaign:
 
 ```ruby
-class TrialCampaign < Heya::Campaigns::Base
+class TrialCampaign < ApplicationCampaign
   segment :trial?
 
   step :one
@@ -321,13 +327,13 @@ end
 ```
 
 #### Segmenting all campaigns
-Finally, there is a *global* option to segment users called `default_segment`. **All users must match the default segment to receive messages from Heya**.
-
-The default segment must be declared once, on your `User` model. For example, you can use `default_segment` to allow users to opt out of emails:
+Heya campaigns inherit options form parent campaigns. For example, to make sure
+unsubscribed users never receive an email from Heya, create a `segment` in the
+`ApplicationCampaign`, and then have all other campaigns inherit from it:
 
 ```ruby
-class User < ApplicationRecord
-  default_segment :subscribed_to_emails?
+class ApplicationCampaign < Heya::Campaigns::Base
+  segment :subscribed?
 end
 ```
 

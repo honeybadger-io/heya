@@ -137,40 +137,40 @@ module Heya
         assert_mock action
       end
 
-      test "it skips actions that don't match default segments" do
+      test "it skips actions that don't match parent segments" do
         action = Minitest::Mock.new
-        class TestContact < Contact
-          default_segment { |u| u.traits["foo"] == "bar" }
-        end
-        campaign = create_test_campaign {
+        parent = create_test_campaign {
+          segment { |u| u.traits["foo"] == "bar" }
+        }
+        child = create_test_campaign(name: "ChildCampaign", parent: parent) {
           default wait: 0, action: action
-          user_type TestContact
+          user_type "Contact"
           step :one
         }
-        contact = contacts(:one).becomes(TestContact)
-        campaign.add(contact, send_now: false)
+        contact = contacts(:one)
+        child.add(contact, send_now: false)
 
         run_once
         assert_mock action
       end
 
-      test "it processes actions that match default segments" do
+      test "it processes actions that match parent segments" do
         action = Minitest::Mock.new
-        class TestContact < Contact
-          default_segment { |u| u.traits["foo"] == "bar" }
-        end
-        campaign = create_test_campaign {
+        parent = create_test_campaign {
+          segment { |u| u.traits["foo"] == "bar" }
+        }
+        child = create_test_campaign(name: "ChildCampaign", parent: parent) {
           default wait: 0, action: action
-          user_type TestContact
+          user_type "Contact"
           step :one
         }
-        contact = contacts(:one).becomes(TestContact)
+        contact = contacts(:one)
         contact.update_attribute(:traits, {foo: "bar"})
-        campaign.add(contact, send_now: false)
+        child.add(contact, send_now: false)
 
         action.expect(:new, NullMail, [{
           user: contact,
-          step: campaign.steps.first,
+          step: child.steps.first,
         }])
 
         run_once
@@ -262,17 +262,17 @@ module Heya
 
       test "it processes multiple campaign actions in order" do
         action = Minitest::Mock.new
-        campaign1 = create_test_campaign("TestCampaign1") {
+        campaign1 = create_test_campaign(name: "TestCampaign1") {
           default action: action
           user_type "Contact"
           step :one, wait: 5.days
         }
-        campaign2 = create_test_campaign("TestCampaign2") {
+        campaign2 = create_test_campaign(name: "TestCampaign2") {
           default action: action
           user_type "Contact"
           step :one, wait: 3.days
         }
-        campaign3 = create_test_campaign("TestCampaign3") {
+        campaign3 = create_test_campaign(name: "TestCampaign3") {
           default action: action
           user_type "Contact"
           step :one, wait: 2.days
@@ -333,20 +333,20 @@ module Heya
 
       test "it processes concurrent campaign actions concurrently" do
         action = Minitest::Mock.new
-        campaign1 = create_test_campaign("TestCampaign1") {
+        campaign1 = create_test_campaign(name: "TestCampaign1") {
           default action: action
           user_type "Contact"
           step :one, wait: 5.days
           step :two, wait: 2.days
           step :three, wait: 1.days
         }
-        campaign2 = create_test_campaign("TestCampaign2") {
+        campaign2 = create_test_campaign(name: "TestCampaign2") {
           default action: action
           user_type "Contact"
           step :one, wait: 3.days
           step :two, wait: 3.days
         }
-        campaign3 = create_test_campaign("TestCampaign3") {
+        campaign3 = create_test_campaign(name: "TestCampaign3") {
           default action: action
           user_type "Contact"
           step :one, wait: 2.days
