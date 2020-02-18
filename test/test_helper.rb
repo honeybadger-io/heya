@@ -25,6 +25,31 @@ class NullMail
   end
 end
 
+module Heya::Campaigns
+  class TestAction < Action
+    class Result
+      def initialize(mock, *args)
+        @mock, @args = mock, args
+      end
+
+      def deliver
+        @mock&.call(*@args)
+      end
+    end
+
+    def self.mock(mock)
+      @@mock = mock
+      yield
+    ensure
+      @@mock = nil
+    end
+
+    def build
+      Result.new(@@mock, user, step)
+    end
+  end
+end
+
 class ActiveSupport::TestCase
   def create_test_campaign(name = "TestCampaign", &block)
     klass = Class.new(Heya::Campaigns::Base) {

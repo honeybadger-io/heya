@@ -6,7 +6,7 @@ module Heya
       rescue_from StandardError, with: :handle_exception_with_campaign_class
 
       def perform(_campaign, user, step)
-        step.action.new(user, step).deliver_now
+        step.action.new(user: user, step: step).deliver_now
       end
 
       private
@@ -15,7 +15,7 @@ module Heya
       # another argument (like a Global ID reference) raised
       # DeserializationError.
       def campaign_class
-        if (campaign = Array(@serialized_arguments).first || Array(arguments).first)
+        if (campaign = (arguments_serialized? && Array(@serialized_arguments).first) || Array(arguments).first)
           campaign.constantize
         end
       end

@@ -15,6 +15,10 @@ module Heya
         instance
       end
 
+      def self.handle_exception(exception)
+        raise exception
+      end
+
       def initialize
         self.steps = []
       end
@@ -62,10 +66,6 @@ module Heya
 
       def user_class
         @user_class ||= self.class.user_type.constantize
-      end
-
-      def handle_exception(exception)
-        raise exception
       end
 
       attr_accessor :steps
