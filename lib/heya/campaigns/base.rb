@@ -101,8 +101,8 @@ module Heya
           __user_type || Heya.config.user_type
         end
 
-        def default(**props)
-          self.__defaults = __defaults.merge(props).freeze
+        def default(**params)
+          self.__defaults = __defaults.merge(params).freeze
         end
 
         def segment(&block)
@@ -113,16 +113,16 @@ module Heya
           __segment
         end
 
-        def step(name, **props, &block)
-          options = props.select { |k, _| __defaults.key?(k) }
-          options[:properties] = props.reject { |k, _| __defaults.key?(k) }.stringify_keys
+        def step(name, **params, &block)
+          options = params.select { |k, _| __defaults.key?(k) }
+          options[:params] = params.reject { |k, _| __defaults.key?(k) }.stringify_keys
           options[:id] = "#{self.name}/#{name}"
           options[:name] = name.to_s
           options[:position] = steps.size
           options[:campaign] = instance
 
           if block_given?
-            options[:properties][:block] = block
+            options[:params][:block] = block
             options[:action] = Actions::Block
           end
 

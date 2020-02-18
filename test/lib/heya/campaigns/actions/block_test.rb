@@ -7,7 +7,7 @@ module Heya
         test "block actions can be called with one argument" do
           mock = MiniTest::Mock.new
           block = proc { |u| mock.call(u) }
-          step = OpenStruct.new(properties: {block: block})
+          step = OpenStruct.new(params: {block: block})
           action = Block.new(user: :user, step: step)
 
           mock.expect(:call, nil, [:user])
@@ -18,7 +18,7 @@ module Heya
         test "block actions can be called with no arguments" do
           mock = MiniTest::Mock.new
           block = proc { mock.call }
-          step = OpenStruct.new(properties: {block: block})
+          step = OpenStruct.new(params: {block: block})
           action = Block.new(user: :user, step: step)
 
           mock.expect(:call, nil, [])
