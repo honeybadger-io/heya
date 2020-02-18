@@ -1,4 +1,5 @@
 # Heya 👋
+![Test](https://github.com/honeybadger-io/heya/workflows/Test/badge.svg)
 
 Heya is a customer communication and automation framework for Ruby on Rails. It's as robust as the hosted alternatives, without the integration and compliance nightmare.
 
