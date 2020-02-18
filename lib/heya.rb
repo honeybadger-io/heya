@@ -16,8 +16,12 @@ module Heya
   attr_accessor :campaigns
   self.campaigns = []
 
-  def register_campaign(subclass)
-    campaigns << subclass
+  def register_campaign(klass)
+    campaigns.push(klass)
+  end
+
+  def unregister_campaign(klass)
+    campaigns.delete(klass)
   end
 
   def configure

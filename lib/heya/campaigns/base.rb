@@ -6,24 +6,11 @@ module Heya
       include Singleton
       include GlobalID::Identification
 
-      def self.inherited(campaign)
-        Heya.register_campaign(campaign)
-        super
-      end
-
-      def self.find(_id)
-        instance
-      end
-
-      def self.handle_exception(exception)
-        raise exception
-      end
-
       def initialize
         self.steps = []
       end
 
-      delegate :name, :segment, to: :class
+      delegate :name, :__segments, to: :class
       alias id name
 
       # Returns String GlobalID.
@@ -32,7 +19,7 @@ module Heya
       end
 
       def add(user, restart: false, concurrent: false, send_now: true)
-        return false unless Heya.in_segments?(user, user.class.__heya_default_segment, segment)
+        return false unless Heya.in_segments?(user, user.class.__heya_default_segment, *__segments)
 
         restart && CampaignReceipt
           .where(user: user, step_gid: steps.map(&:gid))
@@ -74,24 +61,36 @@ module Heya
 
       delegate :sanitize_sql_array, to: ActiveRecord::Base
 
+      class_attribute :__defaults, default: {
+        action: Actions::Email,
+        wait: 2.days,
+        segment: nil,
+        queue: nil,
+      }.freeze
+
+      class_attribute :__segments, default: [].freeze
+      class_attribute :__user_type, default: nil
+
       class << self
-        private
+        def inherited(campaign)
+          Heya.register_campaign(campaign)
+          Heya.unregister_campaign(campaign.superclass)
+          super
+        end
 
-        class_attribute :__defaults, :__segment, :__user_type
+        def find(_id)
+          instance
+        end
 
-        self.__defaults = {
-          action: Actions::Email,
-          wait: 2.days,
-          segment: nil,
-          queue: nil,
-        }.freeze
-
-        self.__segment = nil
-        self.__user_type = nil
-
-        public
+        def handle_exception(exception)
+          raise exception
+        end
 
         delegate :steps, :add, :remove, :users, :gid, :user_class, to: :instance
+
+        def default(**params)
+          self.__defaults = __defaults.merge(params).freeze
+        end
 
         def user_type(value = nil)
           if value.present?
@@ -101,16 +100,12 @@ module Heya
           __user_type || Heya.config.user_type
         end
 
-        def default(**params)
-          self.__defaults = __defaults.merge(params).freeze
-        end
-
-        def segment(&block)
+        def segment(arg = nil, &block)
           if block_given?
-            self.__segment = block
+            self.__segments = ([block] | __segments).freeze
+          elsif arg
+            self.__segments = ([arg] | __segments).freeze
           end
-
-          __segment
         end
 
         def step(name, **params, &block)

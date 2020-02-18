@@ -15,7 +15,7 @@ module Heya
       end
 
       def in_segment?(user)
-        Heya.in_segments?(user, user.class.__heya_default_segment, campaign.segment, segment)
+        Heya.in_segments?(user, user.class.__heya_default_segment, *campaign.__segments, segment)
       end
     end
   end

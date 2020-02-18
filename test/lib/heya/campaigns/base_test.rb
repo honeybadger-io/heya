@@ -20,26 +20,43 @@ module Heya
       end
 
       test "it allows subclasses to change defaults" do
-        campaign = Class.new(Base) {
-          default wait: 5.years
+        parent = Class.new(Base) {
+          default wait: 5.years,
+          from: nil
         }
 
-        assert_equal 5.years, campaign.__defaults[:wait]
-        assert_not_equal Base.__defaults, campaign.__defaults
-      end
-
-      test "it has class segment" do
-        assert_nil Base.segment
-      end
-
-      test "it allows subclasses to change segment" do
-        block = -> { where(id: 1) }
-        campaign = Class.new(Base) {
-          segment(&block)
+        child = Class.new(parent) {
+          default from: "expected"
         }
 
-        assert_equal block, campaign.segment
-        assert_not_equal Base.segment, campaign.segment
+        assert_not_equal Base.__defaults, parent.__defaults
+        assert_not_equal Base.__defaults, child.__defaults
+
+        assert_equal 5.years, parent.__defaults[:wait]
+        assert_nil parent.__defaults[:from]
+
+        assert_equal 5.years, child.__defaults[:wait]
+        assert_equal "expected", child.__defaults[:from]
+      end
+
+      test "it has class segments" do
+        assert_equal [], Base.__segments
+      end
+
+      test "it allows subclasses to change segments" do
+        block_one = -> { :one }
+        block_two = -> { :two }
+
+        parent = Class.new(Base) {
+          segment(&block_one)
+        }
+
+        child = Class.new(parent) {
+          segment(&block_two)
+        }
+
+        assert_equal [block_one], parent.__segments
+        assert_equal [block_two, block_one], child.__segments
       end
 
       test "it sets default user_type" do
@@ -53,6 +70,15 @@ module Heya
 
         assert_equal "Expected", campaign.user_type
         assert_not_equal Base.user_type, campaign.user_type
+      end
+
+      test "it allows subclasses to inherit user_type" do
+        parent = Class.new(Base) {
+          user_type "Expected"
+        }
+        child = Class.new(parent) {}
+
+        assert_equal "Expected", child.user_type
       end
 
       test "it adds and removes users from campaign" do
