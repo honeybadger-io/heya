@@ -327,7 +327,7 @@ end
 ```
 
 #### Segmenting all campaigns
-Heya campaigns inherit options form parent campaigns. For example, to make sure
+Heya campaigns inherit options from parent campaigns. For example, to make sure
 unsubscribed users never receive an email from Heya, create a `segment` in the
 `ApplicationCampaign`, and then have all other campaigns inherit from it:
 
