@@ -103,6 +103,16 @@ module Heya
             .where(user: user, concurrent: false)
         end
       }
+
+      # Given a campaign, {Queries::OrphanedCampaignMemberships} returns the
+      # campaign memberships which belong to users who no longer exist in the
+      # database.
+      OrphanedCampaignMemberships = ->(campaign) {
+        CampaignMembership
+          .where(campaign_gid: campaign.gid)
+          .where(user_type: campaign.user_class.base_class.name)
+          .where.not(user_id: campaign.users.select("id"))
+      }
     end
   end
 end

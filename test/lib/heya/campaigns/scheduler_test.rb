@@ -408,6 +408,42 @@ module Heya
         run_once
         assert_mock action
       end
+
+      test "it deletes orphaned campaign memberships" do
+        action = Minitest::Mock.new
+        campaign = create_test_campaign {
+          default action: action
+          user_type "Contact"
+          step :one, wait: 1.day
+          step :two, wait: 3.days
+          step :three, wait: 2.days
+        }
+        contact1 = contacts(:one)
+        contact2 = contacts(:two)
+        campaign.add(contact1, send_now: false)
+        campaign.add(contact2, send_now: false)
+        membership = CampaignMembership.where(
+          campaign_gid: campaign.gid,
+          user_type: "Contact",
+        )
+
+        run_twice
+
+        assert membership.where(user_id: contact1.id).exists?
+        assert membership.where(user_id: contact2.id).exists?
+
+        contact1.destroy
+
+        assert membership.where(user_id: contact1.id).exists?
+        assert membership.where(user_id: contact2.id).exists?
+
+        run_once
+
+        refute membership.where(user_id: contact1.id).exists?
+        assert membership.where(user_id: contact2.id).exists?
+
+        assert_mock action
+      end
     end
   end
 end
