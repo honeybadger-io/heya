@@ -8,7 +8,6 @@ require "heya/campaigns/queries"
 require "heya/campaigns/scheduler"
 require "heya/campaigns/step"
 require "heya/campaigns/step_action_job"
-require "heya/concerns/models/user"
 
 module Heya
   extend self

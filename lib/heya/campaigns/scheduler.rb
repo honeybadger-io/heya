@@ -11,6 +11,8 @@ module Heya
     class Scheduler
       def run
         Heya.campaigns.each do |campaign|
+          Queries::OrphanedCampaignMemberships.call(campaign).delete_all
+
           campaign.steps.each do |step|
             Queries::UsersForStep.call(campaign, step).find_each do |user|
               self.class.process(campaign, step, user)
@@ -21,7 +23,7 @@ module Heya
             CampaignMembership.where(
               user: Queries::UsersCompletedStep.call(campaign, last_step),
               campaign_gid: campaign.gid,
-            ).destroy_all
+            ).delete_all
           end
         end
       end
