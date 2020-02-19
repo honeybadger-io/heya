@@ -56,8 +56,8 @@ module Heya::Campaigns
 end
 
 class ActiveSupport::TestCase
-  def create_test_campaign(name = "TestCampaign", &block)
-    klass = Class.new(Heya::Campaigns::Base) {
+  def create_test_campaign(name: "TestCampaign", parent: Heya::Campaigns::Base, &block)
+    klass = Class.new(parent) {
       class << self
         attr_accessor :name
       end

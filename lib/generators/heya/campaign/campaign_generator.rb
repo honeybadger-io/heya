@@ -4,6 +4,7 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
   argument :steps, type: :array, default: []
 
   def copy_campaign_template
+    template "application_campaign.rb", "app/campaigns/application_campaign.rb"
     template "campaign.rb", "app/campaigns/#{file_name.underscore}_campaign.rb"
   end
 

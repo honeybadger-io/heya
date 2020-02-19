@@ -154,22 +154,6 @@ module Heya
         assert_mock action
       end
 
-      test "#add requires default_segment to match" do
-        class TestContact < Contact
-          default_segment { |u| u.traits["foo"] == "bar" }
-        end
-        campaign = create_test_campaign {
-          user_type TestContact
-        }
-        contact = contacts(:one).becomes(TestContact)
-
-        refute campaign.add(contact)
-
-        contact.update_attribute(:traits, {foo: "bar"})
-
-        assert campaign.add(contact)
-      end
-
       test "#add requires campaign segment to match" do
         campaign = create_test_campaign {
           user_type "Contact"
