@@ -7,12 +7,14 @@ module Heya
       step = params.fetch(:step)
       campaign = step.campaign
       from = step.params.fetch("from")
+      reply_to = step.params.fetch("reply_to", nil)
       subject = step.params.fetch("subject")
 
       instance_variable_set(:"@#{user.model_name.element}", user)
 
       mail(
         from: from,
+        reply_to: reply_to,
         to: user.email,
         subject: subject,
         template_path: "heya/campaign_mailer/#{campaign.name.underscore}",
