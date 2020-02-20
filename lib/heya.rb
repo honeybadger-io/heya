@@ -16,7 +16,7 @@ module Heya
   self.campaigns = []
 
   def register_campaign(klass)
-    campaigns.push(klass)
+    campaigns.push(klass) unless campaigns.include?(klass)
   end
 
   def unregister_campaign(klass)
