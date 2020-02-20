@@ -1,8 +1,12 @@
+require "active_support/descendants_tracker"
+
 module Heya
   module Campaigns
     # {Campaigns::Base} provides a Ruby DSL for building campaign sequences.
     # Multiple actions are supported; the default is email.
     class Base
+      extend ActiveSupport::DescendantsTracker
+
       include Singleton
       include GlobalID::Identification
 
