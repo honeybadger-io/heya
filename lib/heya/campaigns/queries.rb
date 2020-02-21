@@ -50,10 +50,10 @@ module Heya
           )
         }.join(", ")
 
-        priority = Heya.config.campaigns.priority.reverse.map { |c| c.is_a?(String) ? c.constantize : c }
+        priority = Heya.config.campaigns.priority.reverse.map { |c| c.is_a?(String) ? c : c.name }
         campaigns_values = Heya.campaigns.map { |c|
           ActiveRecord::Base.sanitize_sql_array(
-            ["(?, ?)", c.gid, priority.index(c) || -1]
+            ["(?, ?)", c.gid, priority.index(c.name) || -1]
           )
         }.join(", ")
 
