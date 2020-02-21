@@ -3,7 +3,7 @@
 # Configure Rails Environment
 ENV["RAILS_ENV"] = "test"
 
-require 'simplecov'
+require "simplecov"
 SimpleCov.start
 
 require_relative "../test/dummy/config/environment"

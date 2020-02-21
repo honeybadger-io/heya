@@ -123,9 +123,9 @@ module Heya
 
           opts =
             STEP_ATTRS
-            .merge(Heya.config.campaigns.default_options)
-            .merge(__defaults)
-            .merge(opts)
+              .merge(Heya.config.campaigns.default_options)
+              .merge(__defaults)
+              .merge(opts)
 
           attrs = opts.select { |k, _| STEP_ATTRS.key?(k) }
           attrs[:params] = opts.reject { |k, _| STEP_ATTRS.key?(k) }.stringify_keys

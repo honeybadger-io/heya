@@ -24,7 +24,7 @@ module Heya
       test "it allows subclasses to change defaults" do
         parent = Class.new(Base) {
           default wait: 5.years,
-          from: nil
+                  from: nil
         }
 
         child = Class.new(parent) {

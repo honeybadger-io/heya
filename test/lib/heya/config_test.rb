@@ -40,7 +40,7 @@ class Heya::ConfigTest < ActiveSupport::TestCase
       Heya.register_campaign(klass)
       Heya.register_campaign(klass)
 
-      assert_equal [klass], Heya.campaigns.select {|k| k == klass }
+      assert_equal [klass], Heya.campaigns.select { |k| k == klass }
     ensure
       Heya.campaigns.delete(klass)
     end
