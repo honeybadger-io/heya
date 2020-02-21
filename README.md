@@ -101,9 +101,9 @@ Heya.configure do |config|
   # sent in this order. Campaigns are sent in the order that the users were
   # added if no priority is configured.
   config.campaigns.priority = [
-    FirstCampaign
-    SecondCampaign
-    ThirdCampaign
+    "FirstCampaign",
+    "SecondCampaign",
+    "ThirdCampaign"
   ]
 end
 ```

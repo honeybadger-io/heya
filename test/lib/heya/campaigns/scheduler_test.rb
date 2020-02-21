@@ -280,15 +280,15 @@ module Heya
           step :one, wait: 2.days
         }
         contact = contacts(:one)
-        campaign1.add(contact, send_now: false)
-        campaign2.add(contact, send_now: false)
         campaign3.add(contact, send_now: false)
+        campaign2.add(contact, send_now: false)
+        campaign1.add(contact, send_now: false)
 
         Heya.configure do |config|
-          config.priority = [
-            campaign1,
-            campaign2,
-            campaign3,
+          config.campaigns.priority = [
+            "TestCampaign1",
+            "TestCampaign2",
+            "TestCampaign3",
           ]
         end
 

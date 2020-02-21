@@ -59,6 +59,7 @@ end
 
 class ActiveSupport::TestCase
   def create_test_campaign(name: "TestCampaign", parent: Heya::Campaigns::Base, &block)
+    Object.send(:remove_const, name.to_sym) if Object.const_defined?(name.to_sym)
     klass = Class.new(parent) {
       class << self
         attr_accessor :name
@@ -66,6 +67,7 @@ class ActiveSupport::TestCase
     }
     klass.name = name
     klass.instance_exec(&block)
+    Object.const_set(name.to_sym, klass)
     klass
   end
 end
