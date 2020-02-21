@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Heya::InstallGenerator < Rails::Generators::Base
   include Rails::Generators::Migration
 

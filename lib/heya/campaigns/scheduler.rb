@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Heya
   module Campaigns
     # {Campaigns::Scheduler} schedules campaign jobs to run for each campaign.

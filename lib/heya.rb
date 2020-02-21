@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "heya/engine"
 require "heya/config"
 require "heya/campaigns/action"

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :heya do
   desc "Send campaign emails"
   task scheduler: :environment do

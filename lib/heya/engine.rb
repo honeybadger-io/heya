@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Heya
   class Engine < ::Rails::Engine
     isolate_namespace Heya
