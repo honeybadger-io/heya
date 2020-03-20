@@ -403,20 +403,8 @@ Yep. By default, Heya sends campaigns ain order of `priority`. Use the `concurre
 </details>
 
 ## Roadmap
-For the time being, we could use [ahoy](https://github.com/ankane/ahoy) for web analytics, event tracking, email analytics, and subscribes/unsubscribes. I'd like to take advantage of the existing Rails ecosystem as much as possible--i.e., let's not reinvent the wheel unless we have a good reason to do so.
-
-### MVP (0.0.x)
-We need the following features to replace Intercom:
-
-- [ ] Campaigns
-- [ ] Broadcasts
-- [ ] Segments (or at least some way to send broadcasts to groups of users)
-
-See [here](https://github.com/honeybadger-io/heya/projects/1) for current MVP
-status.
-
-### Version 0.1
-[TBD](https://github.com/honeybadger-io/heya/issues?q=is%3Aopen+is%3Aissue+label%3Aidea)
+See [here](https://github.com/honeybadger-io/heya/projects/1) for things we're
+considering adding to Heya.
 
 ## Contributing
 1. Fork it.
