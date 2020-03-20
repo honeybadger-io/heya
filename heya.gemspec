@@ -11,17 +11,8 @@ Gem::Specification.new do |spec|
   spec.email = ["josh@honeybadger.io"]
   spec.homepage = "https://github.com/honeybadger-io/heya"
   spec.summary = "Heya 👋"
-  spec.description = "Heya 👋"
+  spec.description = "Heya is a customer communication and automation framework for Ruby on Rails. It's as robust as the hosted alternatives, without the integration and compliance nightmare."
   spec.license = "Prosperity Public License"
-
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  if spec.respond_to?(:metadata)
-    spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
-  else
-    raise "RubyGems 2.0 or newer is required to protect against " \
-      "public gem pushes."
-  end
 
   spec.files = Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.md", "CHANGELOG.md"]
 
