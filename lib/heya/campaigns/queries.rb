@@ -62,14 +62,14 @@ module Heya
           .where.not(id: receipt_query)
           .where(NEXT_STEP_SUBQUERY.gsub(":steps_values", steps_values), {
             campaign_gid: campaign.gid,
-            step_gid: step.gid,
+            step_gid: step.gid
           })
           .merge(
             users
               .where("heya_campaign_memberships.concurrent = ?", true)
               .or(
                 users.where(ACTIVE_CAMPAIGN_SUBQUERY.gsub(":campaigns_values", campaigns_values), {
-                  campaign_gid: campaign.gid,
+                  campaign_gid: campaign.gid
                 })
               )
           )

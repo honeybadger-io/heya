@@ -24,7 +24,7 @@ module Heya
           if (last_step = campaign.steps.last)
             CampaignMembership.where(
               user: Queries::UsersCompletedStep.call(campaign, last_step),
-              campaign_gid: campaign.gid,
+              campaign_gid: campaign.gid
             ).delete_all
           end
         end

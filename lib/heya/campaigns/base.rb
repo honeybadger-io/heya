@@ -52,7 +52,7 @@ module Heya
             sanitize_sql_array([
               "inner join heya_campaign_memberships on heya_campaign_memberships.user_type = ? and heya_campaign_memberships.user_id = #{base_class.table_name}.id and heya_campaign_memberships.campaign_gid = ?",
               base_class.name,
-              gid,
+              gid
             ])
           ).all
       end
@@ -75,7 +75,7 @@ module Heya
         action: Actions::Email,
         wait: 2.days,
         segment: nil,
-        queue: "heya",
+        queue: "heya"
       }.freeze
 
       class << self

@@ -117,7 +117,7 @@ module Heya
 
         action.expect(:new, NullMail, [{
           user: contact,
-          step: campaign.steps.first,
+          step: campaign.steps.first
         }])
 
         campaign.add(contact)

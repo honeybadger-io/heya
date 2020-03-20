@@ -9,7 +9,7 @@ module Heya
         user_type: "User",
         campaigns: OpenStruct.new(
           priority: [],
-          default_options: {},
+          default_options: {}
         ),
       )
     end
