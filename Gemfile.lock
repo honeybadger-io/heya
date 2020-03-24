@@ -96,7 +96,7 @@ GEM
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
     parallel (1.19.1)
-    parser (2.7.0.4)
+    parser (2.7.0.5)
       ast (~> 2.4.0)
     pg (1.2.3)
     pry (0.13.0)
@@ -156,7 +156,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    standard (0.2.1)
+    standard (0.2.2)
       rubocop (~> 0.79.0)
       rubocop-performance (~> 1.5.1)
     thor (1.0.1)
@@ -182,7 +182,7 @@ DEPENDENCIES
   pry (~> 0.13.0)
   pry-rails (~> 0.3.9)
   simplecov
-  standard (~> 0.2.1)
+  standard (~> 0.2.2)
   timecop (~> 0.9.1)
   yard (~> 0.9.24)
 
