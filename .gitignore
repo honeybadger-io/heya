@@ -11,3 +11,5 @@ doc/
 test/reports/
 gemfiles/*.lock
 coverage/
+license_key
+*.heya-license
