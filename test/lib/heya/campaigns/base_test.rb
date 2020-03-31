@@ -5,6 +5,9 @@ require "test_helper"
 module Heya
   module Campaigns
     class BaseTest < ActiveSupport::TestCase
+      TestError = Class.new(StandardError)
+      ExpectedError = Class.new(StandardError)
+
       def setup
         Heya.campaigns = []
       end
@@ -225,6 +228,30 @@ module Heya
         campaign.expected_name(user).deliver
 
         assert_mock mock
+      end
+
+      test "#handle_exception handles exceptions with rescuable" do
+        campaign = Class.new(Base) {
+          default wait: 5.years
+
+          rescue_from TestError do
+            raise ExpectedError.new("expected test error")
+          end
+        }
+
+        assert_raises(ExpectedError) do
+          campaign.handle_exception(TestError.new("unexpected test error"))
+        end
+      end
+
+      test "#handle_exception raises unhandled exceptions" do
+        campaign = Class.new(Base) {
+          default wait: 5.years
+        }
+
+        assert_raises(ExpectedError) do
+          campaign.handle_exception(ExpectedError.new("expected test error"))
+        end
       end
     end
   end

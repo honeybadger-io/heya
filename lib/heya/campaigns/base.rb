@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "active_support/descendants_tracker"
+require "active_support/rescuable"
 
 module Heya
   module Campaigns
@@ -11,6 +12,7 @@ module Heya
 
       include Singleton
       include GlobalID::Identification
+      include ActiveSupport::Rescuable
 
       def initialize
         self.steps = []
@@ -90,7 +92,7 @@ module Heya
         end
 
         def handle_exception(exception)
-          raise exception
+          rescue_with_handler(exception) || raise(exception)
         end
 
         delegate :steps, :add, :remove, :users, :gid, :user_class, to: :instance
