@@ -63,6 +63,10 @@ module Heya
         @user_class ||= self.class.user_type.constantize
       end
 
+      def handle_exception(exception)
+        rescue_with_handler(exception) || raise(exception)
+      end
+
       attr_accessor :steps
 
       private
@@ -91,11 +95,7 @@ module Heya
           instance
         end
 
-        def handle_exception(exception)
-          rescue_with_handler(exception) || raise(exception)
-        end
-
-        delegate :steps, :add, :remove, :users, :gid, :user_class, to: :instance
+        delegate :steps, :add, :remove, :users, :gid, :user_class, :handle_exception, to: :instance
 
         def default(**params)
           self.__defaults = __defaults.merge(params).freeze
