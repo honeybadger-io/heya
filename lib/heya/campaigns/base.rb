@@ -29,11 +29,21 @@ module Heya
       def add(user, restart: false, concurrent: false, send_now: true)
         return false unless Heya.in_segments?(user, *__segments)
 
-        restart && CampaignReceipt
-          .where(user: user, step_gid: steps.map(&:gid))
-          .delete_all
+        membership = CampaignMembership.where(user: user, campaign_gid: gid)
+        if membership.exists?
+          return false unless restart
+          membership.delete_all
+        end
 
-        CampaignMembership.where(user: user, campaign_gid: gid, concurrent: concurrent).first_or_create!
+        if restart
+          CampaignReceipt
+            .where(user: user, step_gid: steps.map(&:gid))
+            .delete_all
+        end
+
+        membership.create! do |m|
+          m.concurrent = concurrent
+        end
 
         if send_now && (step = steps.first) && step.wait <= 0
           Scheduler.process(self, step, user)

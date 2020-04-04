@@ -127,7 +127,7 @@ module Heya
         assert_mock action
       end
 
-      test "#add sends first step in campaign with send_now: false" do
+      test "#add skips first step in campaign with send_now: false" do
         action = Minitest::Mock.new
         campaign = Class.new(Base) {
           default action: action
@@ -157,6 +157,26 @@ module Heya
 
         campaign.add(contact)
         assert_mock action
+      end
+
+      test "#add skips user when already in campaign" do
+        campaign = create_test_campaign {
+          user_type "Contact"
+        }
+        contact = contacts(:one)
+
+        assert campaign.add(contact, send_now: false)
+        refute campaign.add(contact)
+      end
+
+      test "#add restarts campaign when already in campaign and restart is true" do
+        campaign = create_test_campaign {
+          user_type "Contact"
+        }
+        contact = contacts(:one)
+
+        assert campaign.add(contact, send_now: false)
+        assert campaign.add(contact, restart: true)
       end
 
       test "#add requires campaign segment to match" do
