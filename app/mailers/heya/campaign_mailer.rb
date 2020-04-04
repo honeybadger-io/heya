@@ -21,5 +21,17 @@ module Heya
         template_name: step.name.underscore
       )
     end
+
+    protected
+
+    def _prefixes
+      @_prefixes_with_campaign_path ||= begin
+        if params.is_a?(Hash) && (campaign_name = params[:step]&.campaign&.name&.underscore)
+          super | ["heya/campaign_mailer/#{campaign_name}"]
+        else
+          super
+        end
+      end
+    end
   end
 end
