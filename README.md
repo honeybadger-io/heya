@@ -3,29 +3,7 @@
 [![Gem Version](https://badge.fury.io/rb/heya.svg)](https://badge.fury.io/rb/heya)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a6416e63ffc426715857/maintainability)](https://codeclimate.com/github/honeybadger-io/heya/maintainability)
 
-Heya is a customer communication and automation framework for Ruby on Rails. It's as robust as the hosted alternatives, without the integration and compliance nightmare.
-
-## Why Heya?
-Imagine onboarding and engaging your users with full access to their data, without maintaining a single 3rd-party integration or stressing over compliance. That's Heya: a new way to email your users.
-
-Heya lives inside your Rails app, giving you full access to your customer data with the power of Ruby and Rails for building automated email campaigns.
-
-If you've ever used 3rd-party email or marketing platforms, you've felt the pain of integrating, syncing customer data, and maintaining complex logic and rules--all of which is unnecessary in Heya.
-
-Email automation becomes startlingly simple when your application framework *is* your automation tool.
-
-## Who is Heya for?
-- SaaS developers who are marketers at heart
-- SaaS marketers who are developers at heart
-- Development and marketing teams who work closely together
-
-## Stuff we believe
-- You should avoid duplicating customer data
-- Segments should live as close to home as possible
-  - So should automation
-  - So should content
-- Code is for everyone, not just developers
-- Heya is the best way to engage your users
+Heya 👋 is a campaign mailer for Rails. Think of it like ActionMailer, but for timed email sequences. It can also perform other actions like sending a text message.
 
 ## Getting started
 Getting started with Heya is easy:
