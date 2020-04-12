@@ -63,6 +63,7 @@ module Heya
         Your Heya license is invalid.
         If you need support, please visit https://www.heya.email
       NOTICE
+      return
     end
 
     if license.expired?
@@ -70,7 +71,7 @@ module Heya
         Your Heya license has expired.
         To update your license, please visit https://www.heya.email
       NOTICE
-      nil
+      return
     end
 
     if (max_user_count = license.restrictions[:user_count]&.to_i)
@@ -81,6 +82,7 @@ module Heya
           To upgrade your license, please visit https://www.heya.email
         NOTICE
       end
+      return # rubocop:disable Style/RedundantReturn
     end
 
     # Valid license
