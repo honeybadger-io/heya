@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2020-04-14
+### Added
+- Added licensing.
+- Added `rescue_from` (rescuable) in campaigns.
+
 ## [0.1.0] - 2020-03-19
 ### Added
 - Initial release. 👋

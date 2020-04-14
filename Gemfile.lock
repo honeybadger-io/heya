@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    heya (0.1.0)
+    heya (0.2.0)
       rails (>= 5.2.3, < 6.1.0)
 
 GEM
@@ -78,7 +78,7 @@ GEM
     i18n (1.8.2)
       concurrent-ruby (~> 1.0)
     jaro_winkler (1.5.4)
-    loofah (2.4.0)
+    loofah (2.5.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -164,7 +164,7 @@ GEM
     thor (1.0.1)
     thread_safe (0.3.6)
     timecop (0.9.1)
-    tzinfo (1.2.6)
+    tzinfo (1.2.7)
       thread_safe (~> 0.1)
     unicode-display_width (1.6.1)
     websocket-driver (0.7.1)
