@@ -25,6 +25,6 @@ gem "simplecov", require: false, group: :test
 
 gem "timecop", "~> 0.9.1"
 
-gem "pry", "~> 0.13.0"
+gem "pry", "~> 0.13.1"
 
 gem "pry-rails", "~> 0.3.9"
