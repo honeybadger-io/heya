@@ -30,8 +30,7 @@ name = gets.strip
 assert(name.present?, "Error: Name required")
 
 puts "Company:"
-company = gets.strip
-assert(company.present?, "Error: Company required")
+company = gets.strip.presence
 
 puts "Email:"
 email = gets.strip
