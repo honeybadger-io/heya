@@ -316,6 +316,27 @@ class ApplicationCampaign < Heya::Campaigns::Base
 end
 ```
 
+### Handling exceptions
+
+Heya campaigns are [rescuable](https://api.rubyonrails.org/classes/ActiveSupport/Rescuable/ClassMethods.html).
+Use the `rescue_from` method to handle exceptions in campaigns:
+
+```ruby
+class OnboardingCampaign < ApplicationCampaign
+  rescue_from Postmark::InactiveRecipientError, with: :log_error
+
+  private
+
+  def log_error(error)
+    Rails.logger.error("Got Heya error: #{error}")
+  end
+end
+```
+
+See the
+[Rails documentation](https://api.rubyonrails.org/classes/ActiveSupport/Rescuable/ClassMethods.html#method-i-rescue_from)
+for additional details.
+
 ### Campaigns FAQ
 **What happens when:**
 <details><summary>I reorder messages in an active campaign?</summary>
