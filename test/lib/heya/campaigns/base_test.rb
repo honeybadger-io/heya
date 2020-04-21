@@ -13,7 +13,7 @@ module Heya
       end
 
       test "it adds the campaign to Heya.campaigns" do
-        campaign = Class.new(Base) {
+        campaign = create_test_campaign {
           default wait: 5.years
         }
 
@@ -25,12 +25,12 @@ module Heya
       end
 
       test "it allows subclasses to change defaults" do
-        parent = Class.new(Base) {
+        parent = create_test_campaign {
           default wait: 5.years,
                   from: nil
         }
 
-        child = Class.new(parent) {
+        child = create_test_campaign(parent: parent) {
           default from: "expected"
         }
 
@@ -52,11 +52,11 @@ module Heya
         block_one = -> { :one }
         block_two = -> { :two }
 
-        parent = Class.new(Base) {
+        parent = create_test_campaign {
           segment(&block_one)
         }
 
-        child = Class.new(parent) {
+        child = create_test_campaign(parent: parent) {
           segment(&block_two)
         }
 
@@ -69,7 +69,7 @@ module Heya
       end
 
       test "it allows subclasses to change user_type" do
-        campaign = Class.new(Base) {
+        campaign = create_test_campaign {
           user_type "Expected"
         }
 
@@ -78,20 +78,17 @@ module Heya
       end
 
       test "it allows subclasses to inherit user_type" do
-        parent = Class.new(Base) {
+        parent = create_test_campaign {
           user_type "Expected"
         }
-        child = Class.new(parent) {}
+        child = create_test_campaign(parent: parent) {}
 
         assert_equal "Expected", child.user_type
       end
 
       test "it adds and removes users from campaign" do
-        campaign = Class.new(Base) {
+        campaign = create_test_campaign(name: "Test") {
           user_type "Contact"
-          def self.name
-            "Test"
-          end
         }
         membership = CampaignMembership.where(user: contacts(:one), campaign_gid: campaign.gid)
 
@@ -108,13 +105,10 @@ module Heya
 
       test "#add sends first step in campaign by default" do
         action = Minitest::Mock.new
-        campaign = Class.new(Base) {
+        campaign = create_test_campaign {
           default action: action
           user_type "Contact"
           step :one, wait: 0
-          def self.name
-            "TestCampaign"
-          end
         }
         contact = contacts(:one)
 
@@ -129,13 +123,10 @@ module Heya
 
       test "#add skips first step in campaign with send_now: false" do
         action = Minitest::Mock.new
-        campaign = Class.new(Base) {
+        campaign = create_test_campaign {
           default action: action
           user_type "Contact"
           step :one, wait: 0
-          def self.name
-            "TestCampaign"
-          end
         }
         contact = contacts(:one)
 
@@ -145,13 +136,10 @@ module Heya
 
       test "#add skips first step in campaign with wait > 0" do
         action = Minitest::Mock.new
-        campaign = Class.new(Base) {
+        campaign = create_test_campaign {
           default action: action
           user_type "Contact"
           step :one, wait: 1
-          def self.name
-            "TestCampaign"
-          end
         }
         contact = contacts(:one)
 
@@ -194,11 +182,8 @@ module Heya
       end
 
       test "it finds users for campaign" do
-        campaign = Class.new(Base) {
+        campaign = create_test_campaign(name: "Test") {
           user_type "Contact"
-          def self.name
-            "Test"
-          end
         }
         CampaignMembership.create(user: contacts(:one), campaign_gid: campaign.gid)
         CampaignMembership.create(user: contacts(:one), campaign_gid: "gid://dummy/Other/1")
@@ -207,7 +192,7 @@ module Heya
       end
 
       test "it creates steps with String names" do
-        campaign = Class.new(Base) {
+        campaign = create_test_campaign {
           step :expected_name
         }
         assert_equal "expected_name", campaign.steps.first.name
@@ -219,7 +204,7 @@ module Heya
             :expected
           end
         }
-        campaign = Class.new(Base) {
+        campaign = create_test_campaign {
           step :expected_name, action: action
         }
 
@@ -228,7 +213,7 @@ module Heya
 
       test "doesn't allow existing method names as step names" do
         assert_raise RuntimeError, /Invalid/ do
-          Class.new(Base) {
+          create_test_campaign {
             step :default
           }
         end
@@ -236,7 +221,7 @@ module Heya
 
       test "executes block actions" do
         mock = MiniTest::Mock.new
-        campaign = Class.new(Base) {
+        campaign = create_test_campaign {
           step :expected_name do |user, step|
             mock.call(user, step.name)
           end
@@ -251,7 +236,7 @@ module Heya
       end
 
       test "#handle_exception handles exceptions with rescuable" do
-        campaign = Class.new(Base) {
+        campaign = create_test_campaign {
           default wait: 5.years
 
           rescue_from TestError do
@@ -265,7 +250,7 @@ module Heya
       end
 
       test "#handle_exception raises unhandled exceptions" do
-        campaign = Class.new(Base) {
+        campaign = create_test_campaign {
           default wait: 5.years
         }
 
