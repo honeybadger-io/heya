@@ -15,7 +15,7 @@ gemspec
 # gem 'byebug', group: [:development, :test]
 
 group :development, :test do
-  gem "standard", "~> 0.2.3"
+  gem "standard", "~> 0.2.4"
   gem "yard", "~> 0.9.24"
 end
 
