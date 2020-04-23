@@ -1,4 +1,4 @@
 class <%= file_name.camelcase %>Campaign < ApplicationCampaign<% steps.each do |step| %><% step, wait = step.split(":") %>
   step :<%= step.underscore.to_sym %>,<%= wait.presence ? "\n    wait: #{wait}," : "" %>
-    subject: "<%= step.humanize %> Message"
+    subject: "<%= step.humanize %>"
 <% end %>end
