@@ -29,6 +29,9 @@ end
 
 require "minitest/mock"
 
+# For generator tests
+Rails.application.config.action_mailer.preview_path = Rails.root.join("test/mailers/previews")
+
 class NullMail
   def self.deliver_later
   end

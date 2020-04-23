@@ -41,6 +41,12 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
     end
   end
 
+  def copy_test_templates
+    if preview_path
+      template "preview.rb", preview_path.join("#{file_name.underscore}_campaign_preview.rb")
+    end
+  end
+
   private
 
   def action_mailer_template(step)
@@ -50,5 +56,11 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
 
   def maildown_template(step)
     template "message.md.erb", "app/views/heya/campaign_mailer/#{file_name.underscore}_campaign/#{step.underscore.to_sym}.md.erb"
+  end
+
+  def preview_path
+    @preview_path ||= if ActionMailer::Base.preview_path.present?
+      Pathname(ActionMailer::Base.preview_path).sub(Rails.root.to_s, ".")
+    end
   end
 end
