@@ -35,6 +35,7 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
       end
 
     steps.each do |step|
+      step, _wait = step.split(":")
       @step = step
       template_method.call(step)
     end
