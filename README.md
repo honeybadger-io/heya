@@ -57,10 +57,27 @@ end
   ```
 
 ### Running the scheduler
-To start sending emails, run the scheduler periodically:
+To start queuing emails, run the scheduler task periodically:
 
 ```bash
 rails heya:scheduler
+```
+
+Heya uses ActiveJob to send emails in the background. Make sure your
+ActiveJob backend is configured to process the `heya` queue. For example,
+here's how you might start Sidekiq:
+
+```sh
+bundle exec sidekiq -q default -q heya
+```
+
+You can change Heya's default queue using the `queue` option:
+
+```ruby
+# app/campaigns/application_campaign.rb
+class ApplicationCampaign < Heya::Campaigns::Base
+  default queue: "custom"
+end
 ```
 
 ## Configuration
