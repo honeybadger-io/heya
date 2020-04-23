@@ -3,6 +3,8 @@
 [![Gem Version](https://badge.fury.io/rb/heya.svg)](https://badge.fury.io/rb/heya)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a6416e63ffc426715857/maintainability)](https://codeclimate.com/github/honeybadger-io/heya/maintainability)
 
+![Twitter Follow](https://img.shields.io/twitter/follow/heyjoshwood?label=Follow%20Josh%20for%20dev%20updates&style=social)
+
 Heya is a campaign mailer for Rails. Think of it like ActionMailer, but for timed email sequences. It can also perform other actions like sending a text message.
 
 ## Getting started
