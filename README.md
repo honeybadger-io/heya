@@ -47,7 +47,7 @@ end
 1. Create a campaign:
 
   ```bash
-  rails generate heya:campaign Onboarding welcome
+  rails generate heya:campaign Onboarding welcome:0
   ```
 
 2. Add a user to your campaign:

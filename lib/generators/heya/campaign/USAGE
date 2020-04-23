@@ -2,7 +2,7 @@ Description:
     Generate a new campaign
 
 Example:
-    rails generate heya:campaign Onboarding first second third
+    rails generate heya:campaign Onboarding first:0 second:2.days third
 
     This will create:
         app/campaigns/onboarding_campaign.rb
