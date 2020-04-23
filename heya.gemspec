@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email = ["josh@honeybadger.io"]
   spec.homepage = "https://github.com/honeybadger-io/heya"
   spec.summary = "Heya 👋"
-  spec.description = "Heya is a customer communication and automation framework for Ruby on Rails. It's as robust as the hosted alternatives, without the integration and compliance nightmare."
+  spec.description = "Heya is a campaign mailer for Rails. Think of it like ActionMailer, but for timed email sequences. It can also perform other actions like sending a text message."
   spec.license = "Prosperity Public License"
 
   spec.files = Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.md", "CHANGELOG.md", "license_key.pub"]
