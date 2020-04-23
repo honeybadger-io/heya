@@ -13,6 +13,10 @@ class Heya::InstallGenerator < Rails::Generators::Base
     copy_file "initializer.rb", "config/initializers/heya.rb"
   end
 
+  def copy_application_campaign_template
+    template "application_campaign.rb", "app/campaigns/application_campaign.rb"
+  end
+
   def self.next_migration_number(dirname)
     next_migration_number = current_migration_number(dirname) + 1
     ActiveRecord::Migration.next_migration_number(next_migration_number)

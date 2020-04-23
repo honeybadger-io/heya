@@ -6,7 +6,10 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
   argument :steps, type: :array, default: []
 
   def copy_campaign_template
-    template "application_campaign.rb", "app/campaigns/application_campaign.rb"
+    application_campaign = "app/campaigns/application_campaign.rb"
+    unless File.exist?(application_campaign)
+      template File.expand_path("../install/templates/application_campaign.rb", __dir__), application_campaign
+    end
     template "campaign.rb", "app/campaigns/#{file_name.underscore}_campaign.rb"
   end
 
