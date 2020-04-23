@@ -89,6 +89,29 @@ class ApplicationCampaign < Heya::Campaigns::Base
 end
 ```
 
+### Bonus: tips for working with email in your dev environment
+
+<details><summary>Use MailCatcher to view emails as they're sent</summary>
+
+```ruby
+# config/environments/development.rb
+Rails.application.configure do
+  # ..
+
+  # Use MailCatcher to inspect emails
+  # http://mailcatcher.me/
+  # Usage:
+  #   gem install mailcatcher
+  #   mailcatcher
+  #   # => Starting MailCatcher
+  #   # => ==> smtp://127.0.0.1:1025
+  #   # => ==> http://127.0.0.1:1080
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {host: "localhost", port: 1025}
+end
+```
+</details>
+
 ## Configuration
 
 You can use the following options to configure Heya (find this file in
