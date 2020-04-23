@@ -118,7 +118,7 @@ $ bundle add maildown
 $ rails generate heya:campaign Onboarding welcome
       create  app/campaigns/application_campaign.rb
       create  app/campaigns/onboarding_campaign.rb
-      create  app/views/heya/campaign_mailer/testing_campaign/welcome.md.erb
+      create  app/views/heya/campaign_mailer/onboarding_campaign/welcome.md.erb
 ```
 
 ☝️ Notice how only one template was generated; Maildown automatically builds
