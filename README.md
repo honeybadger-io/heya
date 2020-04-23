@@ -55,6 +55,15 @@ end
   ```ruby
   OnboardingCampaign.add(user)
   ```
+  
+  Add the following to your `User` model to send them the campaign
+  when they first signup:
+  
+  ```ruby
+  after_create_commit do
+    OnboardingCampaign.add(self)
+  end
+  ```
 
 ### Running the scheduler
 To start queuing emails, run the scheduler task periodically:
