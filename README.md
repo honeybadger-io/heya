@@ -27,11 +27,12 @@ Getting started with Heya is easy:
   rails db:migrate
   ```
 
-  This will do 3 things:
+  This will:
 
   1. Copy Heya's migration files to *db/migrate*
-  2. Copy Heya's default initializer to *config/initializers/heya.rb*
-  3. Run local migrations
+  1. Copy Heya's default initializer to *config/initializers/heya.rb*
+  1. Create the file *app/campaigns/application_campaign.rb*
+  1. Run local migrations
 
 <details><summary>Note: Heya doesn't store a copy of your user data; instead, it reads from your existing <code>User</code> model (it never writes). If you have a different user model, change the <code>user_type</code> configuration option in <em>config/initializers/heya.rb</em>.</summary>
 
@@ -181,11 +182,12 @@ Heya stores campaigns in *app/campaigns/*, similar to how Rails stores mailers i
 rails generate heya:campaign Onboarding first second third
 ```
 
-This will do three things:
+This will:
 
-- Create the file *app/campaigns/onboarding_campaign.rb*
-- Create the directory *app/views/heya/campaign_mailer/onboarding_campaign/*
-- Create email templates inside of *app/views/heya/campaign_mailer/onboarding_campaign/*
+1. Create the file *app/campaigns/onboarding_campaign.rb*
+1. Create the directory *app/views/heya/campaign_mailer/onboarding_campaign/*
+1. Create email templates inside of *app/views/heya/campaign_mailer/onboarding_campaign/*
+1. Create an ActionMailer preview at *(test|spec)/mailers/previews/onboarding_campaign_preview.rb*
 
 Here's the campaign that the above command generates:
 
