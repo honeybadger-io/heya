@@ -89,9 +89,9 @@ class ApplicationCampaign < Heya::Campaigns::Base
 end
 ```
 
-### Bonus: tips for working with email in your dev environment
+### Bonus: tips for working with email in Rails
 
-<details><summary>Use MailCatcher to view emails as they're sent</summary>
+<details><summary>Use <a href="http://mailcatcher.me">MailCatcher</a> to see emails sent from your dev environment</summary>
 
 ```ruby
 # config/environments/development.rb
@@ -99,7 +99,7 @@ Rails.application.configure do
   # ..
 
   # Use MailCatcher to inspect emails
-  # http://mailcatcher.me/
+  # http://mailcatcher.me
   # Usage:
   #   gem install mailcatcher
   #   mailcatcher
@@ -110,6 +110,19 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {host: "localhost", port: 1025}
 end
 ```
+</details>
+<details><summary>Use <a href="https://github.com/codetriage/maildown">Maildown</a> to write your emails in Markdown</summary>
+
+```sh
+$ bundle add maildown
+$ rails generate heya:campaign Onboarding welcome
+      create  app/campaigns/application_campaign.rb
+      create  app/campaigns/onboarding_campaign.rb
+      create  app/views/heya/campaign_mailer/testing_campaign/welcome.md.erb
+```
+
+☝️ Notice how only one template was generated; Maildown automatically builds
+the HTML and text variants from the markdown file.
 </details>
 
 ## Configuration
