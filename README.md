@@ -124,6 +124,29 @@ $ rails generate heya:campaign Onboarding welcome
 ☝️ Notice how only one template was generated; Maildown automatically builds
 the HTML and text variants from the markdown file.
 </details>
+<details><summary>Use <a href="https://guides.rubyonrails.org/action_mailer_basics.html#previewing-emails">ActionMailer::Preview</a> to preview emails as you write them</summary>
+
+Heya's campaign generator generates previews for campaigns at
+`(test|spec)/mailers/previews/*_campaign_preview.rb`. To see them, open
+http://localhost:3000/rails/mailers/. If you didn't use the generator, you
+can still build your own preview:
+
+```ruby
+# test/mailers/previews/onboarding_campaign_preview.rb
+class OnboardingCampaignPreview < ActionMailer::Preview
+  def welcome
+    OnboardingCampaign.welcome(user)
+  end
+
+  private
+
+  def user
+    User.where(id: params[:user_id]).first || User.first
+  end
+end
+
+```
+</details>
 
 ## Configuration
 
