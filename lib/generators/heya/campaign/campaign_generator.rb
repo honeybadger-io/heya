@@ -6,8 +6,8 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
   argument :steps, type: :array, default: []
 
   def copy_campaign_template
-    template "application_campaign.rb", root_path.join("app/campaigns/application_campaign.rb")
-    template "campaign.rb", root_path.join("app/campaigns/#{file_name.underscore}_campaign.rb")
+    template "application_campaign.rb", "app/campaigns/application_campaign.rb"
+    template "campaign.rb", "app/campaigns/#{file_name.underscore}_campaign.rb"
   end
 
   def copy_view_templates
@@ -41,25 +41,25 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
   end
 
   def copy_test_templates
-    template "preview.rb", preview_path.join("#{file_name.underscore}_campaign_preview.rb")
+    if preview_path
+      template "preview.rb", preview_path.join("#{file_name.underscore}_campaign_preview.rb")
+    end
   end
 
   private
 
   def action_mailer_template(step)
-    template "message.text.erb", root_path.join("app/views/heya/campaign_mailer/#{file_name.underscore}_campaign/#{step.underscore.to_sym}.text.erb")
-    template "message.html.erb", root_path.join("app/views/heya/campaign_mailer/#{file_name.underscore}_campaign/#{step.underscore.to_sym}.html.erb")
+    template "message.text.erb", "app/views/heya/campaign_mailer/#{file_name.underscore}_campaign/#{step.underscore.to_sym}.text.erb"
+    template "message.html.erb", "app/views/heya/campaign_mailer/#{file_name.underscore}_campaign/#{step.underscore.to_sym}.html.erb"
   end
 
   def maildown_template(step)
-    template "message.md.erb", root_path.join("app/views/heya/campaign_mailer/#{file_name.underscore}_campaign/#{step.underscore.to_sym}.md.erb")
-  end
-
-  def root_path
-    Rails.root
+    template "message.md.erb", "app/views/heya/campaign_mailer/#{file_name.underscore}_campaign/#{step.underscore.to_sym}.md.erb"
   end
 
   def preview_path
-    root_path.join(ActionMailer::Base.preview_path)
+    @preview_path ||= if ActionMailer::Base.preview_path.present?
+      Pathname(ActionMailer::Base.preview_path).sub(Rails.root.to_s, "")
+    end
   end
 end
