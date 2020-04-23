@@ -7,6 +7,6 @@ class <%= file_name.camelcase %>CampaignPreview < ActionMailer::Preview<% steps.
   private
 
   def user
-    <%= Heya.config.user_type %>.where(id: params[:user_id]).first || <%= Heya.config.user_type %>.first
+    <%= Heya.config.user_type %>.where(id: params[:user_id]).first || <%= Heya.config.user_type %>.first || <%= Heya.config.user_type %>.new(email: "user@example.com").freeze
   end
 end
