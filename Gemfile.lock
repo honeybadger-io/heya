@@ -170,7 +170,7 @@ GEM
     websocket-driver (0.7.1)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.4)
-    yard (0.9.24)
+    yard (0.9.25)
     zeitwerk (2.3.0)
 
 PLATFORMS
@@ -186,7 +186,7 @@ DEPENDENCIES
   simplecov
   standard (~> 0.3.0)
   timecop (~> 0.9.1)
-  yard (~> 0.9.24)
+  yard (~> 0.9.25)
 
 BUNDLED WITH
    2.1.4
