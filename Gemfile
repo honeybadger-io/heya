@@ -16,7 +16,7 @@ gemspec
 
 group :development, :test do
   gem "standard", "~> 0.3.0"
-  gem "yard", "~> 0.9.24"
+  gem "yard", "~> 0.9.25"
 end
 
 gem "minitest-ci", group: :test
