@@ -86,6 +86,12 @@ class ActiveSupport::TestCase
     klass
   end
 
+  def create_test_step(**params)
+    create_test_campaign do
+      step :test, **params
+    end.steps.first
+  end
+
   def generate_license(starts_at: Date.today, expires_at: 1.year.from_now.to_date, name: "Name", company: "Company", email: "user@example.com", user_count: nil)
     original_key = Heya::License.encryption_key
 

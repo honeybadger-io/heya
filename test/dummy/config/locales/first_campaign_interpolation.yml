@@ -1,4 +1,0 @@
-first_campaign_interpolation:
-  first_campaign:
-    one:
-      subject: "Heya %{first_name}"
