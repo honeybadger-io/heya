@@ -156,7 +156,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    standard (0.4.3)
+    standard (0.4.6)
       rubocop (~> 0.83.0)
       rubocop-performance (~> 1.5.2)
     thor (1.0.1)
@@ -182,7 +182,7 @@ DEPENDENCIES
   pry (~> 0.13.1)
   pry-rails (~> 0.3.9)
   simplecov
-  standard (~> 0.4.3)
+  standard (~> 0.4.6)
   timecop (~> 0.9.1)
   yard (~> 0.9.25)
 
