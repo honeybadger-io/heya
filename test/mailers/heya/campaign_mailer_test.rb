@@ -6,7 +6,10 @@ module Heya
   class CampaignMailerTest < ActionMailer::TestCase
     test "it delivers campaign emails with defaults" do
       contact = contacts(:one)
-      step = FirstCampaign.steps.first
+      step = create_test_step(
+        action: Campaigns::Actions::Email,
+        subject: "Expected subject"
+      )
       email = CampaignMailer.with(user: contact, step: step).build
 
       assert_emails 1 do
@@ -14,6 +17,30 @@ module Heya
       end
 
       assert_equal ["user@example.com"], email.from
+      assert_equal "Expected subject", email.subject
+    end
+
+    test "it falls back to i18n for subject" do
+      contact = contacts(:one)
+      contact.traits["first_name"] = "Hunter"
+
+      I18n.with_locale(:test_campaign_interpolation) do
+        step = create_test_step(action: Campaigns::Actions::Email)
+        email = CampaignMailer.with(user: contact, step: step).build
+        assert_equal "Heya Hunter", email.subject
+      end
+    end
+
+    test "it calls block for subject" do
+      contact = contacts(:one)
+      contact.traits["first_name"] = "Hunter"
+      step = create_test_step(
+        action: Campaigns::Actions::Email,
+        subject: ->(u) { "Heya #{u.traits["first_name"]}" }
+      )
+      email = CampaignMailer.with(user: contact, step: step).build
+
+      assert_equal "Heya Hunter", email.subject
     end
   end
 end

@@ -140,13 +140,13 @@ module Heya
               .merge(opts)
 
           attrs = opts.select { |k, _| STEP_ATTRS.key?(k) }
-          attrs[:params] = opts.reject { |k, _| STEP_ATTRS.key?(k) }.stringify_keys
           attrs[:id] = "#{self.name}/#{name}"
           attrs[:name] = name.to_s
-          attrs[:position] = steps.size
           attrs[:campaign] = instance
+          attrs[:position] = steps.size
+          attrs[:params] = opts.reject { |k, _| STEP_ATTRS.key?(k) }.stringify_keys
 
-          step = Step.new(attrs)
+          step = Step.new(**attrs)
           method_name = :"#{step.name.underscore}"
           raise "Invalid step name: #{step.name}\n  Step names must not conflict with method names on Heya::Campaigns::Base" if respond_to?(method_name)
 

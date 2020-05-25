@@ -12,12 +12,23 @@ module Heya
         campaign_name.constantize.steps.find { |s| s.id == id }
       end
 
+      def initialize(id:, name:, campaign:, position:, action:, wait:, segment:, queue:, params: {})
+        super
+        if action.respond_to?(:validate_step)
+          action.validate_step(self)
+        end
+      end
+
       def gid
         to_gid(app: "heya").to_s
       end
 
       def in_segment?(user)
         Heya.in_segments?(user, *campaign.__segments, segment)
+      end
+
+      def campaign_name
+        @campaign_name ||= campaign.name
       end
     end
   end

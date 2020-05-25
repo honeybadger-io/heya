@@ -37,6 +37,15 @@ class NullMail
   end
 end
 
+class NullAction
+  def initialize(step:, user:)
+  end
+
+  def deliver_later
+    true
+  end
+end
+
 module Heya::Campaigns
   class TestAction < Action
     class Message
@@ -65,15 +74,22 @@ module Heya::Campaigns
 end
 
 class ActiveSupport::TestCase
-  def create_test_campaign(name: "TestCampaign", parent: Heya::Campaigns::Base, &block)
+  def create_test_campaign(name: "TestCampaign", parent: Heya::Campaigns::Base, action: NullAction, &block)
     klass = Class.new(parent) {
       class << self
         attr_accessor :name
       end
     }
     klass.name = name
+    klass.default(action: action)
     klass.instance_exec(&block)
     klass
+  end
+
+  def create_test_step(**params)
+    create_test_campaign do
+      step :test, **params
+    end.steps.first
   end
 
   def generate_license(starts_at: Date.today, expires_at: 1.year.from_now.to_date, name: "Name", company: "Company", email: "user@example.com", user_count: nil)
