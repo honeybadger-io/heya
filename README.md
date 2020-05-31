@@ -237,19 +237,19 @@ In the above example, Heya will send a message named `:welcome` one day after a 
 
 The `wait` option tells Heya how long to wait before sending each message (the default is two days). There are a few scheduling options that you can customize for each step:
 
-| Option Name | Default | Description  |
-|:--|:--|:--|
-| `wait`  | `2.days` | The duration of time to wait before sending each message |
-| `segment`  | `nil` | The segment who should receive the message |
-| `action` | `Heya::Campaigns::Actions::Email` | The action to perform (usually sending an email) |
-| `queue` | `"heya"` | The ActiveJob queue |
+| Option Name | Default                           | Description                                              |
+| :---------- | :-------------------------------- | :------------------------------------------------------- |
+| `wait`      | `2.days`                          | The duration of time to wait before sending each message |
+| `segment`   | `nil`                             | The segment who should receive the message               |
+| `action`    | `Heya::Campaigns::Actions::Email` | The action to perform (usually sending an email)         |
+| `queue`     | `"heya"`                          | The ActiveJob queue                                      |
 
 Heya uses the following additional options to build the message itself:
 
-| Option Name | Default | Description  |
-|:--|:--|:--|
-| `subject`  | **required** | The email's subject |
-| `from`  | Heya default | The sender's email address |
+| Option Name | Default      | Description                |
+| :---------- | :----------- | :------------------------- |
+| `subject`   | **required** | The email's subject        |
+| `from`      | Heya default | The sender's email address |
 
 You can change the default options using the `default` method at the top of the campaign. Heya applies default options to each step which doesn't supply its own:
 
@@ -264,6 +264,58 @@ class OnboardingCampaign < ApplicationCampaign
   step :welcome,
     subject: "Welcome to my app!"
 end
+```
+
+#### Customizing email subjects for each user
+
+The subject can be customized for each user by using a `lambda` instead of a `String`:
+
+```ruby
+# app/campaigns/onboarding_campaign.rb
+class OnboardingCampaign < ApplicationCampaign
+  step :welcome,
+    subject: ->(user) { "Heya #{user.first_name}!" }
+end
+```
+
+#### Translations for email subjects (I18n)
+
+If you don't pass a `subject` to the `step` method, Heya will try to find it in your translations. The performed lookup will use the pattern `<campaign_scope>.<step_name>.subject` to construct the key.
+
+```ruby
+# app/campaigns/onboarding_campaign.rb
+class OnboardingCampaign < ApplicationCampaign
+  step :welcome
+end
+```
+
+```yaml
+# config/locales/en.yml
+en:
+  onboarding_campaign:
+    welcome:
+      subject: "Heya!"
+```
+
+To define parameters for interpolation, define a `#heya_attributes` method on your user model:
+
+```ruby
+# app/models/user.rb
+class User < ApplicationRecord
+  def heya_attributes
+    {
+      first_name: name.split(" ").first
+    }
+  end
+end
+```
+
+```yaml
+# config/locales/en.yml
+en:
+  onboarding_campaign:
+    welcome:
+      subject: "Heya %{first_name}!"
 ```
 
 ### Custom Actions
