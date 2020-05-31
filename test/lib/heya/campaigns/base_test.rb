@@ -89,6 +89,7 @@ module Heya
       test "it adds and removes users from campaign" do
         campaign = create_test_campaign(name: "Test") {
           user_type "Contact"
+          step :one
         }
         membership = CampaignMembership.where(user: contacts(:one), campaign_gid: campaign.gid)
 
@@ -150,6 +151,7 @@ module Heya
       test "#add skips user when already in campaign" do
         campaign = create_test_campaign {
           user_type "Contact"
+          step :one
         }
         contact = contacts(:one)
 
@@ -179,16 +181,6 @@ module Heya
         contact.update_attribute(:traits, {foo: "bar"})
 
         assert campaign.add(contact)
-      end
-
-      test "it finds users for campaign" do
-        campaign = create_test_campaign(name: "Test") {
-          user_type "Contact"
-        }
-        CampaignMembership.create(user: contacts(:one), campaign_gid: campaign.gid)
-        CampaignMembership.create(user: contacts(:one), campaign_gid: "gid://dummy/Other/1")
-
-        assert_equal [contacts(:one)], campaign.users
       end
 
       test "it creates steps with String names" do

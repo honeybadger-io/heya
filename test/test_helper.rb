@@ -83,13 +83,15 @@ class ActiveSupport::TestCase
     klass.name = name
     klass.default(action: action)
     klass.instance_exec(&block)
+    Object.send(:remove_const, klass.name) if Object.const_defined?(klass.name.to_sym)
+    Object.send(:const_set, klass.name.to_sym, klass)
     klass
   end
 
   def create_test_step(**params)
-    create_test_campaign do
+    create_test_campaign {
       step :test, **params
-    end.steps.first
+    }.steps.first
   end
 
   def generate_license(starts_at: Date.today, expires_at: 1.year.from_now.to_date, name: "Name", company: "Company", email: "user@example.com", user_count: nil)

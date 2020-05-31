@@ -7,6 +7,7 @@ module Heya
     test "it sets default last_sent_at time" do
       membership = CampaignMembership.create(
         campaign_gid: FirstCampaign.gid,
+        step_gid: FirstCampaign.steps.first.gid,
         user: contacts(:new)
       )
 
