@@ -58,10 +58,10 @@ end
   ```ruby
   OnboardingCampaign.add(user)
   ```
-  
+
   Add the following to your `User` model to send them the campaign
   when they first signup:
-  
+
   ```ruby
   after_create_commit do
     OnboardingCampaign.add(self)
@@ -554,6 +554,13 @@ considering adding to Heya.
 4. Commit your changes `git commit -am "Boom"`
 5. Push to your branch `git push origin my_branch`
 6. Send a [pull request](https://github.com/honeybadger-io/heya/pulls)
+
+## Releasing
+1. `gem install gem-release`
+2. `gem bump -v [version] -t -r`
+3. Update unreleased heading in [CHANGELOG.md](./CHANGELOG.md) (TODO: automate
+   this in gem-release command)
+4. `git push origin master --tags`
 
 ## License
 This package is free to use for noncommercial purposes and for commercial purposes during a trial period under the terms of the [Prosperity Public License](LICENSE).
