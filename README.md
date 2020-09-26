@@ -543,6 +543,13 @@ Yep. Use the `restart` option to resend a campaign to a user (if they are alread
 Yep. By default, Heya sends campaigns ain order of `priority`. Use the `concurrent` option to send campaigns concurrently.
 </details>
 
+## Upgrading Heya
+Heya adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html), and
+should be considered **unstable** until version 1.0.0. Always check
+[CHANGELOG.md](./CHANGELOG.md) prior to upgrading (breaking changes will always
+be called out there). Upgrade instructions for breaking changes are in
+[UPGRADING.md](./UPGRADING.md).
+
 ## Roadmap
 See [here](https://github.com/honeybadger-io/heya/projects/1) for things we're
 considering adding to Heya.
@@ -550,7 +557,7 @@ considering adding to Heya.
 ## Contributing
 1. Fork it.
 2. Create a topic branch `git checkout -b my_branch`
-3. Make your changes and add an entry to the [CHANGELOG](CHANGELOG.md).
+3. Make your changes and add an entry to [CHANGELOG.md](CHANGELOG.md).
 4. Commit your changes `git commit -am "Boom"`
 5. Push to your branch `git push origin my_branch`
 6. Send a [pull request](https://github.com/honeybadger-io/heya/pulls)
