@@ -14,7 +14,7 @@ module Heya
       def run(user: nil)
         Heya.campaigns.each do |campaign|
           if campaign.steps.any?
-            Queries::OrphanedStepMemberships.call(campaign).update_all(step_gid: campaign.steps.first.gid)
+            Queries::OrphanedMemberships.call(campaign).update_all(step_gid: campaign.steps.first.gid)
           end
         end
 

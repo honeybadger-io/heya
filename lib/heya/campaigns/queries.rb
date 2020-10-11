@@ -23,9 +23,9 @@ module Heya
         end
       }
 
-      # Given a campaign, {Queries::OrphanedStepMemberships} returns the campaign
+      # Given a campaign, {Queries::OrphanedMemberships} returns the campaign
       # memberships which are on steps have been removed from the campaign.
-      OrphanedStepMemberships = ->(campaign) {
+      OrphanedMemberships = ->(campaign) {
         CampaignMembership
           .where(campaign_gid: campaign.gid)
           .where.not(step_gid: campaign.steps.map(&:gid))
