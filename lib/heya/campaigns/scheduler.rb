@@ -18,7 +18,7 @@ module Heya
           end
         end
 
-        Queries::MembershipsToProcess.call(user: user) do |membership|
+        Queries::MembershipsToProcess.call(user: user).find_each do |membership|
           step = GlobalID::Locator.locate(membership.step_gid)
           campaign = GlobalID::Locator.locate(membership.campaign_gid)
           process(campaign, step, membership.user)
