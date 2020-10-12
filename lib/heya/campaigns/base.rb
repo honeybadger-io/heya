@@ -41,12 +41,15 @@ module Heya
             .delete_all
         end
 
-        membership.create! do |m|
-          m.concurrent = concurrent
-        end
+        if (step = steps.first)
+          membership.create! do |m|
+            m.concurrent = concurrent
+            m.step_gid = step.gid
+          end
 
-        if send_now && (step = steps.first) && step.wait <= 0
-          Scheduler.process(self, step, user)
+          if send_now && step.wait == 0
+            Scheduler.new.run(user: user)
+          end
         end
 
         true
@@ -55,18 +58,6 @@ module Heya
       def remove(user)
         CampaignMembership.where(user: user, campaign_gid: gid).delete_all
         true
-      end
-
-      def users
-        base_class = user_class.base_class
-        user_class
-          .joins(
-            sanitize_sql_array([
-              "inner join heya_campaign_memberships on heya_campaign_memberships.user_type = ? and heya_campaign_memberships.user_id = #{base_class.table_name}.id and heya_campaign_memberships.campaign_gid = ?",
-              base_class.name,
-              gid
-            ])
-          ).all
       end
 
       def user_class
@@ -105,7 +96,7 @@ module Heya
           instance
         end
 
-        delegate :steps, :add, :remove, :users, :gid, :user_class, :handle_exception, to: :instance
+        delegate :steps, :add, :remove, :gid, :user_class, :handle_exception, to: :instance
 
         def default(**params)
           self.__defaults = __defaults.merge(params).freeze

@@ -135,7 +135,7 @@ module Heya
           user: contact,
           step: campaign.steps.third
         }])
-        run_once
+        run_twice
         assert_mock action
       end
 
@@ -230,6 +230,8 @@ module Heya
 
         assert CampaignMembership.where(campaign_gid: campaign.gid, user: contact).exists?
 
+        run_once
+        run_once
         run_once
 
         refute CampaignMembership.where(campaign_gid: campaign.gid, user: contact).exists?
@@ -435,9 +437,6 @@ module Heya
         assert membership.where(user_id: contact2.id).exists?
 
         contact1.destroy
-
-        assert membership.where(user_id: contact1.id).exists?
-        assert membership.where(user_id: contact2.id).exists?
 
         run_once
 

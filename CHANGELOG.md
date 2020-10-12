@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Added the `step_gid` column to the `heya_campaign_memberships` table. This
+  change requires running a migration to upgrade. [Instructions](./UPGRADING.md#004). (#83)
 
 ## [0.3.0] - 2020-06-02
 ### Added

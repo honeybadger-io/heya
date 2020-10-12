@@ -11,36 +11,37 @@ module Heya
     #   3. Create CampaignReceipt (excludes user in subsequent steps)
     #   4. Process job
     class Scheduler
-      def run
+      def run(user: nil)
         Heya.campaigns.each do |campaign|
-          Queries::OrphanedCampaignMemberships.call(campaign).delete_all
-
-          campaign.steps.each do |step|
-            Queries::UsersForStep.call(campaign, step).find_each do |user|
-              self.class.process(campaign, step, user)
-            end
+          if campaign.steps.any?
+            Queries::OrphanedMemberships.call(campaign).update_all(step_gid: campaign.steps.first.gid)
           end
+        end
 
-          if (last_step = campaign.steps.last)
-            CampaignMembership.where(
-              user: Queries::UsersCompletedStep.call(campaign, last_step),
-              campaign_gid: campaign.gid
-            ).delete_all
+        Queries::MembershipsToProcess.call(user: user).find_each do |membership|
+          step = GlobalID::Locator.locate(membership.step_gid)
+          campaign = GlobalID::Locator.locate(membership.campaign_gid)
+          process(campaign, step, membership.user)
+          current_index = campaign.steps.index(step)
+          if (next_step = campaign.steps[current_index + 1])
+            membership.update(step_gid: next_step.gid)
+          else
+            membership.destroy
           end
         end
       end
 
-      def self.process(campaign, step, user)
+      private
+
+      def process(campaign, step, user)
         ActiveRecord::Base.transaction do
           return if CampaignReceipt.where(user: user, step_gid: step.gid).exists?
 
           if step.in_segment?(user)
             now = Time.now.utc
-            Queries::CampaignMembershipsForUpdate.call(campaign, user).update_all(last_sent_at: now)
+            Queries::MembershipsForUpdate.call(campaign, user).update_all(last_sent_at: now)
             CampaignReceipt.create!(user: user, step_gid: step.gid, sent_at: now)
             step.action.new(user: user, step: step).deliver_later
-          else
-            CampaignReceipt.create!(user: user, step_gid: step.gid)
           end
         end
       end

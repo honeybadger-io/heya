@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "heya/version"
+require "heya/active_record_extension"
 require "heya/engine"
 require "heya/config"
 require "heya/license"
