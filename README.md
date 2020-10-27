@@ -353,7 +353,7 @@ To remove a user from a campaign:
 OnboardingCampaign.remove(user)
 ```
 
-Adding users to campaigns from Rails opens up some interesting automation possibilities--for instance, you can start or stop campaigns from `ActiveRecord` callbacks, or in response to other events that you're already tracking in your application. [See here for a list of ideas](#).
+Adding users to campaigns from Rails opens up some interesting automation possibilities--for instance, you can start or stop campaigns from `ActiveRecord` callbacks, or in response to other events that you're already tracking in your application. [See here for a list of ideas](#automation-ideas).
 
 Because Heya stacks campaigns by default (meaning it will never send more than one at a time), you can also queue up several campaigns for a user, and they'll receive them in order:
 
