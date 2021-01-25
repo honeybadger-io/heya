@@ -21,8 +21,9 @@ module Heya
 
         if values.any?
           arel.with(
-            Arel::Nodes::SqlLiteral.new(
-              "heya_steps AS (SELECT * FROM (VALUES #{values.join(", ")}) AS heya_steps (gid,wait))"
+            Arel::Nodes::As.new(
+              Arel::Table.new(:heya_steps),
+              Arel::Nodes::SqlLiteral.new("(SELECT * FROM (VALUES #{values.join(", ")}) AS heya_steps (gid,wait))")
             )
           )
         end

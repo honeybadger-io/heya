@@ -18,6 +18,7 @@ jobs:
         rails:
           - rails_5.2
           - rails_6.0
+          - rails_6.1
     steps:
     - uses: actions/checkout@v1
 
