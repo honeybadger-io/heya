@@ -570,4 +570,4 @@ considering adding to Heya.
 4. `git push origin master --tags`
 
 ## License
-This package is free to use for noncommercial purposes and for commercial purposes during a trial period under the terms of the [Prosperity Public License](LICENSE).
+Heya is licensed under the [AGPL](./LICENSE).
