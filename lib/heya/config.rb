@@ -6,7 +6,6 @@ module Heya
   class Config < OpenStruct
     def initialize
       super(
-        license_file: nil,
         user_type: "User",
         campaigns: OpenStruct.new(
           priority: [],
