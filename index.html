@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Heya: The Campaign Mailer for Rails</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <script src="https://kit.fontawesome.com/a02ce9628b.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" media="all" href="style.css" />
+    <script src="script.js"></script>
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@honeybadgerapp">
+    <meta name="twitter:creator" content="@heyjoshwood">
+    <meta name="twitter:title" content="Heya 👋">
+    <meta name="twitter:description" content="Heya is a campaign mailer for Rails. Think of it like ActionMailer, but for timed email sequences.">
+    <meta name="twitter:image:src" content="https://www.heya.email/heya.gif">
+
+    <meta property="og:site_name" content="Heya 👋" />
+    <meta property="og:title" content="Heya 👋" />
+    <meta property="og:description" content="Heya is a campaign mailer for Rails. Think of it like ActionMailer, but for timed email sequences." />
+    <meta property="og:image" content="https://www.heya.email/heya.gif" />
+  </head>
+
+  <body>
+    <header>
+  <img src="honeybadger_bolt.svg" width="100">
+  <h1>Heya, Rails Developer 👋</h1>
+  <p>
+    Have you ever set up a complicated marketing integration just to send some emails? Would you like to skip that next time?
+    <br>
+    Or, maybe you want to save a boatload of money on Intercom?
+    <br>
+    If so, then we have just the thing for you.
+  </p>
+  <p><a href="https://github.com/honeybadger-io/heya" onclick="fathom('trackGoal', 'GZ27HZNC', 0);"><b><span class="fab fa-github"></span> Grab the Code &rarr;</b></a></p>
+  <p><small><span class="fas fa-star"></span> Don't forget to star the repo!</small></p>
+</header>
+
+<main>
+  <section>
+    <header>
+      <h2>Introducing Heya 👋</h2>
+      <p>Heya 👋 is a campaign mailer for Rails. Think of it like ActionMailer, but for timed email sequences. It can also perform other actions like sending a text message. Generate and send automated email campaigns with just a few <code>rails</code> commands.</p>
+    </header>
+    <aside>
+      <center>
+        <h3>Not this Heya:</h3>
+        <p><img src="heya.gif" width="350" alt="André 3000 singing into microphone"></p>
+        <p><small>(although feel free to mistakenly associate this with Outkast, alright?)</small></p>
+      </center>
+    </aside>
+    <aside>
+      <center>
+        <h3>This Heya:</h3>
+        <pre><code># app/campaigns/onboarding_campaign.rb
+class OnboardingCampaign < Heya::Campaigns::Base
+  default wait: 2.days,
+    from: "you@example.com"
+
+  step :welcome,
+    subject: "Welcome to our awesome app!"
+
+  step :set_up,
+    subject: "Let's set up your account"
+
+  step :convert,
+    subject: "omg, your trial is ending 🙀"
+end</code></pre>
+      </center>
+    </aside>
+  </section>
+  <hr>
+  <section>
+    <header>
+      <h2>Who are you really, btw?</h2>
+      <p>We're <a href="https://www.honeybadger.io">Honeybadger</a>&mdash;the ice cold error tracker for Rails. You may also know us from our podcast, <a href="https://www.founderquestpodcast.com">FounderQuest</a>.</p><p> We made Heya for ourselves and thought you might like it too.</p>
+      <p><a href="https://twitter.com/heyjoshwood">Follow Josh on Twitter</a> for development updates!</p>
+    </header>
+  </section>
+  <hr>
+  <section>
+    <header>
+      <h2>Is Heya free to use?</h2>
+      <p>Heya is free and open source, licensed under the <a href="https://github.com/honeybadger-io/heya/blob/master/LICENSE">AGPL</a>.</p>
+    </header>
+  </section>
+</main>
+<footer>
+  <p>Copyright 2021 Honeybadger Industries LLC, All Rights Reserved</p>
+</footer>
+
+    <!-- Fathom - simple website analytics - https://usefathom.com -->
+    <script>
+    (function(f, a, t, h, o, m){
+    a[h]=a[h]||function(){
+    (a[h].q=a[h].q||[]).push(arguments)
+    };
+    o=f.createElement('script'),
+    m=f.getElementsByTagName('script')[0];
+    o.async=1; o.src=t; o.id='fathom-script';
+    m.parentNode.insertBefore(o,m)
+    })(document, window, 'https://cdn.usefathom.com/tracker.js', 'fathom');
+    fathom('set', 'siteId', 'IVXDGYEI');
+    fathom('trackPageview');
+    </script>
+    <!-- / Fathom -->
+  </body>
+</html>

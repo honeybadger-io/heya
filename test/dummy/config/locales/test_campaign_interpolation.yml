@@ -1,4 +1,0 @@
-test_campaign_interpolation:
-  test_campaign:
-    test:
-      subject: "Heya %{first_name}"

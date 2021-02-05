@@ -1,4 +1,0 @@
-ignore:
-  - "test/dummy/bin/*"
-  - "test/dummy/db/schema.rb"
-  - "test/dummy/tmp/**/*"
