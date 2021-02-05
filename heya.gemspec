@@ -21,5 +21,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pg"
   spec.add_development_dependency "appraisal"
 
-  spec.post_install_message = "Upgrading from Heya <= 0.0.3? See https://git.io/JtgmW"
+  spec.post_install_message = "Upgrading from Heya < 0.4? See https://git.io/JtgmW"
 end

@@ -1,7 +1,7 @@
 # Upgrading Heya
 
-## 0.0.4
-If you're upgrading from Heya `<= 0.0.3`, you will need the following migration:
+## 0.4.0
+If you're upgrading from Heya `< 0.4`, you will need the following migration:
 
 ```
 class AddStepGidToHeyaCampaignMemberships < ActiveRecord::Migration[6.0]
