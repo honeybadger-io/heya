@@ -93,35 +93,4 @@ class ActiveSupport::TestCase
       step :test, **params
     }.steps.first
   end
-
-  def generate_license(starts_at: Date.today, expires_at: 1.year.from_now.to_date, name: "Name", company: "Company", email: "user@example.com", user_count: nil)
-    original_key = Heya::License.encryption_key
-
-    Heya::License.encryption_key = File.read(File.expand_path("../fixtures/license/license_key", __FILE__))
-
-    license = Heya::License.new
-
-    license.licensee = {
-      "Name" => name,
-      "Company" => company,
-      "Email" => email
-    }
-
-    license.starts_at = starts_at
-    license.expires_at = expires_at
-
-    license.restrictions = {user_count: user_count}
-
-    license.export
-  ensure
-    Heya::License.encryption_key = original_key
-  end
-
-  def mock_license_key
-    original_key = Heya::License.encryption_key
-    Heya::License.encryption_key = File.read(File.expand_path("../fixtures/license/license_key.pub", __FILE__))
-    yield
-  ensure
-    Heya::License.encryption_key = original_key
-  end
 end
