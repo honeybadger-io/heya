@@ -23,7 +23,7 @@ gem "minitest-ci", group: :test
 
 gem "simplecov", require: false, group: :test
 
-gem "timecop", "~> 0.9.2"
+gem "timecop", "~> 0.9.3"
 
 gem "pry", "~> 0.13.1"
 

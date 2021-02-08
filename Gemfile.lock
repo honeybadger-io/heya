@@ -174,7 +174,7 @@ GEM
       rubocop (= 1.8.1)
       rubocop-performance (= 1.9.2)
     thor (1.1.0)
-    timecop (0.9.2)
+    timecop (0.9.3)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.0.0)
@@ -196,7 +196,7 @@ DEPENDENCIES
   pry-rails (~> 0.3.9)
   simplecov
   standard (~> 0.12)
-  timecop (~> 0.9.2)
+  timecop (~> 0.9.3)
   yard (~> 0.9.26)
 
 BUNDLED WITH
