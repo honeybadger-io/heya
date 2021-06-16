@@ -18,6 +18,7 @@ module Heya
       subject = subject.call(user) if subject.respond_to?(:call)
 
       instance_variable_set(:"@#{user.model_name.element}", user)
+      instance_variable_set(:@campaign_name, campaign_name)
 
       mail(
         from: from,
