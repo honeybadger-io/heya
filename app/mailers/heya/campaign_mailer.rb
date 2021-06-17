@@ -24,7 +24,6 @@ module Heya
         from: from,
         reply_to: reply_to,
         to: user.email,
-        bcc: 'cdowney@gmail.com',
         subject: subject,
         template_path: "heya/campaign_mailer/#{campaign_name}",
         template_name: step_name
