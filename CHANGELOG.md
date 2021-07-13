@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Fix compatibility with Rails 6.1.4 (introduced by [this change](https://github.com/rails/rails/commit/99049262d37fedcd25af91231423103b0d218694#diff-79b53b2602bf702bdd8ce677e096be6a6923a54236e17237c16068a510078683) to `build_arel`) (#137, @retsef)
 
 ## [0.5.0] - 2021-06-17
 ### Added
