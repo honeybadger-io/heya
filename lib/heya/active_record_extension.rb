@@ -6,7 +6,7 @@ module Heya
   module ActiveRecordRelationExtension
     TABLE_REGEXP = /heya_steps/
 
-    def build_arel(aliases)
+    def build_arel(aliases = nil)
       arel = super(aliases)
 
       if table_name == "heya_campaign_memberships" && arel.to_sql =~ TABLE_REGEXP
