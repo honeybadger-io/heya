@@ -8,7 +8,7 @@ Heya.configure do |config|
   # Campaign priority. When a user is added to multiple campaigns, they are
   # sent in this order. Campaigns are sent in the order that the users were
   # added if no priority is configured.
-  # config.campaings.priority = [
+  # config.campaigns.priority = [
   #   "FirstCampaign",
   #   "SecondCampaign",
   #   "ThirdCampaign"
