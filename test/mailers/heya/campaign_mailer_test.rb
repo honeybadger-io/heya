@@ -4,6 +4,25 @@ require "test_helper"
 
 module Heya
   class CampaignMailerTest < ActionMailer::TestCase
+
+    test "it delivers campaign emails with defaults plus bcc at step level" do
+      contact = contacts(:one)
+      step = create_test_step(
+        action: Campaigns::Actions::Email,
+        subject: "Expected subject",
+        bcc: 'quality_control@example.com'
+      )
+      email = CampaignMailer.with(user: contact, step: step).build
+
+      assert_emails 1 do
+        email.deliver_now
+      end
+
+      assert_equal ["user@example.com"], email.from
+      assert_equal "Expected subject", email.subject
+      assert_equal ["quality_control@example.com"], email.bcc 
+    end
+
     test "it delivers campaign emails with defaults" do
       contact = contacts(:one)
       step = create_test_step(

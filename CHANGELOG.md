@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.3] - 2021-08-16
+### Added
+- Create `bcc:` optional parameter for steps; use case is quality control
+
 ## [0.5.2] - 2021-08-11
 ### Fixed
 - Fix typo in initializer (#139, @800a7b32)

@@ -10,6 +10,7 @@ module Heya
       step_name = step.name.underscore
 
       from = step.params.fetch("from")
+      bcc = step.params.fetch("bcc", nil)
       reply_to = step.params.fetch("reply_to", nil)
 
       subject = step.params.fetch("subject") {
@@ -22,6 +23,7 @@ module Heya
 
       mail(
         from: from,
+        bcc: bcc,
         reply_to: reply_to,
         to: user.email,
         subject: subject,
