@@ -266,6 +266,28 @@ class OnboardingCampaign < ApplicationCampaign
 end
 ```
 
+#### Quality control option
+
+You may wish to apply quality control to individual steps of a campaign. For example, when adding a new step to an existing campaign it is
+a good idea to inspect real-time results in production. You can do this by using the `bcc:` step option, which would look like this:
+
+```ruby
+class OnboardingCampaign < ApplicationCampaign
+  default wait: 1.day,
+    queue: "onboarding",
+    from: "support@example.com"
+
+  # Will still be sent after one day from the
+  # email address support@example.com
+  step :welcome,
+    subject: "Welcome to my app!"
+
+  step :added_two_months_later,
+    subject: "We now have something new to say!",
+    bcc: 'quality_control@example.com'
+end
+```
+
 #### Customizing email subjects for each user
 
 The subject can be customized for each user by using a `lambda` instead of a `String`:
