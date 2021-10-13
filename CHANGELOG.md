@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Optional `layout` parameter for steps; allowing override from default `heya/campaign_mailer`
+
 ## [0.5.3] - 2021-08-18
 ### Added
 - Create `bcc:` optional parameter for steps; use case is quality control

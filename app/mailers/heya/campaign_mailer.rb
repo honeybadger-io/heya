@@ -1,6 +1,7 @@
 module Heya
   class CampaignMailer < ApplicationMailer
-    layout "heya/campaign_mailer"
+    DEFAULT_LAYOUT = "heya/campaign_mailer".freeze
+    layout -> { params.fetch(:step).params.fetch("layout", DEFAULT_LAYOUT) }
 
     def build
       user = params.fetch(:user)
