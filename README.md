@@ -250,6 +250,7 @@ Heya uses the following additional options to build the message itself:
 | :---------- | :----------- | :------------------------- |
 | `subject`   | **required** | The email's subject        |
 | `from`      | Heya default | The sender's email address |
+| `layout`    | Heya default | The email's layout file    |
 
 You can change the default options using the `default` method at the top of the campaign. Heya applies default options to each step which doesn't supply its own:
 
@@ -257,7 +258,8 @@ You can change the default options using the `default` method at the top of the 
 class OnboardingCampaign < ApplicationCampaign
   default wait: 1.day,
     queue: "onboarding",
-    from: "support@example.com"
+    from: "support@example.com",
+    layout: "onboarding"
 
   # Will still be sent after one day from the
   # email address support@example.com
