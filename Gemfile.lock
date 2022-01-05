@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    heya (0.6.0)
+    heya (0.6.1)
       rails (>= 5.2.3, < 7.1.0)
 
 GEM
@@ -193,4 +193,4 @@ DEPENDENCIES
   yard (~> 0.9.26)
 
 BUNDLED WITH
-   2.1.4
+   2.2.22
