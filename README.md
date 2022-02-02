@@ -247,10 +247,11 @@ The `wait` option tells Heya how long to wait before sending each message (the d
 Heya uses the following additional options to build the message itself:
 
 | Option Name | Default      | Description                |
-| :---------- | :----------- | :------------------------- |
+|-------------|--------------|----------------------------|
 | `subject`   | **required** | The email's subject        |
 | `from`      | Heya default | The sender's email address |
 | `layout`    | Heya default | The email's layout file    |
+| `to`        | See below    | See below                  |
 
 You can change the default options using the `default` method at the top of the campaign. Heya applies default options to each step which doesn't supply its own:
 
@@ -267,6 +268,27 @@ class OnboardingCampaign < ApplicationCampaign
     subject: "Welcome to my app!"
 end
 ```
+
+#### Customizing the `to` field
+
+You can customize the `to` field by passing a callable object, which Heya will invoke with the user. For instance:
+
+```ruby
+class OnboardingCampaign < ApplicationCampaign
+  step :welcome,
+    subject: "Welcome to my app!",
+    to: -> (user) { ActionMailer::Base.email_address_with_name(user.email, user.nickname) }
+end
+```
+
+It is recommended to rely on `ActionMailer::Base.email_address_with_name` so that sanitization is correctly applied.
+
+If the `to` param is not provided, Heya will default to:
+
+1. `user#first_name`
+1. `user#name`
+
+If the `user` object doesn't respond to these methods, it will fallback to a simple `user.email` in the `to` field.
 
 #### Quality control option
 

@@ -22,6 +22,49 @@ module Heya
           assert_equal "expected subject", email.subject
         end
 
+        test "to field" do
+
+          contact = contacts(:one)
+          step = create_test_step(action: Email, subject: "expected subject")
+          email = Email.new(user: contact, step: step).build
+
+          def contact.first_name; "John"; end
+          def contact.name; "John Doe"; end
+          def contact.nickname; "Jhonny Doe"; end
+
+          assert_emails 1 do
+            email.deliver
+          end
+
+          assert_equal "John <one@example.com>", email.header[:to].value
+
+          contact.instance_exec { undef :first_name }
+
+          email = Email.new(user: contact, step: step).build
+
+          assert_emails 1 do
+            email.deliver
+          end
+
+          assert_equal "John Doe <one@example.com>", email.header[:to].value
+
+          contact.instance_exec { undef :name }
+
+          step = create_test_step(
+            action: Email,
+            subject: "expected subject",
+            to: -> (user) { ActionMailer::Base.email_address_with_name(user.email, user.nickname) }
+          )
+          email = Email.new(user: contact, step: step).build
+
+          assert_emails 1 do
+            email.deliver
+          end
+
+          assert_equal "Jhonny Doe <one@example.com>", email.header[:to].value
+
+        end
+
         test "it raises an exception without a subject" do
           assert_raise ArgumentError, /subject/ do
             create_test_step(action: Email)

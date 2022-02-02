@@ -26,7 +26,7 @@ module Heya
         from: from,
         bcc: bcc,
         reply_to: reply_to,
-        to: user.email,
+        to: to_address(user, step),
         subject: subject,
         template_path: "heya/campaign_mailer/#{campaign_name}",
         template_name: step_name
@@ -50,6 +50,18 @@ module Heya
         else
           super
         end
+      end
+    end
+
+    def to_address(user, step)
+      return step.params["to"].call(user) if step.params["to"].respond_to?(:call)
+
+      if user.respond_to?(:first_name)
+        email_address_with_name(user.email, user.first_name)
+      elsif user.respond_to?(:name)
+        email_address_with_name(user.email, user.name)
+      else
+        user.email
       end
     end
   end
