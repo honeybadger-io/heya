@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Automatically include Rails url helpers from application in campaign mailer templates (#158, @feliperaul)
+
 ### Added
 - Allow the customization of the to field (#155, @feliperaul)
 
