@@ -53,7 +53,7 @@ module Heya
           step = create_test_step(
             action: Email,
             subject: "expected subject",
-            to: -> (user) { ActionMailer::Base.email_address_with_name(user.email, user.nickname) }
+            to: -> (user) { Heya::CampaignMailer.email_address_with_name(user.email, user.nickname) }
           )
           email = Email.new(user: contact, step: step).build
 
