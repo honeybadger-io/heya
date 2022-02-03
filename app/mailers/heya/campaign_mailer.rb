@@ -2,6 +2,7 @@ module Heya
   class CampaignMailer < ApplicationMailer
     DEFAULT_LAYOUT = "heya/campaign_mailer"
     layout -> { params.fetch(:step).params.fetch("layout", DEFAULT_LAYOUT) }
+    include Rails.application.routes.url_helpers
 
     def build
       user = params.fetch(:user)
