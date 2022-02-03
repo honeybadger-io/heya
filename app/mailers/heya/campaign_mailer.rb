@@ -57,12 +57,22 @@ module Heya
       return step.params["to"].call(user) if step.params["to"].respond_to?(:call)
 
       if user.respond_to?(:first_name)
-        email_address_with_name(user.email, user.first_name)
+        self.class.email_address_with_name(user.email, user.first_name)
       elsif user.respond_to?(:name)
-        email_address_with_name(user.email, user.name)
+        self.class.email_address_with_name(user.email, user.name)
       else
         user.email
       end
+    end
+
+    # This method is a backport and can be removed when we drop support of
+    # Rails 6.0; As of Rails 6.1, ActionMailer::Base, which we inherit from,
+    # already includes it.
+    def self.email_address_with_name(address, name)
+      Mail::Address.new.tap do |builder|
+        builder.address = address
+        builder.display_name = name
+      end.to_s
     end
   end
 end
