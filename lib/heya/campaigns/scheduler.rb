@@ -21,7 +21,22 @@ module Heya
         Queries::MembershipsToProcess.call(user: user).find_each do |membership|
           step = GlobalID::Locator.locate(membership.step_gid)
           campaign = GlobalID::Locator.locate(membership.campaign_gid)
+
+          if membership.user.nil?
+            # User not found; delete orphaned memberships and receipts.
+            CampaignReceipt.where(
+              user_type: membership.user_type,
+              user_id: membership.user_id
+            ).delete_all
+            CampaignMembership.where(
+              user_type: membership.user_type,
+              user_id: membership.user_id
+            ).delete_all
+            next
+          end
+
           process(campaign, step, membership.user)
+
           current_index = campaign.steps.index(step)
           if (next_step = campaign.steps[current_index + 1])
             membership.update(step_gid: next_step.gid)
