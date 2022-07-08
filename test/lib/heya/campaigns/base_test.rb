@@ -27,7 +27,7 @@ module Heya
       test "it allows subclasses to change defaults" do
         parent = create_test_campaign {
           default wait: 5.years,
-                  from: nil
+            from: nil
         }
 
         child = create_test_campaign(parent: parent) {
@@ -113,10 +113,9 @@ module Heya
         }
         contact = contacts(:one)
 
-        action.expect(:new, NullMail, [{
+        action.expect(:new, NullMail,
           user: contact,
-          step: campaign.steps.first
-        }])
+          step: campaign.steps.first)
 
         campaign.add(contact)
         assert_mock action
