@@ -96,7 +96,7 @@ GEM
     marcel (1.0.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
-    mini_portile2 (2.8.0)
+    mini_portile2 (2.8.1)
     minitest (5.16.2)
     minitest-ci (3.4.0)
       minitest (>= 5.0.6)
@@ -115,7 +115,7 @@ GEM
       net-protocol
       timeout
     nio4r (2.5.8)
-    nokogiri (1.13.9)
+    nokogiri (1.13.10)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     parallel (1.22.1)
@@ -127,7 +127,7 @@ GEM
       method_source (~> 1.0)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    racc (1.6.0)
+    racc (1.6.2)
     rack (2.2.4)
     rack-test (2.0.2)
       rack (>= 1.3)
