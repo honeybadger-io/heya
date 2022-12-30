@@ -25,12 +25,12 @@ jobs:
           - rails_6.1
           - rails_7.0
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
 
     - name: Set up Ruby 2.7.x
-      uses: actions/setup-ruby@v1
+      uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.7.x
+        ruby-version: '2.7'
 
     - name: Install PostgreSQL 11 client
       run: |
