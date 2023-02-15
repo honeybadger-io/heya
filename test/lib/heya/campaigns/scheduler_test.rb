@@ -427,6 +427,36 @@ module Heya
 
         assert_mock action
       end
+
+      test "it immediately skips steps that have receipts" do
+        action = Minitest::Mock.new
+        campaign = create_test_campaign {
+          default action: action
+          user_type "Contact"
+          step :one, wait: 0
+          step :two, wait: 3.days
+          step :three, wait: 2.days
+        }
+
+        contact = contacts(:one)
+
+        CampaignReceipt.create!(
+          user: contact,
+          step_gid: campaign.steps[1].gid
+        )
+
+        action.expect(:new, NullMail,
+          user: contact,
+          step: campaign.steps.first)
+
+        campaign.add(contact)
+
+        membership = CampaignMembership
+          .where(user: contact, campaign_gid: campaign.gid)
+          .first
+
+        assert_equal campaign.steps[2].gid, membership.step_gid
+      end
     end
   end
 end
