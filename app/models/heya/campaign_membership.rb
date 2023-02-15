@@ -5,7 +5,7 @@ module Heya
     belongs_to :user, polymorphic: true
 
     before_create do
-      self.last_sent_at = Time.now
+      self.last_sent_at ||= Time.now
     end
 
     scope :with_steps, -> {
