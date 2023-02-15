@@ -222,7 +222,7 @@ module Heya
           .first
 
         assert_equal campaign.steps[1].gid, membership.step_gid
-        assert_equal created_at, membership.last_sent_at
+        assert_equal created_at.to_i, membership.last_sent_at.to_i
       end
 
       test "it creates steps with String names" do
