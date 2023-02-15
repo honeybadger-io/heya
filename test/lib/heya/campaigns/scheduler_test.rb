@@ -398,11 +398,10 @@ module Heya
       test "it deletes orphaned campaign memberships" do
         action = Minitest::Mock.new
         campaign = create_test_campaign {
-          default action: action
           user_type "Contact"
-          step :one, wait: 1.day
-          step :two, wait: 3.days
-          step :three, wait: 2.days
+          step :one, wait: 0
+          step :two, wait: 0
+          step :three, wait: 0
         }
         contact1 = contacts(:one)
         contact2 = contacts(:two)
@@ -413,7 +412,7 @@ module Heya
           user_type: "Contact"
         )
 
-        run_twice
+        run_once
 
         assert membership.where(user_id: contact1.id).exists?
         assert membership.where(user_id: contact2.id).exists?
