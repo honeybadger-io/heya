@@ -616,4 +616,4 @@ considering adding to Heya.
 4. `git push origin master --tags`
 
 ## License
-Heya is licensed under the [AGPL](./LICENSE).
+Heya is licensed under the [LGPL](./LICENSE).
