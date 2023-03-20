@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Fixed
-- Delete user-orphaned campaign memberships in scheduler (#180) 
+- Delete user-orphaned campaign memberships in scheduler (#180)
+- Fix a bug where the campaign fails to resume immediately when adding a user
+  who had previously received earlier steps in the campaign. (#197)
 
 ## [0.7.0] - 2022-02-03
 ### Fixed

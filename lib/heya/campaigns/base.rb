@@ -19,7 +19,7 @@ module Heya
       end
 
       delegate :name, :__segments, to: :class
-      alias id name
+      alias_method :id, :name
 
       # Returns String GlobalID.
       def gid
@@ -35,16 +35,18 @@ module Heya
           membership.delete_all
         end
 
-        if restart
-          CampaignReceipt
-            .where(user: user, step_gid: steps.map(&:gid))
-            .delete_all
-        end
+        receipts = CampaignReceipt
+          .where(user: user, step_gid: steps.map(&:gid))
 
-        if (step = steps.first)
+        receipts.delete_all if restart
+
+        last_sent_at = receipts.maximum(:created_at)
+        receipt_gids = receipts.map(&:step_gid)
+        if (step = steps.find { |s| receipt_gids.exclude?(s.gid) })
           membership.create! do |m|
             m.concurrent = concurrent
             m.step_gid = step.gid
+            m.last_sent_at = last_sent_at
           end
 
           if send_now && step.wait == 0
@@ -111,7 +113,7 @@ module Heya
         end
 
         def segment(arg = nil, &block)
-          if block_given?
+          if block
             self.__segments = ([block] | __segments).freeze
           elsif arg
             self.__segments = ([arg] | __segments).freeze
@@ -119,7 +121,7 @@ module Heya
         end
 
         def step(name, **opts, &block)
-          if block_given?
+          if block
             opts[:block] ||= block
             opts[:action] ||= Actions::Block
           end

@@ -104,7 +104,7 @@ module Heya
         refute membership.exists?
       end
 
-      test "#add sends first step in campaign by default" do
+      test "#add sends first step in campaign when wait is zero" do
         action = Minitest::Mock.new
         campaign = create_test_campaign {
           default action: action
@@ -121,7 +121,7 @@ module Heya
         assert_mock action
       end
 
-      test "#add skips first step in campaign with send_now: false" do
+      test "#add skips first step in campaign when wait is zero with send_now: false" do
         action = Minitest::Mock.new
         campaign = create_test_campaign {
           default action: action
@@ -180,6 +180,49 @@ module Heya
         contact.update_attribute(:traits, {foo: "bar"})
 
         assert campaign.add(contact)
+      end
+
+      test "#add starts the user on step one when they haven't received the campaign" do
+        campaign = create_test_campaign(name: "Test") {
+          user_type "Contact"
+          step :one
+          step :two
+          step :three
+        }
+
+        campaign.add(contacts(:one))
+
+        membership = CampaignMembership
+          .where(user: contacts(:one), campaign_gid: campaign.gid)
+          .first
+
+        assert_equal campaign.steps[0].gid, membership.step_gid
+      end
+
+      test "#add resumes the campaign where the user left off when they previously received the campaign" do
+        campaign = create_test_campaign(name: "Test") {
+          user_type "Contact"
+          step :one
+          step :two
+          step :three
+        }
+
+        created_at = 2.days.ago
+        CampaignReceipt.create!(
+          user: contacts(:one),
+          step_gid: campaign.steps[0].gid
+        ).tap do |r|
+          r.update(created_at: created_at)
+        end
+
+        campaign.add(contacts(:one))
+
+        membership = CampaignMembership
+          .where(user: contacts(:one), campaign_gid: campaign.gid)
+          .first
+
+        assert_equal campaign.steps[1].gid, membership.step_gid
+        assert_equal created_at.to_i, membership.last_sent_at.to_i
       end
 
       test "it creates steps with String names" do

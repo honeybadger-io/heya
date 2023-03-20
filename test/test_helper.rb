@@ -39,6 +39,7 @@ end
 
 class NullAction
   def initialize(step:, user:)
+    # noop
   end
 
   def deliver_later
@@ -74,6 +75,10 @@ module Heya::Campaigns
 end
 
 class ActiveSupport::TestCase
+  def teardown
+    Timecop.return
+  end
+
   def create_test_campaign(name: "TestCampaign", parent: Heya::Campaigns::Base, action: NullAction, &block)
     klass = Class.new(parent) {
       class << self

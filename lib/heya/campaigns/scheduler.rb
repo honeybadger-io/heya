@@ -37,8 +37,7 @@ module Heya
 
           process(campaign, step, membership.user)
 
-          current_index = campaign.steps.index(step)
-          if (next_step = campaign.steps[current_index + 1])
+          if (next_step = get_next_step(campaign, step, user))
             membership.update(step_gid: next_step.gid)
           else
             membership.destroy
@@ -47,6 +46,15 @@ module Heya
       end
 
       private
+
+      def get_next_step(campaign, step, user)
+        receipt_gids = CampaignReceipt
+          .where(user: user, step_gid: campaign.steps.map(&:gid))
+          .pluck(:step_gid)
+          .uniq
+        current_index = campaign.steps.index(step)
+        campaign.steps[(current_index + 1)..].find { |s| receipt_gids.exclude?(s.gid) }
+      end
 
       def process(campaign, step, user)
         ActiveRecord::Base.transaction do
