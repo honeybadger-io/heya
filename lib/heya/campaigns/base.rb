@@ -7,7 +7,7 @@ module Heya
   module Campaigns
     # {Campaigns::Base} provides a Ruby DSL for building campaign sequences.
     # Multiple actions are supported; the default is email.
-    class Base
+    class Base < ActionMailer::Base
       extend ActiveSupport::DescendantsTracker
 
       include Singleton
