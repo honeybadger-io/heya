@@ -23,6 +23,11 @@ module Heya
       instance_variable_set(:"@#{user.model_name.element}", user)
       instance_variable_set(:@campaign_name, campaign_name)
 
+      x_smtp_api = step.params.fetch("x_smtp_api", nil)
+      if x_smtp_api
+        headers["X-SMTPAPI"] = x_smtp_api
+      end
+
       mail(
         from: from,
         bcc: bcc,
