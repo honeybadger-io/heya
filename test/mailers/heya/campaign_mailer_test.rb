@@ -61,5 +61,22 @@ module Heya
 
       assert_equal "Heya Hunter", email.subject
     end
+
+    test "it sets headers" do
+      contact = contacts(:one)
+      step = create_test_step(
+        action: Campaigns::Actions::Email,
+        subject: "Expected subject",
+        bcc: 'quality_control@example.com',
+        headers: {"X-Special-Domain-Special-Header" => "SecretValue"}
+      )
+      email = CampaignMailer.with(user: contact, step: step).build
+
+      assert_emails 1 do
+        email.deliver_now
+      end
+
+      assert_equal email["X-Special-Domain-Special-Header"].value, "SecretValue"
+    end    
   end
 end
