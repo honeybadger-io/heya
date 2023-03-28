@@ -4,7 +4,7 @@ module Heya
   module Campaigns
     module Actions
       class Email < Action
-        VALID_PARAMS = %w[subject from reply_to bcc layout to]
+        VALID_PARAMS = %w[subject from reply_to bcc layout to headers]
 
         def self.validate_step(step)
           step.params.assert_valid_keys(VALID_PARAMS)
