@@ -615,7 +615,7 @@ considering adding to Heya.
 2. `gem bump -v [version] -t -r`
 3. Update unreleased heading in [CHANGELOG.md](./CHANGELOG.md) (TODO: automate
    this in gem-release command)
-4. `git push origin master --tags`
+4. `git push origin main --tags`
 
 ## License
 Heya is licensed under the [LGPL](./LICENSE).
