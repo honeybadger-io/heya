@@ -24,10 +24,7 @@ module Heya
       instance_variable_set(:@campaign_name, campaign_name)
 
       headers_params = step.params.fetch("headers", nil)
-
-      if headers_params
-        headers headers_params
-      end
+      headers(headers_params) if headers_params
 
       mail(
         from: from,
