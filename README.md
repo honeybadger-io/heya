@@ -251,7 +251,9 @@ Heya uses the following additional options to build the message itself:
 | `subject`   | **required** | The email's subject        |
 | `from`      | Heya default | The sender's email address |
 | `layout`    | Heya default | The email's layout file    |
-| `to`        | See below    | See below                  |
+| `to`        | See below    | The recipient's name & email address |
+| `bcc`       | `nil`        | BCC when sending emails    |
+| `headers`   | `{}`         | Headers to include when sending emails |
 
 You can change the default options using the `default` method at the top of the campaign. Heya applies default options to each step which doesn't supply its own:
 
