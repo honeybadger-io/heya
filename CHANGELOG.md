@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Add `header` mail option (#202, @montekaka)
+- Add `:headers` mail option (#202, @montekaka)
 
 ### Fixed
 - Delete user-orphaned campaign memberships in scheduler (#180)
