@@ -18,41 +18,52 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     strategy:
+      fail-fast: false
       matrix:
         rails:
           - rails_5.2
           - rails_6.0
           - rails_6.1
           - rails_7.0
+        ruby:
+          - 3.2
+          - 3.1
+          - '3.0'
+          - 2.7
+        exclude:
+          - ruby: 3.2
+            rails: rails_5.2
+          - ruby: 3.2
+            rails: rails_6.0
+          - ruby: 3.2
+            rails: rails_6.1
+          - ruby: 3.1
+            rails: rails_5.2
+          - ruby: 3.1
+            rails: rails_6.0
+          - ruby: 3.0
+            rails: rails_5.2
+
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      RAILS_ENV: test
+      RAILS_VERSION: ${{ matrix.rails }}
+      BUNDLE_GEMFILE: "./gemfiles/${{ matrix.rails }}.gemfile"
+
     steps:
     - uses: actions/checkout@v3
-
-    - name: Set up Ruby 2.7.x
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '2.7'
 
     - name: Install PostgreSQL 11 client
       run: |
         sudo apt-get -yqq install libpq-dev postgresql-client
 
-    - name: Cache
-      uses: actions/cache@v1
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
       with:
-        path: vendor/bundle
-        key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-gem-
+        ruby-version: ${{ matrix.ruby }}
+        bundler-cache: true
 
     - name: Build and test
-      env:
-        PGHOST: localhost
-        PGUSER: postgres
-        RAILS_ENV: test
-        RAILS_VERSION: ${{ matrix.rails }}
       run: |
-        export BUNDLE_GEMFILE="${GITHUB_WORKSPACE}/gemfiles/${RAILS_VERSION}.gemfile"
-        gem install bundler
-        bundle config path vendor/bundle
-        bundle install --jobs 4 --retry 3
         bundle exec rake db:create db:schema:load test
