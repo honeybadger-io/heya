@@ -23,14 +23,15 @@ module Heya
         end
 
         test "to field" do
-
           contact = contacts(:one)
           step = create_test_step(action: Email, subject: "expected subject")
           email = Email.new(user: contact, step: step).build
 
-          def contact.first_name; "John"; end
-          def contact.name; "John Doe"; end
-          def contact.nickname; "Jhonny Doe"; end
+          def first_name = "John"
+
+          def name = "John Doe"
+
+          def nickname = "Jhonny Doe"
 
           assert_emails 1 do
             email.deliver
@@ -53,7 +54,7 @@ module Heya
           step = create_test_step(
             action: Email,
             subject: "expected subject",
-            to: -> (user) { Heya::CampaignMailer.email_address_with_name(user.email, user.nickname) }
+            to: ->(user) { Heya::CampaignMailer.email_address_with_name(user.email, user.nickname) }
           )
           email = Email.new(user: contact, step: step).build
 
@@ -62,7 +63,6 @@ module Heya
           end
 
           assert_equal "Jhonny Doe <one@example.com>", email.header[:to].value
-
         end
 
         test "it raises an exception without a subject" do

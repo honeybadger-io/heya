@@ -4,13 +4,12 @@ require "test_helper"
 
 module Heya
   class CampaignMailerTest < ActionMailer::TestCase
-
     test "it delivers campaign emails with defaults plus bcc at step level" do
       contact = contacts(:one)
       step = create_test_step(
         action: Campaigns::Actions::Email,
         subject: "Expected subject",
-        bcc: 'quality_control@example.com'
+        bcc: "quality_control@example.com"
       )
       email = CampaignMailer.with(user: contact, step: step).build
 
@@ -20,7 +19,7 @@ module Heya
 
       assert_equal ["user@example.com"], email.from
       assert_equal "Expected subject", email.subject
-      assert_equal ["quality_control@example.com"], email.bcc 
+      assert_equal ["quality_control@example.com"], email.bcc
     end
 
     test "it delivers campaign emails with defaults" do
@@ -67,7 +66,7 @@ module Heya
       step = create_test_step(
         action: Campaigns::Actions::Email,
         subject: "Expected subject",
-        bcc: 'quality_control@example.com',
+        bcc: "quality_control@example.com",
         headers: {"X-Special-Domain-Special-Header" => "SecretValue"}
       )
       email = CampaignMailer.with(user: contact, step: step).build
@@ -77,6 +76,6 @@ module Heya
       end
 
       assert_equal email["X-Special-Domain-Special-Header"].value, "SecretValue"
-    end    
+    end
   end
 end

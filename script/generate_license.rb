@@ -62,4 +62,4 @@ data = license.export
 puts "Exported license:"
 puts data
 
-File.open("Heya.heya-license", "w") { |f| f.write(data) }
+File.write("Heya.heya-license", data)

@@ -44,7 +44,7 @@ module Heya
 
     test ".migrate_next_step! removes orphaned memberships" do
       CampaignMembership.create(
-        campaign_gid: 'gid://heya/null',
+        campaign_gid: "gid://heya/null",
         step_gid: "gid://heya/null",
         user: contacts(:one)
       )
