@@ -254,7 +254,7 @@ module Heya
       end
 
       test "executes block actions" do
-        mock = MiniTest::Mock.new
+        mock = Minitest::Mock.new
         campaign = create_test_campaign {
           step :expected_name do |user, step|
             mock.call(user, step.name)
