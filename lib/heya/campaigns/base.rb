@@ -18,7 +18,7 @@ module Heya
         self.steps = []
       end
 
-      delegate :name, :__segments, to: :class
+      delegate :name, to: :class
       alias_method :id, :name
 
       # Returns String GlobalID.
