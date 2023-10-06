@@ -62,8 +62,8 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
   end
 
   def preview_path
-    @preview_path ||= if ActionMailer::Base.preview_path.present?
-      Pathname(ActionMailer::Base.preview_path).sub(Rails.root.to_s, ".")
+    @preview_path ||= if (preview_path = ActionMailer::Base.preview_paths.first)
+      Pathname(preview_path).sub(Rails.root.to_s, ".")
     end
   end
 end
