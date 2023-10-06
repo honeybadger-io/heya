@@ -7,7 +7,7 @@ module Heya
     module Actions
       class BlockTest < ActiveSupport::TestCase
         test "block actions can be called with one argument" do
-          mock = MiniTest::Mock.new
+          mock = Minitest::Mock.new
           block = proc { |u| mock.call(u) }
           step = OpenStruct.new(params: {"block" => block})
           action = Block.new(user: :user, step: step)
@@ -18,7 +18,7 @@ module Heya
         end
 
         test "block actions can be called with no arguments" do
-          mock = MiniTest::Mock.new
+          mock = Minitest::Mock.new
           block = proc { mock.call }
           step = OpenStruct.new(params: {"block" => block})
           action = Block.new(user: :user, step: step)
