@@ -27,11 +27,17 @@ module Heya
           step = create_test_step(action: Email, subject: "expected subject")
           email = Email.new(user: contact, step: step).build
 
-          def first_name = "John"
+          def contact.first_name
+            "John"
+          end
 
-          def name = "John Doe"
+          def contact.name
+            "John Doe"
+          end
 
-          def nickname = "Jhonny Doe"
+          def contact.nickname
+            "Jhonny Doe"
+          end
 
           assert_emails 1 do
             email.deliver
