@@ -12,6 +12,10 @@ Getting started with Heya is easy:
 2. [Create a campaign](#creating-your-first-campaign)
 3. [Run the scheduler](#running-the-scheduler)
 
+### Prerequisites
+Heya was built to work with PostgreSQL.
+Pull Requests are welcome to support more databases.
+
 ### Installing the Heya gem
 1. Add this line to your application's Gemfile:
 
