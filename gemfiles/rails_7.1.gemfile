@@ -10,7 +10,7 @@ gem "pry-rails", "~> 0.3.9"
 gem "rails", "~> 7.1.0"
 
 group :development, :test do
-  gem "standard", "~> 1.31.2"
+  gem "standard", "~> 1.32.0"
   gem "yard", "~> 0.9.26"
 end
 
