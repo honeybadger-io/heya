@@ -12,8 +12,13 @@ module Heya
       step_name = step.name.underscore
 
       from = step.params.fetch("from")
+      from = from.call(user) if from.respond_to?(:call)
+
       bcc = step.params.fetch("bcc", nil)
+      bcc = bcc.call(user) if bcc.respond_to?(:call)
+
       reply_to = step.params.fetch("reply_to", nil)
+      reply_to = reply_to.call(user) if reply_to.respond_to?(:call)
 
       subject = step.params.fetch("subject") {
         I18n.t("#{campaign_name}.#{step_name}.subject", **attributes_for(user))
