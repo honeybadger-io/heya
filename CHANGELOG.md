@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix a Rails startup bug when validating steps that use translations from locale
   files. (#211)
+- Fix a typo in message.html.erb.tt.
 
 ## [0.9.0] - 2023-10-06
 ### Added
