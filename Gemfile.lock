@@ -105,7 +105,7 @@ GEM
     irb (1.12.0)
       rdoc
       reline (>= 0.4.2)
-    json (2.7.1)
+    json (2.7.2)
     language_server-protocol (3.17.0.3)
     lint_roller (1.1.0)
     loofah (2.22.0)
@@ -117,9 +117,9 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
-    method_source (1.0.0)
+    method_source (1.1.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.5)
+    mini_portile2 (2.8.6)
     minitest (5.22.3)
     minitest-ci (3.4.0)
       minitest (>= 5.0.6)
@@ -134,11 +134,11 @@ GEM
     net-smtp (0.5.0)
       net-protocol
     nio4r (2.7.1)
-    nokogiri (1.16.3)
+    nokogiri (1.16.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     parallel (1.24.0)
-    parser (3.3.0.5)
+    parser (3.3.1.0)
       ast (~> 2.4.1)
       racc
     pg (1.5.6)
@@ -188,11 +188,11 @@ GEM
       thor (~> 1.0, >= 1.2.2)
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
-    rake (13.1.0)
+    rake (13.2.1)
     rdoc (6.6.3.1)
       psych (>= 4.0.0)
     regexp_parser (2.9.0)
-    reline (0.5.0)
+    reline (0.5.3)
       io-console (~> 0.5)
     rexml (3.2.6)
     rubocop (1.62.1)
