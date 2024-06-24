@@ -527,6 +527,23 @@ See the
 [Rails documentation](https://api.rubyonrails.org/classes/ActiveSupport/Rescuable/ClassMethods.html#method-i-rescue_from)
 for additional details.
 
+### Extending Campaign Mailers with Macros
+
+The campaign generator does not create a Mailer class for campaigns. In order to enhance a campaign
+with a macro from another gem (such as for adding analytics), you can do so by extending the
+`Heya::ApplicationMailer` class.
+
+- Create a new file at `app/mailers/heya/application_mailer.rb`
+- Add the following to it:
+
+```
+module Heya
+  class ApplicationMailer < ActionMailer::Base
+    macro_to_add_to_all_campaign_mailers
+  end
+end
+```
+
 ### Campaigns FAQ
 **What happens when:**
 <details><summary>I reorder messages in an active campaign?</summary>
