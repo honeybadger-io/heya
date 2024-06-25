@@ -194,7 +194,7 @@ GEM
     regexp_parser (2.9.2)
     reline (0.5.9)
       io-console (~> 0.5)
-    rexml (3.3.0)
+    rexml (3.3.1)
       strscan
     rubocop (1.64.1)
       json (~> 2.3)
@@ -219,7 +219,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
-    standard (1.37.0)
+    standard (1.39.0)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.0)
       rubocop (~> 1.64.0)
@@ -257,7 +257,7 @@ DEPENDENCIES
   pry (~> 0.14.0)
   pry-rails (~> 0.3.9)
   simplecov
-  standard (~> 1.37.0)
+  standard (~> 1.39.0)
   timecop (~> 0.9.2)
   yard (~> 0.9.36)
 
