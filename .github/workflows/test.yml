@@ -45,6 +45,10 @@ jobs:
             rails: rails_6.0
           - ruby: 3.0
             rails: rails_5.2
+          - ruby: 3.0
+            rails: rails_7.2
+          - ruby: 2.7
+            rails: rails_7.2
 
     env:
       PGHOST: localhost
