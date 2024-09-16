@@ -50,18 +50,9 @@ module Heya
     }
 
     scope :to_process, ->(now: Time.now, user: nil) {
-      upcoming
-        .where(<<~SQL, now: now.utc, user_type: user&.class&.base_class&.name, user_id: user&.id)
-          ("heya_campaign_memberships".last_sent_at <= (TIMESTAMP :now - make_interval(secs := "heya_steps".wait)))
-          AND (
-            (:user_type IS NULL OR :user_id IS NULL)
-            OR (
-              "heya_campaign_memberships".user_type = :user_type
-              AND
-              "heya_campaign_memberships".user_id = :user_id
-            )
-          )
-        SQL
+      query = upcoming.where('heya_campaign_memberships.last_sent_at <= (:now::timestamp - make_interval(secs := "heya_steps".wait))', now: now.utc)
+      query = query.where(user: user) if user
+      query
     }
 
     def self.migrate_next_step!
