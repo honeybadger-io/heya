@@ -601,14 +601,14 @@ See the
 [Rails documentation](https://api.rubyonrails.org/classes/ActiveSupport/Rescuable/ClassMethods.html#method-i-rescue_from)
 for additional details.
 
-### Extending Campaign Mailers with Macros
+### Extending campaign mailers
 
 The campaign generator does not create a Mailer class for campaigns. In order to
 enhance a campaign with a macro from another gem (such as for adding analytics),
 you can do so by extending the `Heya::ApplicationMailer` class.
 
-- Create a new file at `app/mailers/heya/application_mailer.rb`
-- Add the following to it:
+1. Create a new file at `app/mailers/heya/application_mailer.rb`
+2. Add the following to it:
 
 ```ruby
 module Heya
@@ -616,6 +616,46 @@ module Heya
     macro_to_add_to_all_campaign_mailers
   end
 end
+```
+
+For example, here's how to extended `Heya::ApplicationMailer` to include [Ahoy
+Email's](https://github.com/ankane/ahoy_email)
+[has_history](https://github.com/ankane/ahoy_email?tab=readme-ov-file#message-history)
+and
+[track_clicks](https://github.com/ankane/ahoy_email?tab=readme-ov-file#usage)
+macros:
+
+```ruby
+# app/mailers/heya/application_mailer.rb
+
+module Heya
+  class ApplicationMailer < ActionMailer::Base
+    has_history
+
+    track_clicks campaign: -> {
+      params[:step].campaign.name
+    }
+  end
+end
+```
+
+This does two things:
+
+1. `has_history` enables history tracking for all Heya emails
+2. The `track_clicks` block appends the name of the campaign to all
+   (non-unsubscribe) links in an email so that each campaign can keep its data
+   separate from the other campaigns.
+
+The result of this is that you can run a command like this in the console:
+
+```irb
+AhoyEmail.stats "OnboardingCampaign"
+```
+
+...and receive a result:
+
+```irb
+=> {:sends=>1, :clicks=>2, :unique_clicks=>1, :ctr=>100.0}
 ```
 
 ### Campaigns FAQ
