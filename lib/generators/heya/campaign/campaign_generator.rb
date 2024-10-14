@@ -4,6 +4,8 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
   source_root File.expand_path("templates", __dir__)
 
   argument :steps, type: :array, default: []
+  class_option :skip_previews, type: :boolean, default: false
+  class_option :skip_views, type: :boolean, default: false
 
   def copy_campaign_template
     application_campaign = "app/campaigns/application_campaign.rb"
@@ -14,6 +16,8 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
   end
 
   def copy_view_templates
+    return if skip_views?
+
     selection =
       if defined?(Maildown)
         puts <<~MSG
@@ -45,6 +49,8 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
   end
 
   def copy_test_templates
+    return if skip_previews?
+
     if preview_path
       template "preview.rb", preview_path.join("#{file_name.underscore}_campaign_preview.rb")
     end
@@ -73,5 +79,13 @@ class Heya::CampaignGenerator < Rails::Generators::NamedBase
 
       Pathname(preview_path).sub(Rails.root.to_s, ".") if preview_path
     end
+  end
+
+  def skip_previews?
+    options[:skip_previews]
+  end
+
+  def skip_views?
+    options[:skip_views]
   end
 end
