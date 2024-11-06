@@ -92,7 +92,7 @@ class ActiveSupport::TestCase
     Timecop.return
   end
 
-  def create_test_campaign(name: "TestCampaign", parent: Heya::Campaigns::Base, action: NullAction, &block)
+  def create_test_campaign(name: "TestCampaign", parent: Heya::Campaigns::Base, action: NullAction, &)
     klass = Class.new(parent) {
       class << self
         attr_accessor :name
@@ -100,7 +100,7 @@ class ActiveSupport::TestCase
     }
     klass.name = name
     klass.default(action: action)
-    klass.instance_exec(&block)
+    klass.instance_exec(&)
     Object.send(:remove_const, klass.name) if Object.const_defined?(klass.name.to_sym)
     Object.send(:const_set, klass.name.to_sym, klass)
     klass

@@ -7,7 +7,7 @@ module Heya
     TABLE_REGEXP = /heya_steps/
 
     def build_arel(...) # forward all params. Handles differences between 7.1 -> 7.2
-      arel = super(...)
+      arel = super
 
       if table_name == "heya_campaign_memberships" && arel.to_sql =~ TABLE_REGEXP
         # https://www.postgresql.org/docs/9.4/queries-values.html
