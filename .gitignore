@@ -7,6 +7,7 @@ test/dummy/yarn-error.log
 test/dummy/storage/
 test/dummy/tmp/
 .yardoc/
+./ncie
 doc/
 test/reports/
 gemfiles/*.lock
