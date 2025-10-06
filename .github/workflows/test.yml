@@ -36,7 +36,7 @@ jobs:
       BUNDLE_GEMFILE: "./gemfiles/${{ matrix.rails }}.gemfile"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install PostgreSQL 11 client
         run: |
