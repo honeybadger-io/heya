@@ -15,7 +15,7 @@ gemspec
 # gem 'byebug', group: [:development, :test]
 
 group :development, :test do
-  gem "standard", "~> 1.51.1"
+  gem "standard", "~> 1.56.0"
   gem "yard", "~> 0.9.36"
 end
 
@@ -25,6 +25,6 @@ gem "simplecov", require: false, group: :test
 
 gem "timecop", "~> 0.9.2"
 
-gem "pry", "~> 0.15.0"
+gem "pry", "~> 0.16.0"
 
 gem "pry-rails", "~> 0.3.9"
