@@ -1,3 +1,4 @@
+ruby_version: 3.3
 ignore:
   - "test/dummy/bin/*"
   - "test/dummy/db/schema.rb"
