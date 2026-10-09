@@ -20,6 +20,7 @@ group :development, :test do
 end
 
 gem "minitest-ci", group: :test
+gem "minitest-mock", group: :test
 
 gem "simplecov", require: false, group: :test
 
