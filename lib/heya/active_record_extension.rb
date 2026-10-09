@@ -20,12 +20,17 @@ module Heya
           }
 
         if values.any?
-          arel.with(
-            Arel::Nodes::As.new(
-              Arel::Table.new(:heya_steps),
-              Arel::Nodes::SqlLiteral.new("(SELECT * FROM (VALUES #{values.join(", ")}) AS heya_steps (gid,wait))")
-            )
-          )
+          relation = Arel::Nodes::SqlLiteral.new("(SELECT * FROM (VALUES #{values.join(", ")}) AS heya_steps (gid,wait))")
+
+          # Rails 7.1 added Arel::Nodes::Cte. Rails 8.2 changed Arel::Table.new to
+          # take the name as a keyword argument, so avoid it where Cte is available.
+          cte = if defined?(Arel::Nodes::Cte)
+            Arel::Nodes::Cte.new(:heya_steps, relation)
+          else
+            Arel::Nodes::As.new(Arel::Table.new(:heya_steps), relation)
+          end
+
+          arel.with(cte)
         end
       end
 
