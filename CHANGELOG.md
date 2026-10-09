@@ -26,6 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   when a campaign-level segment stopped matching. Their messages were only ever
   skipped; `halt true` is what removes them.
 
+### Fixed
+- Build the `heya_steps` CTE with `Arel::Nodes::Cte` so the scheduler query works on Rails 8.2, where `Arel::Table.new` takes the name as a keyword (@excid3)
+
 ## [0.12.0] - 2024-10-25
 ### Added
 - `--skip-previews` and `--skip-views` flags to skip mail previews and views (#276, @HenriqueMorato)

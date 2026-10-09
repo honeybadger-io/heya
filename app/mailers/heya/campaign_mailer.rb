@@ -42,6 +42,16 @@ module Heya
       )
     end
 
+    # This method is a backport and can be removed when we drop support of
+    # Rails 6.0; As of Rails 6.1, ActionMailer::Base, which we inherit from,
+    # already includes it.
+    def self.email_address_with_name(address, name)
+      Mail::Address.new.tap do |builder|
+        builder.address = address
+        builder.display_name = name
+      end.to_s
+    end
+
     protected
 
     def attributes_for(user)
@@ -70,16 +80,6 @@ module Heya
       else
         user.email
       end
-    end
-
-    # This method is a backport and can be removed when we drop support of
-    # Rails 6.0; As of Rails 6.1, ActionMailer::Base, which we inherit from,
-    # already includes it.
-    def self.email_address_with_name(address, name)
-      Mail::Address.new.tap do |builder|
-        builder.address = address
-        builder.display_name = name
-      end.to_s
     end
   end
 end

@@ -7,6 +7,22 @@ on:
     branches: [main]
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "4.0"
+          bundler-cache: true
+
+      - name: Run Standard
+        run: bundle exec standardrb
+
   build:
     runs-on: ubuntu-latest
 
@@ -20,13 +36,12 @@ jobs:
       fail-fast: false
       matrix:
         rails:
-          - rails_7.1
-          - rails_7.2
           - rails_8.0
+          - rails_8.1
         ruby:
-          - 3.4
-          - 3.3
-          - 3.2
+          - "4.0"
+          - "3.4"
+          - "3.3"
 
     env:
       PGHOST: localhost
@@ -36,7 +51,7 @@ jobs:
       BUNDLE_GEMFILE: "./gemfiles/${{ matrix.rails }}.gemfile"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install PostgreSQL 11 client
         run: |
