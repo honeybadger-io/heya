@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Support Rails 8.0 (#286, @jbennett)
+- `halt` campaigns to remove users whose segment stops matching, instead of
+  skipping their messages. Set `halt true` in a campaign, or per user with
+  `Campaign.add(user, halt: true)`. Requires a migration -- see
+  [UPGRADING.md](./UPGRADING.md).
+
+### Changed
+- Like `segment`, `default`, and `user_type`, `halt` is now a reserved campaign
+  method name, so `step :halt` raises `Invalid step name`. Rename the step if
+  you have one.
+
+### Fixed
+- Skip steps the user has already received when advancing a membership during a
+  scheduled run. `Scheduler#run` passes no user, so the receipt lookup matched
+  nothing and a user who re-entered a campaign advanced through steps they had
+  already received, one run at a time.
+- Correct the segmenting docs, which claimed users were removed from a campaign
+  when a campaign-level segment stopped matching. Their messages were only ever
+  skipped; `halt true` is what removes them.
 
 ### Fixed
 - Build the `heya_steps` CTE with `Arel::Nodes::Cte` so the scheduler query works on Rails 8.2, where `Arel::Table.new` takes the name as a keyword (@excid3)

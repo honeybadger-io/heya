@@ -456,6 +456,213 @@ module Heya
 
         assert_equal campaign.steps[2].gid, membership.step_gid
       end
+
+      test "it skips steps that have receipts during a global run" do
+        campaign = create_test_campaign {
+          default wait: 0
+          user_type "Contact"
+          step :one
+          step :two
+          step :three, wait: 1.day
+        }
+        contact = contacts(:one)
+        CampaignReceipt.create!(user: contact, step_gid: campaign.steps.second.gid)
+
+        campaign.add(contact, send_now: false)
+        run_once
+
+        membership = CampaignMembership.where(user: contact, campaign_gid: campaign.gid).first
+        assert_equal campaign.steps.third.gid, membership.step_gid
+      end
+
+      test "it removes the user when a halting campaign segment stops matching" do
+        action = Minitest::Mock.new
+        campaign = create_test_campaign {
+          default wait: 0, action: action
+          user_type "Contact"
+          halt true
+          segment ->(u) { u.traits["foo"] == "bar" }
+          step :one
+          step :two
+          step :three, wait: 1.day
+        }
+        contact = contacts(:one)
+        contact.update_attribute(:traits, {foo: "bar"})
+
+        action.expect(:new, NullMail,
+          user: contact,
+          step: campaign.steps.first)
+
+        campaign.add(contact, send_now: false)
+        run_once
+        assert_mock action
+
+        membership = CampaignMembership.where(user: contact, campaign_gid: campaign.gid).first
+        assert_equal campaign.steps.second.gid, membership.step_gid
+
+        contact.update_attribute(:traits, {foo: "other"})
+        run_once
+
+        refute CampaignMembership.where(user: contact, campaign_gid: campaign.gid).exists?
+      end
+
+      test "it removes the user when a step's own segment stops matching" do
+        campaign = create_test_campaign {
+          default wait: 0
+          user_type "Contact"
+          halt true
+          segment ->(u) { u.traits["eligible"] == "yes" }
+          step :one, segment: ->(u) { u.traits["foo"] == "bar" }
+          step :two, wait: 1.day
+        }
+        contact = contacts(:one)
+        contact.update_attribute(:traits, {eligible: "yes"})
+
+        campaign.add(contact, send_now: false)
+        run_once
+
+        refute CampaignMembership.where(user: contact, campaign_gid: campaign.gid).exists?
+      end
+
+      test "it removes a user who opted into halting via add" do
+        action = Minitest::Mock.new
+        campaign = create_test_campaign {
+          default wait: 0, action: action
+          user_type "Contact"
+          step :one, segment: ->(u) { u.traits["foo"] == "bar" }
+          step :two
+        }
+        contact = contacts(:one)
+        campaign.add(contact, send_now: false, halt: true)
+
+        run_once
+        assert_mock action
+
+        refute CampaignMembership.where(user: contact, campaign_gid: campaign.gid).exists?
+      end
+
+      test "it keeps a user who opted out of halting on a halting campaign" do
+        action = Minitest::Mock.new
+        campaign = create_test_campaign {
+          default wait: 0, action: action
+          user_type "Contact"
+          halt true
+          step :one, segment: ->(u) { u.traits["foo"] == "bar" }
+          step :two
+        }
+        contact = contacts(:one)
+        campaign.add(contact, send_now: false, halt: false)
+
+        run_once
+        assert_mock action
+
+        membership = CampaignMembership.where(user: contact, campaign_gid: campaign.gid).first
+        assert_equal campaign.steps.second.gid, membership.step_gid
+      end
+
+      test "it keeps a non-halting user whose segment doesn't match" do
+        action = Minitest::Mock.new
+        campaign = create_test_campaign {
+          default wait: 0, action: action
+          user_type "Contact"
+          step :one, segment: ->(u) { u.traits["foo"] == "bar" }
+          step :two
+        }
+        contact = contacts(:one)
+        campaign.add(contact, send_now: false)
+
+        run_once
+        assert_mock action
+
+        membership = CampaignMembership.where(user: contact, campaign_gid: campaign.gid).first
+        assert_equal campaign.steps.second.gid, membership.step_gid
+      end
+
+      test "it delivers to a halting user whose segment matches" do
+        action = Minitest::Mock.new
+        campaign = create_test_campaign {
+          default wait: 0, action: action
+          user_type "Contact"
+          halt true
+          step :one, segment: ->(u) { u.traits["foo"] == "bar" }
+          step :two, wait: 1.day
+        }
+        contact = contacts(:one)
+        contact.update_attribute(:traits, {foo: "bar"})
+
+        action.expect(:new, NullMail,
+          user: contact,
+          step: campaign.steps.first)
+
+        campaign.add(contact, send_now: false)
+        run_once
+        assert_mock action
+
+        membership = CampaignMembership.where(user: contact, campaign_gid: campaign.gid).first
+        assert_equal campaign.steps.second.gid, membership.step_gid
+      end
+
+      test "it creates no receipt for the step that halted" do
+        campaign = create_test_campaign {
+          default wait: 0
+          user_type "Contact"
+          halt true
+          step :one, segment: ->(u) { u.traits["foo"] == "bar" }
+          step :two, wait: 1.day
+        }
+        contact = contacts(:one)
+        campaign.add(contact, send_now: false)
+
+        run_once
+
+        refute CampaignMembership.where(user: contact, campaign_gid: campaign.gid).exists?
+        assert_empty CampaignReceipt.where(user: contact, step_gid: campaign.steps.first.gid)
+      end
+
+      test "it removes the user even when the current step already has a receipt" do
+        campaign = create_test_campaign {
+          default wait: 0
+          user_type "Contact"
+          halt true
+          segment ->(u) { u.traits["foo"] == "bar" }
+          step :one
+          step :two
+        }
+        contact = contacts(:one)
+        contact.update_attribute(:traits, {foo: "bar"})
+        campaign.add(contact, send_now: false)
+
+        first_step_gid = campaign.steps.first.gid
+        CampaignReceipt.create!(user: contact, step_gid: first_step_gid, sent_at: Time.now.utc)
+
+        contact.update_attribute(:traits, {foo: "other"})
+        run_once
+
+        refute CampaignMembership.where(user: contact, campaign_gid: campaign.gid).exists?
+        assert_predicate CampaignReceipt.where(user: contact, step_gid: first_step_gid), :exists?
+      end
+
+      test "it only removes the users whose segment stopped matching" do
+        campaign = create_test_campaign {
+          default wait: 0
+          user_type "Contact"
+          halt true
+          step :one, segment: ->(u) { u.traits["foo"] == "bar" }
+          step :two, wait: 1.day
+        }
+        halting = contacts(:one)
+        staying = contacts(:two)
+        staying.update_attribute(:traits, {foo: "bar"})
+
+        campaign.add(halting, send_now: false)
+        campaign.add(staying, send_now: false)
+
+        run_once
+
+        refute CampaignMembership.where(user: halting, campaign_gid: campaign.gid).exists?
+        membership = CampaignMembership.where(user: staying, campaign_gid: campaign.gid).first
+        assert_equal campaign.steps.second.gid, membership.step_gid
+      end
     end
   end
 end

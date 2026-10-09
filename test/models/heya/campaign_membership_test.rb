@@ -14,6 +14,25 @@ module Heya
       assert membership.last_sent_at.is_a?(Time)
     end
 
+    test "it reports no halt when the column is missing" do
+      connection = CampaignMembership.connection
+      connection.remove_column(:heya_campaign_memberships, :halt)
+      CampaignMembership.reset_column_information
+
+      membership = CampaignMembership.new(
+        campaign_gid: FirstCampaign.gid,
+        step_gid: FirstCampaign.steps.first.gid,
+        user: contacts(:new)
+      )
+      membership.halt = true
+
+      refute_predicate membership, :halt?
+      assert membership.save
+    ensure
+      connection.add_column(:heya_campaign_memberships, :halt, :boolean, null: false, default: false)
+      CampaignMembership.reset_column_information
+    end
+
     test ".migrate_next_step! selects first step" do
       membership = CampaignMembership.create(
         campaign_gid: FirstCampaign.gid,

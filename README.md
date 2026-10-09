@@ -550,12 +550,14 @@ class UpgradeCampaign < ApplicationCampaign
 end
 ```
 
-If they upgrade half way through the campaign, Heya will stop sending messages
-and remove them from the campaign.
+If they upgrade half way through the campaign, Heya skips the messages they no
+longer qualify for. They stay in the campaign and keep advancing through it, so
+they pick up at whatever step is current if they qualify again. To remove them
+from the campaign instead, see [Ending a campaign early](#ending-a-campaign-early).
 
 Likewise, you can require that users meet conditions to continue receiving a
 campaign. Here's a campaign which sends messages only to trial users--non-trial
-users will be removed from the campaign:
+users have their messages skipped:
 
 ```ruby
 class TrialCampaign < ApplicationCampaign
@@ -578,6 +580,68 @@ class ApplicationCampaign < Heya::Campaigns::Base
   segment :subscribed?
 end
 ```
+
+#### Ending a campaign early
+
+By default a segment miss only skips the current message--the user stays in the
+campaign and keeps advancing through it. Use `halt` to remove them instead:
+
+```ruby
+class TrialCampaign < ApplicationCampaign
+  segment :trial?
+  halt true
+
+  step :one
+  step :two
+  step :three
+end
+```
+
+Now when a user stops matching `trial?`, their campaign membership is destroyed
+and they receive nothing further. Add them back with `TrialCampaign.add(user)` if
+they re-qualify.
+
+Halting applies to *every* segment the message is checked against, including a
+step's own `segment:`. In the campaign below, a user who isn't new is removed
+rather than being skipped past `:welcome`:
+
+```ruby
+class TrialCampaign < ApplicationCampaign
+  segment :trial?
+  halt true
+
+  step :welcome, segment: :new_user?  # a non-new user is removed here
+  step :tips
+end
+```
+
+If you want a step to filter without ending the campaign, leave `halt` off and
+remove users yourself with `TrialCampaign.remove(user)`.
+
+`halt` is resolved when the user is added and stored on their membership, so you
+can override it per user:
+
+```ruby
+TrialCampaign.add(user)               # uses the campaign's `halt true`
+TrialCampaign.add(user, halt: false)  # skip messages for this user instead
+TrialCampaign.add(user, halt: true)   # halt this user even when the campaign doesn't
+```
+
+Like `concurrent`, `halt` is only applied when the membership is created--adding a
+user who is already in the campaign returns `false` and changes nothing.
+
+Because the value lives on the membership, editing `halt` in the campaign only
+affects users added after the change. To change it for current members:
+
+```ruby
+Heya::CampaignMembership
+  .where(campaign_gid: TrialCampaign.gid)
+  .update_all(halt: true)
+```
+
+Halting happens when the scheduler next processes the user, not the moment the
+segment flips. A user who becomes ineligible during a 10-day `wait` is removed
+once that wait expires.
 
 ### Handling exceptions
 

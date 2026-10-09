@@ -86,6 +86,114 @@ module Heya
         assert_equal "Expected", child.user_type
       end
 
+      test "it doesn't halt by default" do
+        assert_equal false, Base.halt
+      end
+
+      test "it allows subclasses to change halt" do
+        campaign = create_test_campaign { halt true }
+
+        assert_equal true, campaign.halt
+        assert_equal false, Base.halt
+      end
+
+      test "it allows subclasses to inherit and override halt" do
+        parent = create_test_campaign(name: "ParentCampaign") { halt true }
+        child = create_test_campaign(name: "ChildCampaign", parent: parent) {}
+        grandchild = create_test_campaign(name: "GrandchildCampaign", parent: child) { halt false }
+
+        assert_equal true, child.halt
+        assert_equal false, grandchild.halt
+        assert_equal true, parent.halt
+      end
+
+      test "it raises when halt is given a non-boolean" do
+        error = assert_raises(ArgumentError) do
+          create_test_campaign { halt :subscribed? }
+        end
+
+        assert_match(/must be true or false/, error.message)
+      end
+
+      test "#add raises when halt is given a non-boolean" do
+        campaign = create_test_campaign {
+          user_type "Contact"
+          step :one
+        }
+        contact = contacts(:one)
+
+        error = assert_raises(ArgumentError) do
+          campaign.add(contact, send_now: false, halt: :subscribed?)
+        end
+
+        assert_match(/must be true or false/, error.message)
+        refute CampaignMembership.where(user: contact, campaign_gid: campaign.gid).exists?
+      end
+
+      test "#add stores the campaign's halt default on the membership" do
+        campaign = create_test_campaign {
+          user_type "Contact"
+          halt true
+          step :one
+        }
+        contact = contacts(:one)
+
+        campaign.add(contact, send_now: false)
+
+        assert CampaignMembership.where(user: contact, campaign_gid: campaign.gid, halt: true).exists?
+      end
+
+      test "#add defaults the membership to not halting" do
+        campaign = create_test_campaign {
+          user_type "Contact"
+          step :one
+        }
+        contact = contacts(:one)
+
+        campaign.add(contact, send_now: false)
+
+        assert CampaignMembership.where(user: contact, campaign_gid: campaign.gid, halt: false).exists?
+      end
+
+      test "#add overrides the campaign's halt default per user" do
+        campaign = create_test_campaign {
+          user_type "Contact"
+          halt true
+          step :one
+        }
+        contact = contacts(:one)
+
+        campaign.add(contact, send_now: false, halt: false)
+
+        assert CampaignMembership.where(user: contact, campaign_gid: campaign.gid, halt: false).exists?
+      end
+
+      test "#add opts a single user into halting on a non-halting campaign" do
+        campaign = create_test_campaign {
+          user_type "Contact"
+          step :one
+        }
+        contact = contacts(:one)
+
+        campaign.add(contact, send_now: false, halt: true)
+
+        assert CampaignMembership.where(user: contact, campaign_gid: campaign.gid, halt: true).exists?
+      end
+
+      test "#add picks up the new halt value on restart" do
+        campaign = create_test_campaign {
+          user_type "Contact"
+          step :one
+        }
+        contact = contacts(:one)
+
+        campaign.add(contact, send_now: false, halt: true)
+        assert CampaignMembership.where(user: contact, campaign_gid: campaign.gid, halt: true).exists?
+
+        campaign.add(contact, send_now: false, restart: true, halt: false)
+        assert CampaignMembership.where(user: contact, campaign_gid: campaign.gid, halt: false).exists?
+      end
+
       test "it adds and removes users from campaign" do
         campaign = create_test_campaign(name: "Test") {
           user_type "Contact"

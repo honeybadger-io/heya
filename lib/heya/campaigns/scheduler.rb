@@ -7,7 +7,7 @@ module Heya
     # For each step in each campaign:
     #   1. Find users who haven't completed step, and are outside the `wait`
     #   window
-    #   2. Match segment
+    #   2. Match segment; halting memberships are removed when it fails
     #   3. Create CampaignReceipt (excludes user in subsequent steps)
     #   4. Process job
     class Scheduler
@@ -35,9 +35,10 @@ module Heya
             next
           end
 
-          process(campaign, step, membership.user)
+          process(campaign, step, membership)
+          next if membership.destroyed?
 
-          if (next_step = get_next_step(campaign, step, user))
+          if (next_step = get_next_step(campaign, step, membership.user))
             membership.update(step_gid: next_step.gid)
           else
             membership.destroy
@@ -56,16 +57,20 @@ module Heya
         campaign.steps[(current_index + 1)..].find { |s| receipt_gids.exclude?(s.gid) }
       end
 
-      def process(campaign, step, user)
-        ActiveRecord::Base.transaction do
-          return if CampaignReceipt.where(user: user, step_gid: step.gid).exists?
+      def process(campaign, step, membership)
+        user = membership.user
 
-          if step.in_segment?(user)
+        if step.in_segment?(user)
+          ActiveRecord::Base.transaction do
+            next if CampaignReceipt.where(user: user, step_gid: step.gid).exists?
+
             now = Time.now.utc
             Queries::MembershipsForUpdate.call(campaign, user).update_all(last_sent_at: now)
             CampaignReceipt.create!(user: user, step_gid: step.gid, sent_at: now)
             step.action.new(user: user, step: step).deliver_later
           end
+        elsif membership.halt?
+          membership.destroy
         end
       end
     end

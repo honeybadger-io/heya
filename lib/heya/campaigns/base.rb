@@ -26,7 +26,11 @@ module Heya
         to_gid(app: "heya").to_s
       end
 
-      def add(user, restart: false, concurrent: false, send_now: true)
+      def add(user, restart: false, concurrent: false, send_now: true, halt: nil)
+        unless halt.nil? || HALT_VALUES.include?(halt)
+          raise ArgumentError, "halt must be true or false, got #{halt.inspect}"
+        end
+
         return false unless Heya.in_segments?(user, *__segments)
 
         membership = CampaignMembership.where(user: user, campaign_gid: gid)
@@ -45,6 +49,7 @@ module Heya
         if (step = steps.find { |s| receipt_gids.exclude?(s.gid) })
           membership.create! do |m|
             m.concurrent = concurrent
+            m.halt = halt.nil? ? __halt : halt
             m.step_gid = step.gid
             m.last_sent_at = last_sent_at
           end
@@ -79,6 +84,9 @@ module Heya
       class_attribute :__defaults, default: {}.freeze
       class_attribute :__segments, default: [].freeze
       class_attribute :__user_type, default: nil
+      class_attribute :__halt, default: false
+
+      HALT_VALUES = [true, false].freeze
 
       STEP_ATTRS = {
         action: Actions::Email,
@@ -110,6 +118,17 @@ module Heya
           end
 
           __user_type || Heya.config.user_type
+        end
+
+        def halt(value = nil)
+          unless value.nil?
+            unless HALT_VALUES.include?(value)
+              raise ArgumentError, "halt must be true or false, got #{value.inspect}"
+            end
+            self.__halt = value
+          end
+
+          __halt
         end
 
         def segment(arg = nil, &block)
