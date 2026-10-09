@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support Rails 8.0 (#286, @jbennett)
 
 ### Fixed
+- Remove users from a campaign when they no longer match the campaign's
+  segments, as documented. Previously they stayed in the campaign and skipped
+  every remaining step. Step segments still skip only the current step.
 - Use the membership's user when choosing the next step during a global
   scheduler run, so steps that already have receipts are skipped instead of
   revisited.

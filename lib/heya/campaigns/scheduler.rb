@@ -7,9 +7,10 @@ module Heya
     # For each step in each campaign:
     #   1. Find users who haven't completed step, and are outside the `wait`
     #   window
-    #   2. Match segment
-    #   3. Create CampaignReceipt (excludes user in subsequent steps)
-    #   4. Process job
+    #   2. Remove users who no longer match the campaign's segments
+    #   3. Match step segment
+    #   4. Create CampaignReceipt (excludes user in subsequent steps)
+    #   5. Process job
     class Scheduler
       def run(user: nil)
         Heya.campaigns.each do |campaign|
@@ -32,6 +33,12 @@ module Heya
               user_type: membership.user_type,
               user_id: membership.user_id
             ).delete_all
+            next
+          end
+
+          unless Heya.in_segments?(membership.user, *campaign.__segments)
+            # User no longer matches the campaign's segments; remove them.
+            membership.destroy
             next
           end
 
