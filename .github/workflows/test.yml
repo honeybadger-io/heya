@@ -20,13 +20,12 @@ jobs:
       fail-fast: false
       matrix:
         rails:
-          - rails_7.1
-          - rails_7.2
           - rails_8.0
+          - rails_8.1
         ruby:
-          - 3.4
-          - 3.3
-          - 3.2
+          - "4.0"
+          - "3.4"
+          - "3.3"
 
     env:
       PGHOST: localhost
