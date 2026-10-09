@@ -37,7 +37,7 @@ module Heya
 
           process(campaign, step, membership.user)
 
-          if (next_step = get_next_step(campaign, step, user))
+          if (next_step = get_next_step(campaign, step, membership.user))
             membership.update(step_gid: next_step.gid)
           else
             membership.destroy
