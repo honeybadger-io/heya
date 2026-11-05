@@ -30,13 +30,13 @@ class Heya::LoadHooksTest < ActiveSupport::TestCase
   test "eager loading the app loads StepActionJob" do
     script = <<~RUBY
       require #{File.expand_path("dummy/config/environment", __dir__).inspect}
-      print Heya::Campaigns.autoload?(:StepActionJob).inspect
+      print [Heya::Campaigns.const_defined?(:StepActionJob, false), Heya::Campaigns.autoload?(:StepActionJob)].inspect
     RUBY
 
     env = {"RAILS_ENV" => "production", "SECRET_KEY_BASE" => "test"}
     output, status = Open3.capture2e(env, RbConfig.ruby, "-e", script)
 
     assert status.success?, output
-    assert_equal "nil", output
+    assert_equal "[true, nil]", output
   end
 end
