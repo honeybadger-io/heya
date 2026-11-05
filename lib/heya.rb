@@ -11,7 +11,7 @@ require "heya/campaigns/base"
 require "heya/campaigns/queries"
 require "heya/campaigns/scheduler"
 require "heya/campaigns/step"
-require "heya/campaigns/step_action_job"
+Heya::Campaigns.autoload :StepActionJob, "heya/campaigns/step_action_job"
 
 module Heya
   extend self
