@@ -124,7 +124,9 @@ GEM
     marcel (1.2.1)
     method_source (1.1.0)
     mini_mime (1.1.5)
-    minitest (5.27.0)
+    minitest (6.1.0)
+      drb (~> 2.0)
+      prism (>= 1.5, < 3)
     minitest-ci (3.4.0)
       minitest (>= 5.0.6)
     minitest-mock (5.27.0)
@@ -293,7 +295,7 @@ PLATFORMS
 DEPENDENCIES
   appraisal
   heya!
-  minitest (< 6)
+  minitest (<= 6.1.0)
   minitest-ci
   minitest-mock
   pg
