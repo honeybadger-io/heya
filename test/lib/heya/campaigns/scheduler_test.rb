@@ -133,7 +133,7 @@ module Heya
         assert_mock action
       end
 
-      test "it skips actions that don't match parent segments" do
+      test "it removes users who don't match parent segments" do
         action = Minitest::Mock.new
         parent = create_test_campaign {
           segment { |u| u.traits["foo"] == "bar" }
@@ -142,12 +142,16 @@ module Heya
           default wait: 0, action: action
           user_type "Contact"
           step :one
+          step :two
         }
         contact = contacts(:one)
+        contact.update_attribute(:traits, {foo: "bar"})
         child.add(contact, send_now: false)
+        contact.update_attribute(:traits, {})
 
         run_once
         assert_mock action
+        refute CampaignMembership.where(campaign_gid: child.gid, user: contact).exists?
       end
 
       test "it processes actions that match parent segments" do
@@ -172,13 +176,73 @@ module Heya
         assert_mock action
       end
 
-      test "it skips actions that don't match campaign segment" do
+      test "it removes users who stop matching the campaign segment" do
         action = Minitest::Mock.new
         campaign = create_test_campaign {
           default wait: 0, action: action
           user_type "Contact"
           segment { |u| u.traits["foo"] == "foo" }
           step :one
+          step :two
+          step :three
+        }
+        contact = contacts(:one)
+        contact.update_attribute(:traits, {foo: "foo"})
+        campaign.add(contact, send_now: false)
+
+        action.expect(:new, NullMail,
+          user: contact,
+          step: campaign.steps.first)
+
+        run_once
+        assert_mock action
+
+        contact.update_attribute(:traits, {})
+
+        run_once
+        assert_mock action
+        refute CampaignMembership.where(campaign_gid: campaign.gid, user: contact).exists?
+      end
+
+      test "it resumes from the last unsent step when a removed user is re-added" do
+        action = Minitest::Mock.new
+        campaign = create_test_campaign {
+          default wait: 0, action: action
+          user_type "Contact"
+          segment { |u| u.traits["foo"] == "foo" }
+          step :one
+          step :two
+          step :three
+        }
+        contact = contacts(:one)
+        contact.update_attribute(:traits, {foo: "foo"})
+        campaign.add(contact, send_now: false)
+
+        action.expect(:new, NullMail,
+          user: contact,
+          step: campaign.steps.first)
+        run_once
+        assert_mock action
+
+        contact.update_attribute(:traits, {})
+        run_once
+        refute CampaignMembership.where(campaign_gid: campaign.gid, user: contact).exists?
+
+        contact.update_attribute(:traits, {foo: "foo"})
+        action.expect(:new, NullMail,
+          user: contact,
+          step: campaign.steps.second)
+        campaign.add(contact)
+        assert_mock action
+      end
+
+      test "it keeps users who don't match a step segment" do
+        action = Minitest::Mock.new
+        campaign = create_test_campaign {
+          default wait: 0, action: action
+          user_type "Contact"
+          step :one, segment: ->(u) { u.traits["foo"] == "foo" }
+          step :two
         }
         contact = contacts(:one)
         campaign.add(contact, send_now: false)
@@ -186,6 +250,9 @@ module Heya
         run_once
 
         assert_mock action
+        membership = CampaignMembership.where(campaign_gid: campaign.gid, user: contact).first
+        assert membership
+        assert_equal campaign.steps.second.gid, membership.step_gid
       end
 
       test "it processes actions that match campaign segment" do

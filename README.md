@@ -551,7 +551,9 @@ end
 ```
 
 If they upgrade half way through the campaign, Heya will stop sending messages
-and remove them from the campaign.
+and remove them from the campaign. Removal happens when the scheduler next
+processes the user, so a user who stops matching during a step's `wait` is
+removed once that wait expires.
 
 Likewise, you can require that users meet conditions to continue receiving a
 campaign. Here's a campaign which sends messages only to trial users--non-trial
