@@ -22,6 +22,12 @@ module Heya
       end
     end
 
+    # StepActionJob is autoloaded so requiring heya doesn't load ActiveJob::Base
+    # before the app's initializers have run.
+    config.before_eager_load do
+      Heya::Campaigns::StepActionJob
+    end
+
     config.after_initialize do
       Dir.glob(Rails.root + "app/campaigns/*.rb").each do |c|
         require_dependency(c)

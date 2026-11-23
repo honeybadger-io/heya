@@ -74,7 +74,7 @@ module Heya
 
       private
 
-      delegate :sanitize_sql_array, to: ActiveRecord::Base
+      delegate :sanitize_sql_array, to: "::ActiveRecord::Base"
 
       class_attribute :__defaults, default: {}.freeze
       class_attribute :__segments, default: [].freeze
