@@ -55,6 +55,15 @@ module Heya
       query
     }
 
+    # halt? and halt= tolerate installs that haven't run the halt migration yet.
+    def halt?
+      has_attribute?(:halt) ? super : false
+    end
+
+    def halt=(value)
+      super if has_attribute?(:halt)
+    end
+
     def self.migrate_next_step!
       find_each do |membership|
         campaign = GlobalID::Locator.locate(membership.campaign_gid)

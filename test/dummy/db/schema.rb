@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_14_174703) do
+ActiveRecord::Schema.define(version: 2026_09_11_000000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2020_02_14_174703) do
     t.string "campaign_gid", null: false
     t.string "step_gid", null: false
     t.boolean "concurrent", default: false, null: false
+    t.boolean "halt", default: false, null: false
     t.datetime "last_sent_at", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
