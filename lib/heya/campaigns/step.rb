@@ -12,6 +12,10 @@ module Heya
         campaign_name.constantize.steps.find { |s| s.id == id }
       end
 
+      def self.where(id:)
+        Array(id).filter_map { |step_id| find(step_id) }
+      end
+
       def initialize(id:, name:, campaign:, position:, action:, wait:, segment:, queue:, params: {})
         super
         if action.respond_to?(:validate_step)
