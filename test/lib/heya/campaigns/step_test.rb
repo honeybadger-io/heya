@@ -19,6 +19,17 @@ module Heya
 
         refute step.in_segment?(contact)
       end
+
+      test "it is located by Global ID fetch" do
+        campaign = create_test_campaign {
+          step :one
+          step :two
+        }
+        one, two = campaign.steps
+
+        assert_equal one, GlobalID::Locator.fetch(one.gid)
+        assert_equal [two], Step.where(id: [two.id, "#{campaign.name}/missing"])
+      end
     end
   end
 end
